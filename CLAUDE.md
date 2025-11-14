@@ -8,15 +8,17 @@ This is a **multi-language monorepo** containing four independent implementation
 
 ```
 /Users/svetzal/Work/Personal/conversion/
-├── mojentic-py/     # Python reference implementation (complete)
-├── mojentic-ex/     # Elixir implementation (in progress)
-├── mojentic-ru/     # Rust implementation (in progress)
-├── mojentic-ts/     # TypeScript implementation (in progress)
+├── mojentic-py/     # Python reference implementation (complete) [git submodule]
+├── mojentic-ex/     # Elixir implementation (in progress) [git submodule]
+├── mojentic-ru/     # Rust implementation (in progress) [git submodule]
+├── mojentic-ts/     # TypeScript implementation (in progress) [git submodule]
 ├── PARITY.md        # Feature parity tracking matrix (CRITICAL - always consult and update)
 ├── ELIXIR.md        # Elixir implementation guide
 ├── RUST.md          # Rust implementation guide
 └── TYPESCRIPT.md    # TypeScript implementation guide
 ```
+
+**Note**: Each `mojentic-*` directory is a **git submodule**, pointing to its own independent repository. This allows each language implementation to have its own version control, CI/CD, and release cycle while maintaining coordinated feature parity across implementations.
 
 **CRITICAL**: The Python implementation (`mojentic-py`) is the **reference implementation**. All other implementations must achieve feature parity with it. **Always consult `PARITY.md`** before implementing features to understand current status and priorities.
 
