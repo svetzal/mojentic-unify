@@ -1,0 +1,12 @@
+[submodule "mojentic-ex"]
+	path = mojentic-ex
+	url = git@github.com:svetzal/mojentic-ex.git
+[submodule "mojentic-py"]
+	path = mojentic-py
+	url = git@github.com:svetzal/mojentic.git
+[submodule "mojentic-ru"]
+	path = mojentic-ru
+	url = git@github.com:svetzal/mojentic-ru.git
+[submodule "mojentic-ts"]
+	path = mojentic-ts
+	url = git@github.com:svetzal/mojentic-ts.git
