@@ -24,7 +24,7 @@ This is a **multi-language monorepo** containing four independent implementation
 
 ## Working with Language-Specific Agents
 
-**IMPORTANT**: This monorepo has four specialized agents (see `.claude/agents/`) for quality work in each language:
+**IMPORTANT**: This monorepo has four specialized agents for quality work in each language:
 
 - **@elixir-craftsperson** - Elixir work in `mojentic-ex/`
 - **@python-craftsperson** - Python work in `mojentic-py/`
