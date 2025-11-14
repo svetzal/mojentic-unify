@@ -42,14 +42,6 @@
       "Bash(gh release create:*)",
       "Bash(gh release:*)",
       "Bash(chmod:*)",
-      "Bash(timeout 5 mix run:*)",
-      "Bash(timeout 10 mix run:*)",
-      "Bash(timeout 15 mix run examples/streaming.exs)",
-      "Bash(timeout 30 mix run:*)",
-      "Bash(timeout 15 cargo run:*)",
-      "Bash(for example in examples/*.exs)",
-      "Bash(do echo \"=== Testing $example ===\")",
-      "Bash(done)",
       "Bash(for:*)",
       "Bash(timeout 10 npx ts-node:*)",
       "Bash(timeout 10 cargo run:*)",
@@ -62,7 +54,9 @@
       "Bash(flake8:*)",
       "Bash(npx tsc:*)",
       "Bash(cargo run:*)",
-      "Bash(npx ts-node:*)"
+      "Bash(npx ts-node:*)",
+      "Bash(mv:*)",
+      "Bash(ln:*)"
     ],
     "deny": [],
     "ask": []
