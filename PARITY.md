@@ -1089,7 +1089,7 @@ def process(_), do: {:error, :invalid_format}
 | **File Manager Tool** | ✅ | ✅ | ✅ | ✅ | Sandboxed file operations; All: FilesystemGateway with security, ListFiles, ReadFile, WriteFile, ListAllFiles, FindByGlob, FindContaining, FindLinesMatching, CreateDirectory tools |
 | **Task Manager Tool** | ✅ | ✅ | ✅ | ✅ | Ephemeral tasks with shared state |
 | **Ask User Tool** | ✅ | ❌ | ❌ | ❌ | Interactive input |
-| **Tell User Tool** | ✅ | ❌ | ❌ | ❌ | User output |
+| **Tell User Tool** | ✅ | ✅ | ✅ | ✅ | User output |
 | **Web Search Tool** | ✅ | ❌ | ❌ | ❌ | Organic search |
 | **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | Date/time access - returns current datetime with formatting |
 
@@ -1224,7 +1224,7 @@ This section organizes all Python example scripts from simplest to most sophisti
 | **coding_file_tool.py** | ✅ | ✅ | ⚠️ | ✅ | Code-specific file operations | File tool with code awareness |
 | **broker_as_tool.py** | ✅ | ❌ | ❌ | ❌ | Use LLM broker as a tool | Tool wrapping, nested brokers |
 | **ephemeral_task_manager_example.py** | ✅ | ✅ | ✅ | ✅ | Task management tool demo | TaskManager tool (all implementations complete) |
-| **tell_user_example.py** | ✅ | ❌ | ❌ | ❌ | User communication tool | TellUser tool |
+| **tell_user_example.py** | ✅ | ✅ | ✅ | ✅ | User communication tool | TellUser tool |
 | **ensures_files_exist.py** | ✅ | ❌ | ❌ | ❌ | File existence verification tool | File tool utilities |
 
 **Implementation Priority**: Implement after core tools (DateResolver) work. These are specialized tools for specific use cases.
@@ -1516,7 +1516,7 @@ This section organizes TODOs based on which example scripts require which featur
 All Level 2 features are now complete!
 
 #### ✅ **Level 3 Partial** (Tool System Extensions)
-**Current Status**: 4/6 complete
+**Current Status**: 5/6 complete
 
 Completed tools:
 1. ✅ **File tool** (for file_tool.exs)
@@ -1542,11 +1542,15 @@ Completed tools:
    - ✅ Comprehensive test coverage
    - ✅ Example demonstrating coordinator/specialist pattern
 
+5. ✅ **Tell user tool** (for tell_user.exs)
+   - ✅ TellUser tool implementation
+   - ✅ 7 comprehensive tests
+   - ✅ Example demonstrating user communication
+
 Remaining tools needed:
-5. ⬜ **User communication tools** (for tell_user.exs)
 6. ⬜ **File utilities** (for ensures_files_exist.exs)
 
-**Estimated Effort**: 1-2 weeks for remaining tools
+**Estimated Effort**: 1 week for remaining tool
 
 #### 📝 **Level 4 Planned** (Tracing & Observability)
 **Dependencies**: Level 2 complete
@@ -1572,8 +1576,8 @@ Required agent infrastructure:
 
 **Estimated Effort**: 4-6 weeks (complex OTP patterns)
 
-**Current Test Coverage**: 85% (279 tests including 13 doctests)
-**Priority**: Maintain high coverage, implement remaining Level 3 tools (tell_user, ensures_files_exist), then Layer 2 (Tracer)
+**Current Test Coverage**: 85% (286 tests including 13 doctests)
+**Priority**: Maintain high coverage, implement remaining Level 3 tool (ensures_files_exist), then Layer 2 (Tracer)
 
 ---
 
@@ -1591,7 +1595,7 @@ Required agent infrastructure:
 All Level 2 features are now complete!
 
 #### ✅ **Level 3 Partial** (Tool System Extensions)
-**Current Status**: 4/6 complete
+**Current Status**: 5/6 complete
 
 Completed tools:
 1. ✅ **File tool** (for file_tool.rs)
@@ -1623,11 +1627,15 @@ Completed tools:
    - ✅ Working example with coordinator/specialist pattern
    - ✅ Documentation in book/src/core/agent_delegation.md
 
+5. ✅ **Tell user tool** (for tell_user.rs)
+   - ✅ TellUserTool implementation
+   - ✅ 6 comprehensive unit tests
+   - ✅ Example demonstrating user communication
+
 Remaining tools needed:
-5. ⬜ **User communication tools** (for tell_user.rs)
 6. ⬜ **File utilities** (for ensures_files_exist.rs)
 
-**Estimated Effort**: 1-2 weeks for remaining tools
+**Estimated Effort**: 1 week for remaining tool
 
 #### 📝 **Level 4 Planned** (Tracing & Observability)
 Required for tracer_demo.rs:
@@ -1642,11 +1650,11 @@ Required for tracer_demo.rs:
 #### 📝 **Level 5-7 Future** (Agent System)
 **Not planned yet** - Focus on Layer 1 and Layer 2 first
 
-**Current Test Coverage**: 129 tests (124 unit tests + 5 passing doctests)
-- **Unit tests**: 100% passing (error handling, broker, gateway, chat session, tools, file_manager, tool_wrapper)
-- **Doctests**: 5 passing (TokenizerGateway examples that don't require Ollama)
+**Current Test Coverage**: 135 tests (129 unit tests + 6 passing doctests)
+- **Unit tests**: 100% passing (error handling, broker, gateway, chat session, tools, file_manager, tool_wrapper, tell_user_tool)
+- **Doctests**: 6 passing (TokenizerGateway and TellUserTool examples that don't require Ollama)
 
-**Priority**: Maintain high unit test coverage, implement remaining Level 3 tools (tell_user, ensures_files_exist), then Layer 2 (Tracer)
+**Priority**: Maintain high unit test coverage, implement remaining Level 3 tool (ensures_files_exist), then Layer 2 (Tracer)
 
 ---
 
@@ -1664,7 +1672,7 @@ Required for tracer_demo.rs:
 All Level 2 features are now complete!
 
 #### ✅ **Level 3 Partial** (Tool System Extensions)
-**Current Status**: 4/6 complete
+**Current Status**: 5/6 complete
 
 Completed tools:
 1. ✅ **Task manager tool** (ephemeral-task-manager.ts)
@@ -1679,12 +1687,15 @@ Completed tools:
    - ✅ 17 comprehensive tests (7 Agent + 10 ToolWrapper, all 315 tests passing)
    - ✅ Working example with coordinator/specialist pattern
    - ✅ Documentation in docs/agent-delegation.md
+5. ✅ **Tell user tool** (tell-user.ts)
+   - ✅ TellUserTool implementation
+   - ✅ 7 comprehensive tests
+   - ✅ Example demonstrating user communication
 
 Missing tools:
-5. ⬜ **User communication tools** (tell_user.ts)
 6. ⬜ **File utilities** (ensures_files_exist.ts)
 
-**Estimated Effort**: 1-2 weeks for remaining tools
+**Estimated Effort**: 1 week for remaining tool
 
 #### 📝 **Level 4 Planned** (Tracing & Observability)
 Required for tracer_demo.ts:
@@ -1725,8 +1736,8 @@ Required for tracer_demo.ts:
    - ⬜ Version management
    - ⬜ Publish to npm
 
-**Current Test Coverage**: 315 tests passing across 15 test suites (added Agent and ToolWrapper tests)
-**Priority**: Implement remaining Level 3 tools (tell_user, ensures_files_exist), then Layer 2 (Tracer)
+**Current Test Coverage**: 322 tests passing across 15 test suites (added TellUserTool tests: 7 tests)
+**Priority**: Implement remaining Level 3 tool (ensures_files_exist), then Layer 2 (Tracer)
 
 ---
 
@@ -1821,7 +1832,7 @@ This table provides a quick overview of which examples are implemented in each p
 | **3** | coding_file_tool | ✅ | ✅ | ✅ | ✅ | Code-aware File Tool |
 | **3** | broker_as_tool | ✅ | ✅ | ✅ | ✅ | Tool Wrapping |
 | **3** | ephemeral_task_manager | ✅ | ✅ | ✅ | ✅ | Task Tool with shared state |
-| **3** | tell_user | ✅ | ❌ | ❌ | ❌ | User Communication Tool |
+| **3** | tell_user | ✅ | ✅ | ✅ | ✅ | User Communication Tool |
 | **4** | tracer_demo | ✅ | ❌ | ❌ | ❌ | TracerSystem |
 | **5** | async_llm | ✅ | ❌ | ❌ | ❌ | Async Agents |
 | **5** | async_dispatcher | ✅ | ❌ | ❌ | ❌ | AsyncDispatcher |
@@ -1835,9 +1846,9 @@ This table provides a quick overview of which examples are implemented in each p
 
 **Summary by Port**:
 - **Python**: 24/24 examples implemented (100%)
-- **Elixir**: 15/24 examples (63%) - Level 1 + Level 2 complete + 4 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool)
-- **Rust**: 15/24 examples (63%) - Level 1 + Level 2 complete + 4 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool)
-- **TypeScript**: 15/24 examples (63%) - Level 1 + Level 2 complete + 4 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool)
+- **Elixir**: 16/24 examples (67%) - Level 1 + Level 2 complete + 5 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool, tell_user)
+- **Rust**: 16/24 examples (67%) - Level 1 + Level 2 complete + 5 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool, tell_user)
+- **TypeScript**: 16/24 examples (67%) - Level 1 + Level 2 complete + 5 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool, tell_user)
 
 ---
 
