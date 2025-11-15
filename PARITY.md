@@ -856,7 +856,7 @@ For detailed examples and architecture, see the sections below.
 - **Python**: 100% complete (reference implementation)
 - **Elixir**: 30% complete (Level 1 + Level 2 + Level 3 partial, 279 tests, 85% coverage)
 - **Rust**: 30% complete (Level 1 + Level 2 + Level 3 partial, 133 tests: 120 unit + 5 doctests + 8 integration doctests)
-- **TypeScript**: 25% complete (Level 1 + Level 2 partial, 287 tests, coverage TBD)
+- **TypeScript**: 30% complete (Level 1 + Level 2 complete, 298 tests passing, coverage TBD)
 
 ### By Example Complexity Level
 - **Level 1** (Basic LLM): All ports ✅
@@ -1636,43 +1636,25 @@ Required for tracer_demo.rs:
 - ✅ simple_tool.ts - Tool usage with DateResolver
 - ✅ list_models.ts - Model listing
 
-#### ✅ **Level 2 Partial** (Advanced LLM Features)
-**Current Status**: 5/7 complete
+#### ✅ **Level 2 Complete** (Advanced LLM Features)
+**Current Status**: 7/7 complete ✅
 
-Completed features:
-1. ✅ **Streaming API** (streaming.ts)
-2. ✅ **Broker Examples** (broker_examples.ts)
-3. ✅ **Image Analysis** (image_analysis.ts)
-4. ✅ **Embeddings API** (embeddings.ts)
-5. ✅ **CurrentDateTimeTool** (current_datetime.ts)
+All Level 2 features are now complete!
 
-Missing Level 2 features:
-1. ⬜ **ChatSession** (chat_session.ts)
-   - Class-based session management
-   - Message history (SizedLlmMessage[])
-   - Context window management
-   - Async methods
-
-2. ⬜ **ChatSession with Tools** (chat_session_with_tool.ts)
-   - ChatSession + Tool integration
-   - Example demonstrating tool usage in session
-
-**Estimated Effort**: 2-3 days for ChatSession
-
-#### ⚠️ **Level 3 Partial** (Tool System Extensions)
-**Current Status**: 1/6 complete
+#### ✅ **Level 3 Partial** (Tool System Extensions)
+**Current Status**: 2/6 complete
 
 Completed tools:
 1. ✅ **Task manager tool** (ephemeral-task-manager.ts)
+2. ✅ **File tool** (file_tool.ts)
 
 Missing tools:
-2. ⬜ **File tool** (file_tool.ts)
 3. ⬜ **Coding-specific file tool** (coding_file_tool.ts)
 4. ⬜ **Broker as tool** (broker_as_tool.ts)
 5. ⬜ **User communication tools** (tell_user.ts)
 6. ⬜ **File utilities** (ensures_files_exist.ts)
 
-**Estimated Effort**: 1-2 weeks for all tools
+**Estimated Effort**: 1-2 weeks for remaining tools
 
 #### 📝 **Level 4 Planned** (Tracing & Observability)
 Required for tracer_demo.ts:
@@ -1713,8 +1695,8 @@ Required for tracer_demo.ts:
    - ⬜ Version management
    - ⬜ Publish to npm
 
-**Current Test Coverage**: 287 tests passing across 12 test suites
-**Priority**: Add ChatSession examples, then additional gateways, then complete documentation
+**Current Test Coverage**: 298 tests passing across 13 test suites (added ChatSession tests)
+**Priority**: Implement remaining Level 3 tools (coding_file_tool, broker_as_tool, tell_user), then Layer 2 (Tracer)
 
 ---
 
@@ -1801,11 +1783,11 @@ This table provides a quick overview of which examples are implemented in each p
 | **2** | image_analysis | ✅ | ✅ | ✅ | ✅ | Multimodal Messages |
 | **2** | broker_examples | ✅ | ✅ | ✅ | ✅ | All Broker Features |
 | **2** | streaming | ✅ | ✅ | ✅ | ✅ | Streaming API with full recursive tool execution (all: Ollama; Py: also OpenAI) |
-| **2** | chat_session | ✅ | ✅ | ✅ | ❌ | ChatSession |
-| **2** | chat_session_with_tool | ✅ | ✅ | ✅ | ❌ | ChatSession + Tools |
+| **2** | chat_session | ✅ | ✅ | ✅ | ✅ | ChatSession |
+| **2** | chat_session_with_tool | ✅ | ✅ | ✅ | ✅ | ChatSession + Tools |
 | **2** | embeddings | ✅ | ✅ | ✅ | ✅ | Embeddings API |
 | **2** | current_datetime_tool | ✅ | ✅ | ✅ | ✅ | DateTime Tool |
-| **3** | file_tool | ✅ | ✅ | ✅ | ❌ | File Tool |
+| **3** | file_tool | ✅ | ✅ | ✅ | ✅ | File Tool |
 | **3** | coding_file_tool | ✅ | ❌ | ❌ | ❌ | Code-aware File Tool |
 | **3** | broker_as_tool | ✅ | ❌ | ❌ | ❌ | Tool Wrapping |
 | **3** | ephemeral_task_manager | ✅ | ✅ | ✅ | ✅ | Task Tool with shared state |
@@ -1825,7 +1807,7 @@ This table provides a quick overview of which examples are implemented in each p
 - **Python**: 24/24 examples implemented (100%)
 - **Elixir**: 13/24 examples (54%) - Level 1 + Level 2 complete + ephemeral_task_manager + file_tool
 - **Rust**: 13/24 examples (54%) - Level 1 + Level 2 complete + ephemeral_task_manager + file_tool
-- **TypeScript**: 10/24 examples (42%) - Level 1 + Level 2 partial (missing chat_session) + ephemeral_task_manager
+- **TypeScript**: 13/24 examples (54%) - Level 1 + Level 2 complete + ephemeral_task_manager + file_tool
 
 ---
 
