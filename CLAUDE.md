@@ -91,6 +91,67 @@ ESLint, Prettier, Jest tests, npm audit, and verify VitePress docs are current.
 4. **Documentation sync** - Agents ensure guides (ex_docs, mdBook, VitePress, mkdocs) stay current
 5. **Security** - Each agent runs appropriate security audits (mix_audit, cargo-deny, npm audit, pysentry)
 
+## MANDATORY Quality Gates
+
+**CRITICAL**: Every code change session MUST run full quality checks before considering work complete. These gates are non-negotiable.
+
+### Pre-Commit Checklist (ALL implementations)
+
+Before ANY commit or completion of work:
+
+1. ✅ **Format check** - Code must be formatted per language standards
+2. ✅ **Lint check** - All linter warnings resolved (including examples/tests)
+3. ✅ **Test suite** - All tests passing
+4. ✅ **Security audit** - No known vulnerabilities
+5. ✅ **Examples validate** - All examples compile/run without errors
+
+### Language-Specific Quality Commands
+
+**Python** (mojentic-py/):
+```bash
+flake8 src && \
+pytest && \
+pip-audit
+```
+
+**Elixir** (mojentic-ex/):
+```bash
+mix format --check-formatted && \
+mix credo --strict && \
+mix test && \
+mix audit
+```
+
+**Rust** (mojentic-ru/):
+```bash
+cargo fmt --check && \
+cargo clippy --all-targets --all-features -- -D warnings && \
+cargo test && \
+cargo deny check
+```
+
+**TypeScript** (mojentic-ts/):
+```bash
+npm run lint && \
+npm run format:check && \
+npm test && \
+npm audit
+```
+
+### Why This Matters
+
+**Examples are executable documentation** - When examples fail to compile, users cannot learn from them. The `--all-targets` flag in linting/checking MUST include examples to catch API mismatches immediately.
+
+**Prevention over cure** - Running quality gates takes seconds. Debugging broken examples in CI or production takes hours. Always run checks before committing.
+
+### When Quality Gates Fail
+
+If quality checks reveal errors:
+1. **Stop immediately** - Do not proceed with other work
+2. **Fix the root cause** - Don't suppress warnings
+3. **Re-run all checks** - Ensure the fix didn't introduce new issues
+4. **Document exceptions** - If suppressing a lint, explain why in comments
+
 ## Working Across Language Boundaries
 
 ### Before Implementing a Feature
