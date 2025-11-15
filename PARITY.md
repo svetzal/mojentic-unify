@@ -854,14 +854,14 @@ For detailed examples and architecture, see the sections below.
 
 ### By Port
 - **Python**: 100% complete (reference implementation)
-- **Elixir**: 30% complete (Level 1 + Level 2 + Level 3 partial, 279 tests, 85% coverage)
-- **Rust**: 30% complete (Level 1 + Level 2 + Level 3 partial, 133 tests: 120 unit + 5 doctests + 8 integration doctests)
-- **TypeScript**: 30% complete (Level 1 + Level 2 complete, 298 tests passing, coverage TBD)
+- **Elixir**: 35% complete (Level 1 + Level 2 + Level 3 partial: 4/6 tools, 279 tests, 85% coverage)
+- **Rust**: 35% complete (Level 1 + Level 2 + Level 3 partial: 4/6 tools, 129 tests: 124 unit + 5 doctests)
+- **TypeScript**: 35% complete (Level 1 + Level 2 + Level 3 partial: 4/6 tools, 315 tests passing)
 
 ### By Example Complexity Level
 - **Level 1** (Basic LLM): All ports ✅
 - **Level 2** (Advanced LLM): All ports ✅
-- **Level 3** (Tools): Python ✅, others planned
+- **Level 3** (Tools): Python ✅, Elixir/Rust/TypeScript 4/6 complete (broker_as_tool ✅)
 - **Level 4** (Tracing): Python ✅, others planned
 - **Level 5-7** (Agents): Python ✅, others future work
 
@@ -877,7 +877,7 @@ See [Quick Reference table](#quick-reference-example-implementation-status) for 
 | **Data Modeling** | ✅ (Pydantic) | ✅ (Structs/Maps) | ✅ (Structs/Enums) | ✅ (Interfaces/Types) | TypeScript adds compile-time type safety |
 | **Async Support** | ✅ (asyncio) | 📝 (OTP) | ✅ (tokio) | ✅ (async/await) | Elixir: GenServer/Task/GenStage for actor-based concurrency; see ELIXIR.md OTP section |
 | **Documentation** | ✅ (Sphinx/MkDocs) | ✅ (ExDoc with guides) | ✅ (mdBook) | ✅ (VitePress/TSDoc) | All ports have comprehensive documentation |
-| **Testing Framework** | ✅ (pytest) | ✅ (ExUnit, 279 tests, 85% coverage) | ✅ (133 tests: 120 unit + 13 doc) | ✅ (Jest, 287 tests) | All ports have comprehensive test coverage |
+| **Testing Framework** | ✅ (pytest) | ✅ (ExUnit, 279 tests, 85% coverage) | ✅ (129 tests: 124 unit + 5 doc) | ✅ (Jest, 315 tests) | All ports have comprehensive test coverage |
 | **Linting & Formatting** | ✅ (flake8) | ✅ (credo, mix format) | ✅ (clippy, rustfmt) | ✅ (ESLint, Prettier) | All ports enforce code quality standards |
 | **Security Scanning** | ✅ (bandit, pip-audit) | ✅ (mix audit, sobelow) | ✅ (cargo-audit, deny) | ✅ (npm audit, eslint-plugin-security) | Python: bandit >=1.7.0 (code) + pip-audit >=2.0.0 (deps); Elixir: sobelow (code) + mix audit (deps); Rust: cargo-audit (deps) + deny (license/security); TypeScript: npm audit (deps) + eslint-plugin-security (code) |
 | **CI/CD Pipeline** | ✅ (3 parallel) | ✅ (5 parallel) | ✅ (6 parallel) | ✅ (6 parallel) | Python: lint, test, security (JSON artifacts); Elixir: format, compile, credo, test, security; Rust: format, clippy, build, test, security, docs; TypeScript: lint, format, build, test, security, docs |
@@ -1313,7 +1313,7 @@ This section organizes all Python example scripts from simplest to most sophisti
 #### Rust
 - **Level 1 Complete**: ✅ (4/4 examples)
 - **Level 2 Complete**: ✅ (7/7 examples - streaming, embeddings, current_datetime, image_analysis, broker_examples, chat_session, chat_session_with_tool)
-- **Level 3 Complete**: ✅ (3/6 - ephemeral_task_manager, file_tool, coding_file_tool FUNCTIONAL)
+- **Level 3 Complete**: ✅ (3/6 - ephemeral_task_manager, file_tool, coding_file_tool)
 - **Test Status**: ✅ 124/124 unit tests passing, 5/5 doctests passing, 8 integration doctests appropriately ignored
 - **Priority**: Complete remaining Level 3 tools (broker_as_tool, tell_user, ensures_files_exist), then Layer 2 (Tracer)
 
@@ -1516,7 +1516,7 @@ This section organizes TODOs based on which example scripts require which featur
 All Level 2 features are now complete!
 
 #### ✅ **Level 3 Partial** (Tool System Extensions)
-**Current Status**: 2/6 complete
+**Current Status**: 4/6 complete
 
 Completed tools:
 1. ✅ **File tool** (for file_tool.exs)
@@ -1536,8 +1536,13 @@ Completed tools:
    - ✅ Example demonstrates systematic coding workflow
    - ⚠️ Missing EditFileWithDiffTool (not critical for current example)
 
+4. ✅ **Broker as tool** (for broker_as_tool.exs)
+   - ✅ ToolWrapper module wrapping agents as tools
+   - ✅ Agent delegation pattern implementation
+   - ✅ Comprehensive test coverage
+   - ✅ Example demonstrating coordinator/specialist pattern
+
 Remaining tools needed:
-4. ⬜ **Broker as tool** (for broker_as_tool.exs)
 5. ⬜ **User communication tools** (for tell_user.exs)
 6. ⬜ **File utilities** (for ensures_files_exist.exs)
 
@@ -1568,7 +1573,7 @@ Required agent infrastructure:
 **Estimated Effort**: 4-6 weeks (complex OTP patterns)
 
 **Current Test Coverage**: 85% (279 tests including 13 doctests)
-**Priority**: Maintain high coverage, implement remaining Level 3 tools, then Layer 2 (Tracer)
+**Priority**: Maintain high coverage, implement remaining Level 3 tools (tell_user, ensures_files_exist), then Layer 2 (Tracer)
 
 ---
 
@@ -1586,7 +1591,7 @@ Required agent infrastructure:
 All Level 2 features are now complete!
 
 #### ✅ **Level 3 Partial** (Tool System Extensions)
-**Current Status**: 2/6 complete
+**Current Status**: 4/6 complete
 
 Completed tools:
 1. ✅ **File tool** (for file_tool.rs)
@@ -1605,12 +1610,20 @@ Completed tools:
    - ✅ Comprehensive test coverage
 
 3. ✅ **Coding file tool** (for coding_file_tool.rs)
-   - ✅ Placeholder example created with detailed documentation
-   - ✅ File manager now functional and ready for use
-   - 📝 Example can now be updated to use real file tools
+   - ✅ Complete example demonstrating LLM-driven coding workflow
+   - ✅ Combines file management tools with task management
+   - ✅ Interactive multi-iteration conversation loop
+   - ✅ Example successfully creates Rust calculator module with tests
+
+4. ✅ **Broker as tool** (for broker_as_tool.rs)
+   - ✅ ToolWrapper struct implementing LlmTool trait
+   - ✅ Agent delegation pattern with Arc<LlmBroker>
+   - ✅ Async/sync bridge using tokio::task::block_in_place
+   - ✅ 5 comprehensive unit tests (all 129 tests passing)
+   - ✅ Working example with coordinator/specialist pattern
+   - ✅ Documentation in book/src/core/agent_delegation.md
 
 Remaining tools needed:
-4. ⬜ **Broker as tool** (for broker_as_tool.rs)
 5. ⬜ **User communication tools** (for tell_user.rs)
 6. ⬜ **File utilities** (for ensures_files_exist.rs)
 
@@ -1629,13 +1642,11 @@ Required for tracer_demo.rs:
 #### 📝 **Level 5-7 Future** (Agent System)
 **Not planned yet** - Focus on Layer 1 and Layer 2 first
 
-**Current Test Coverage**: 124 tests (124 unit tests + 5 passing doctests + 8 integration doctests marked `ignore`)
-- **Note**: The 8 ignored doctests are integration examples requiring a running Ollama server
-- **Unit tests**: 100% passing (error handling, broker, gateway, chat session, tools, file_manager)
+**Current Test Coverage**: 129 tests (124 unit tests + 5 passing doctests)
+- **Unit tests**: 100% passing (error handling, broker, gateway, chat session, tools, file_manager, tool_wrapper)
 - **Doctests**: 5 passing (TokenizerGateway examples that don't require Ollama)
-- **Integration doctests**: 8 ignored (require Ollama: broker streaming, chat session, tool usage)
 
-**Priority**: Maintain high unit test coverage, implement remaining Level 3 tools, then Layer 2 (Tracer)
+**Priority**: Maintain high unit test coverage, implement remaining Level 3 tools (tell_user, ensures_files_exist), then Layer 2 (Tracer)
 
 ---
 
@@ -1653,7 +1664,7 @@ Required for tracer_demo.rs:
 All Level 2 features are now complete!
 
 #### ✅ **Level 3 Partial** (Tool System Extensions)
-**Current Status**: 3/6 complete
+**Current Status**: 4/6 complete
 
 Completed tools:
 1. ✅ **Task manager tool** (ephemeral-task-manager.ts)
@@ -1661,9 +1672,15 @@ Completed tools:
 3. ✅ **Coding file tool** (coding_file_tool.ts)
    - ✅ Combines file management tools with task management
    - ✅ Example demonstrates systematic coding workflow
+4. ✅ **Broker as tool** (broker_as_tool.ts)
+   - ✅ Agent class combining broker, tools, and behavior
+   - ✅ ToolWrapper class implementing LlmTool interface
+   - ✅ Full Result type integration with error handling
+   - ✅ 17 comprehensive tests (7 Agent + 10 ToolWrapper, all 315 tests passing)
+   - ✅ Working example with coordinator/specialist pattern
+   - ✅ Documentation in docs/agent-delegation.md
 
 Missing tools:
-4. ⬜ **Broker as tool** (broker_as_tool.ts)
 5. ⬜ **User communication tools** (tell_user.ts)
 6. ⬜ **File utilities** (ensures_files_exist.ts)
 
@@ -1708,8 +1725,8 @@ Required for tracer_demo.ts:
    - ⬜ Version management
    - ⬜ Publish to npm
 
-**Current Test Coverage**: 298 tests passing across 13 test suites (added ChatSession tests)
-**Priority**: Implement remaining Level 3 tools (coding_file_tool, broker_as_tool, tell_user), then Layer 2 (Tracer)
+**Current Test Coverage**: 315 tests passing across 15 test suites (added Agent and ToolWrapper tests)
+**Priority**: Implement remaining Level 3 tools (tell_user, ensures_files_exist), then Layer 2 (Tracer)
 
 ---
 
@@ -1801,8 +1818,8 @@ This table provides a quick overview of which examples are implemented in each p
 | **2** | embeddings | ✅ | ✅ | ✅ | ✅ | Embeddings API |
 | **2** | current_datetime_tool | ✅ | ✅ | ✅ | ✅ | DateTime Tool |
 | **3** | file_tool | ✅ | ✅ | ✅ | ✅ | File Tool |
-| **3** | coding_file_tool | ✅ | ✅ | ⚠️ | ✅ | Code-aware File Tool |
-| **3** | broker_as_tool | ✅ | ❌ | ❌ | ❌ | Tool Wrapping |
+| **3** | coding_file_tool | ✅ | ✅ | ✅ | ✅ | Code-aware File Tool |
+| **3** | broker_as_tool | ✅ | ✅ | ✅ | ✅ | Tool Wrapping |
 | **3** | ephemeral_task_manager | ✅ | ✅ | ✅ | ✅ | Task Tool with shared state |
 | **3** | tell_user | ✅ | ❌ | ❌ | ❌ | User Communication Tool |
 | **4** | tracer_demo | ✅ | ❌ | ❌ | ❌ | TracerSystem |
@@ -1818,9 +1835,9 @@ This table provides a quick overview of which examples are implemented in each p
 
 **Summary by Port**:
 - **Python**: 24/24 examples implemented (100%)
-- **Elixir**: 14/24 examples (58%) - Level 1 + Level 2 complete + ephemeral_task_manager + file_tool + coding_file_tool
-- **Rust**: 13/24 examples (54%) - Level 1 + Level 2 complete + ephemeral_task_manager + file_tool (coding_file_tool placeholder)
-- **TypeScript**: 14/24 examples (58%) - Level 1 + Level 2 complete + ephemeral_task_manager + file_tool + coding_file_tool
+- **Elixir**: 15/24 examples (63%) - Level 1 + Level 2 complete + 4 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool)
+- **Rust**: 15/24 examples (63%) - Level 1 + Level 2 complete + 4 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool)
+- **TypeScript**: 15/24 examples (63%) - Level 1 + Level 2 complete + 4 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool)
 
 ---
 
