@@ -8,7 +8,7 @@ This document tracks the implementation status of features across all four imple
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: November 13, 2025
+Last Updated: November 15, 2025
 
 ---
 
@@ -854,9 +854,9 @@ For detailed examples and architecture, see the sections below.
 
 ### By Port
 - **Python**: 100% complete (reference implementation)
-- **Elixir**: 25% complete (Level 1 + Level 2 done, 92 tests, 69% coverage)
-- **Rust**: 25% complete (Level 1 + Level 2 done, 85 tests)
-- **TypeScript**: 29% complete (Level 1 + Level 2 done, 112 tests, 95% coverage)
+- **Elixir**: 30% complete (Level 1 + Level 2 + Level 3 partial, 279 tests, 85% coverage)
+- **Rust**: 30% complete (Level 1 + Level 2 + Level 3 partial, 133 tests: 120 unit + 5 doctests + 8 integration doctests)
+- **TypeScript**: 25% complete (Level 1 + Level 2 partial, 287 tests, coverage TBD)
 
 ### By Example Complexity Level
 - **Level 1** (Basic LLM): All ports ✅
@@ -877,7 +877,7 @@ See [Quick Reference table](#quick-reference-example-implementation-status) for 
 | **Data Modeling** | ✅ (Pydantic) | ✅ (Structs/Maps) | ✅ (Structs/Enums) | ✅ (Interfaces/Types) | TypeScript adds compile-time type safety |
 | **Async Support** | ✅ (asyncio) | 📝 (OTP) | ✅ (tokio) | ✅ (async/await) | Elixir: GenServer/Task/GenStage for actor-based concurrency; see ELIXIR.md OTP section |
 | **Documentation** | ✅ (Sphinx/MkDocs) | ✅ (ExDoc with guides) | ✅ (mdBook) | ✅ (VitePress/TSDoc) | All ports have comprehensive documentation |
-| **Testing Framework** | ✅ (pytest) | ✅ (ExUnit, 87 tests, 67% coverage) | ✅ (75 tests) | ✅ (Jest, 108 tests, 95% coverage) | TypeScript: exceeded 70% target, now at 95%! |
+| **Testing Framework** | ✅ (pytest) | ✅ (ExUnit, 279 tests, 85% coverage) | ✅ (133 tests: 120 unit + 13 doc) | ✅ (Jest, 287 tests) | All ports have comprehensive test coverage |
 | **Linting & Formatting** | ✅ (flake8) | ✅ (credo, mix format) | ✅ (clippy, rustfmt) | ✅ (ESLint, Prettier) | All ports enforce code quality standards |
 | **Security Scanning** | ✅ (bandit, pip-audit) | ✅ (mix audit, sobelow) | ✅ (cargo-audit, deny) | ✅ (npm audit, eslint-plugin-security) | Python: bandit >=1.7.0 (code) + pip-audit >=2.0.0 (deps); Elixir: sobelow (code) + mix audit (deps); Rust: cargo-audit (deps) + deny (license/security); TypeScript: npm audit (deps) + eslint-plugin-security (code) |
 | **CI/CD Pipeline** | ✅ (3 parallel) | ✅ (5 parallel) | ✅ (6 parallel) | ✅ (6 parallel) | Python: lint, test, security (JSON artifacts); Elixir: format, compile, credo, test, security; Rust: format, clippy, build, test, security, docs; TypeScript: lint, format, build, test, security, docs |
@@ -1305,22 +1305,23 @@ This section organizes all Python example scripts from simplest to most sophisti
 - **Status**: Production-ready, comprehensive coverage
 
 #### Elixir
-- **Level 1 Complete**: ✅ (4/4 - all basic examples done!)
-- **Level 2 Partial**: ⚠️ (6/7 - streaming, embeddings, current_datetime_tool, image_analysis, broker_examples, chat_session, chat_session_with_tool)
-- **Level 3+**: ❌ Not started
-- **Priority**: Complete Level 2 (only image_analysis remaining), then Layer 2 (Tracer)
+- **Level 1 Complete**: ✅ (4/4 examples)
+- **Level 2 Complete**: ✅ (7/7 examples - streaming, embeddings, current_datetime, image_analysis, broker_examples, chat_session, chat_session_with_tool)
+- **Level 3 Partial**: ⚠️ (2/6 - ephemeral_task_manager, file_tool)
+- **Priority**: Complete Level 3 tools, then Layer 2 (Tracer)
 
 #### Rust
-- **Level 1 Complete**: ✅ (4/4 - all basic examples done!)
-- **Level 2 Partial**: ⚠️ (6/7 - streaming, embeddings, image_analysis, broker_examples, chat_session, chat_session_with_tool)
-- **Level 3+**: ❌ Not started
-- **Priority**: Complete Level 2 (only current_datetime_tool remaining), add more tools, then Layer 2 (Tracer)
+- **Level 1 Complete**: ✅ (4/4 examples)
+- **Level 2 Complete**: ✅ (7/7 examples - streaming, embeddings, current_datetime, image_analysis, broker_examples, chat_session, chat_session_with_tool)
+- **Level 3 Partial**: ⚠️ (2/6 - ephemeral_task_manager, file_tool)
+- **Test Status**: ✅ 120/120 unit tests passing, 5/5 doctests passing, 8 integration doctests appropriately ignored
+- **Priority**: Complete Level 3 tools, then Layer 2 (Tracer)
 
 #### TypeScript
-- **Level 1 Complete**: ✅ (4/4 - all basic examples done!)
-- **Level 2 Partial**: ⚠️ (5/7 - streaming, embeddings, image_analysis, broker_examples, chat_session, chat_session_with_tool)
-- **Level 3+**: ❌ Not started
-- **Priority**: Complete Level 2 (current_datetime_tool remaining), add more gateways
+- **Level 1 Complete**: ✅ (4/4 examples)
+- **Level 2 Partial**: ⚠️ (6/7 examples - missing chat_session, chat_session_with_tool)
+- **Level 3 Partial**: ⚠️ (1/6 - ephemeral_task_manager only)
+- **Priority**: Add ChatSession examples to complete Level 2, then add file_tool
 
 ---
 
@@ -1514,53 +1515,29 @@ This section organizes TODOs based on which example scripts require which featur
 
 All Level 2 features are now complete!
 
-Required for Level 2 completion:
-1. ✅ **Streaming API** (for streaming.exs)
-   - ✅ Implement `Broker.generate_stream/2`
-   - ✅ Add streaming support to Ollama gateway
-   - ✅ Handle chunked responses
+#### ✅ **Level 3 Partial** (Tool System Extensions)
+**Current Status**: 2/6 complete
 
-2. ✅ **ChatSession** (for chat_session.exs, chat_session_with_tool.exs)
-   - ✅ Struct-based session management (functional approach)
-   - ✅ Message history tracking
-   - ✅ Context window management
-   - ✅ System prompt support
+Completed tools:
+1. ✅ **File tool** (for file_tool.exs)
+   - ✅ FilesystemGateway with security
+   - ✅ ListFiles, ReadFile, WriteFile tools
+   - ✅ ListAllFiles, FindByGlob, FindContaining, FindLinesMatching tools
+   - ✅ CreateDirectory tool
+   - ✅ Comprehensive test coverage
 
-3. ✅ **Multimodal Messages** (for image_analysis.exs)
-   - ✅ Add image_paths to Message struct
-   - ✅ Update Ollama gateway for vision models
-   - ✅ Handle base64 encoding
+2. ✅ **Task manager tool** (for ephemeral_task_manager.exs)
+   - ✅ EphemeralTaskManager with shared state
+   - ✅ All task operations (List, Append, Prepend, Insert, Start, Complete, Clear)
+   - ✅ Comprehensive test coverage
 
-4. ✅ **Broker Examples** (for broker_examples.exs)
-   - ✅ Comprehensive test of all broker features
-   - ✅ Simple text generation
-   - ✅ Structured output
-   - ✅ Tool usage
-   - ✅ Image analysis
+Remaining tools needed:
+3. ⬜ **Coding-specific file tool** (for coding_file_tool.exs)
+4. ⬜ **Broker as tool** (for broker_as_tool.exs)
+5. ⬜ **User communication tools** (for tell_user.exs)
+6. ⬜ **File utilities** (for ensures_files_exist.exs)
 
-5. ⬜ **Additional Gateways** (for list_models.exs full support)
-   - OpenAI gateway implementation
-   - Anthropic gateway implementation
-   - Gateway feature parity tests
-
-6. ✅ **Embeddings API** (for embeddings.exs)
-   - Already implemented in Ollama gateway
-
-7. ✅ **CurrentDateTimeTool** (for current_datetime_tool_example.exs)
-   - Already implemented
-
-**Estimated Effort**: 2-3 weeks for streaming + ChatSession, 1 week per additional gateway
-
-#### 📝 **Level 3 Planned** (Tool System Extensions)
-**Dependencies**: Level 2 complete
-
-Required tools:
-1. ⬜ File tool implementation
-2. ⬜ Task manager tool
-3. ⬜ User communication tools (AskUser, TellUser)
-4. ⬜ Tool wrapper utilities
-
-**Estimated Effort**: 1 week for all basic tools
+**Estimated Effort**: 1-2 weeks for remaining tools
 
 #### 📝 **Level 4 Planned** (Tracing & Observability)
 **Dependencies**: Level 2 complete
@@ -1586,8 +1563,8 @@ Required agent infrastructure:
 
 **Estimated Effort**: 4-6 weeks (complex OTP patterns)
 
-**Current Test Coverage**: 67.43% (68 tests)
-**Priority**: Improve Error module coverage (currently 13.64%)
+**Current Test Coverage**: 85% (279 tests including 13 doctests)
+**Priority**: Maintain high coverage, implement remaining Level 3 tools, then Layer 2 (Tracer)
 
 ---
 
@@ -1604,51 +1581,29 @@ Required agent infrastructure:
 
 All Level 2 features are now complete!
 
-Required for Level 2 completion:
-1. ✅ **Streaming API** (for streaming.rs)
-   - ✅ Ollama streaming with full tool support
-   - ✅ SimpleDateTool implementation
-   - ✅ Recursive tool execution during streaming
+#### ✅ **Level 3 Partial** (Tool System Extensions)
+**Current Status**: 2/6 complete
 
-2. ✅ **ChatSession** (for chat_session.rs, chat_session_with_tool.rs)
-   - ✅ Struct-based session management
-   - ✅ Message history (Vec<SizedLlmMessage>)
-   - ✅ Context window management
-   - ✅ Builder pattern
+Completed tools:
+1. ✅ **File tool** (for file_tool.rs)
+   - ✅ FilesystemGateway with security
+   - ✅ ListFiles, ReadFile, WriteFile tools
+   - ✅ ListAllFiles, FindByGlob, FindContaining, FindLinesMatching tools
+   - ✅ CreateDirectory tool
+   - ✅ Comprehensive test coverage
 
-3. ✅ **Multimodal Messages** (for image_analysis.rs)
-   - ✅ Add image_paths to Message struct
-   - ✅ Update Ollama gateway for vision models
-   - ✅ Handle base64 encoding
+2. ✅ **Task manager tool** (for ephemeral_task_manager.rs)
+   - ✅ EphemeralTaskManager with shared state
+   - ✅ All task operations (List, Append, Prepend, Insert, Start, Complete, Clear)
+   - ✅ Comprehensive test coverage
 
-4. ✅ **Broker Examples** (for broker_examples.rs)
-   - ✅ Comprehensive test of all broker features
-   - ✅ Simple text generation
-   - ✅ Structured output
-   - ✅ Tool usage (with SimpleDateTool)
-   - ✅ Image analysis
+Remaining tools needed:
+3. ⬜ **Coding-specific file tool** (for coding_file_tool.rs)
+4. ⬜ **Broker as tool** (for broker_as_tool.rs)
+5. ⬜ **User communication tools** (for tell_user.rs)
+6. ⬜ **File utilities** (for ensures_files_exist.rs)
 
-5. ⬜ **Additional Gateways** (for list_models.rs full support)
-   - OpenAI gateway trait impl
-   - Anthropic gateway trait impl
-   - Gateway tests
-
-6. ✅ **Embeddings API** (for embeddings.rs)
-   - Already implemented
-
-7. ✅ **SimpleDateTool** (for streaming.rs with tools)
-   - ✅ Implemented with chrono-based date parsing
-   - ✅ Supports relative date expressions
-
-**Estimated Effort**: 1 week for ChatSession, 1 week per gateway
-
-#### 📝 **Level 3 Planned** (Tool System Extensions)
-Required tools:
-1. ⬜ File tool
-2. ⬜ Task manager tool
-3. ⬜ User communication tools
-
-**Estimated Effort**: 1 week
+**Estimated Effort**: 1-2 weeks for remaining tools
 
 #### 📝 **Level 4 Planned** (Tracing & Observability)
 Required for tracer_demo.rs:
@@ -1663,8 +1618,13 @@ Required for tracer_demo.rs:
 #### 📝 **Level 5-7 Future** (Agent System)
 **Not planned yet** - Focus on Layer 1 and Layer 2 first
 
-**Current Test Coverage**: 85 tests passing (includes streaming with tools)
-**Priority**: Add ChatSession, then complete remaining Level 2 examples
+**Current Test Coverage**: 133 tests (120 unit tests + 5 passing doctests + 8 integration doctests marked `ignore`)
+- **Note**: The 8 ignored doctests are integration examples requiring a running Ollama server
+- **Unit tests**: 100% passing (error handling, broker, gateway, chat session, tools)
+- **Doctests**: 5 passing (TokenizerGateway examples that don't require Ollama)
+- **Integration doctests**: 8 ignored (require Ollama: broker streaming, chat session, tool usage)
+
+**Priority**: Maintain high unit test coverage, implement remaining Level 3 tools, then Layer 2 (Tracer)
 
 ---
 
@@ -1676,57 +1636,43 @@ Required for tracer_demo.rs:
 - ✅ simple_tool.ts - Tool usage with DateResolver
 - ✅ list_models.ts - Model listing
 
-#### ✅ **Level 2 Complete** (Advanced LLM Features)
-**Current Status**: 7/7 complete ✅
+#### ✅ **Level 2 Partial** (Advanced LLM Features)
+**Current Status**: 5/7 complete
 
-All Level 2 features are now complete!
+Completed features:
+1. ✅ **Streaming API** (streaming.ts)
+2. ✅ **Broker Examples** (broker_examples.ts)
+3. ✅ **Image Analysis** (image_analysis.ts)
+4. ✅ **Embeddings API** (embeddings.ts)
+5. ✅ **CurrentDateTimeTool** (current_datetime.ts)
 
-Required for Level 2 completion:
-1. ✅ **Streaming API** (for streaming.ts)
-   - ✅ Already implemented for Ollama
+Missing Level 2 features:
+1. ⬜ **ChatSession** (chat_session.ts)
+   - Class-based session management
+   - Message history (SizedLlmMessage[])
+   - Context window management
+   - Async methods
 
-2. ✅ **ChatSession** (for chat_session.ts, chat_session_with_tool.ts)
-   - ✅ Class-based session management
-   - ✅ Message history (SizedLlmMessage[])
-   - ✅ Context window management
-   - ✅ Async methods
+2. ⬜ **ChatSession with Tools** (chat_session_with_tool.ts)
+   - ChatSession + Tool integration
+   - Example demonstrating tool usage in session
 
-3. ✅ **Multimodal Messages** (for image_analysis.ts)
-   - ✅ Structure defined and working
-   - ✅ Gateway integration complete
-   - ✅ Base64 data URI format
+**Estimated Effort**: 2-3 days for ChatSession
 
-4. ✅ **Broker Examples** (for broker_examples.ts)
-   - ✅ Comprehensive test of all broker features
-   - ✅ Simple text generation
-   - ✅ Structured output
-   - ✅ Tool usage (with DateResolver)
-   - ✅ Image analysis
+#### ⚠️ **Level 3 Partial** (Tool System Extensions)
+**Current Status**: 1/6 complete
 
-5. ⬜ **Additional Gateways** (for broker_examples.ts)
-   - OpenAI gateway implementation
-   - Anthropic gateway implementation
-   - Gateway interface compliance
+Completed tools:
+1. ✅ **Task manager tool** (ephemeral-task-manager.ts)
 
-6. ✅ **Embeddings API** (for embeddings.ts)
-   - ✅ Added calculateEmbeddings to LlmGateway interface
-   - ✅ Implemented in Ollama gateway
-   - ✅ Comprehensive tests added (6 test cases)
-   - ✅ Example created with cosine similarity demo
-   - ⬜ Implement in OpenAI gateway (future work)
+Missing tools:
+2. ⬜ **File tool** (file_tool.ts)
+3. ⬜ **Coding-specific file tool** (coding_file_tool.ts)
+4. ⬜ **Broker as tool** (broker_as_tool.ts)
+5. ⬜ **User communication tools** (tell_user.ts)
+6. ⬜ **File utilities** (ensures_files_exist.ts)
 
-7. ⬜ **CurrentDateTimeTool** (for current_datetime_tool_example.ts)
-   - Simple tool implementation
-
-**Estimated Effort**: 1 week for ChatSession, 1 week per gateway, 2 days for embeddings
-
-#### 📝 **Level 3 Planned** (Tool System Extensions)
-Required tools:
-1. ⬜ File tool
-2. ⬜ Task manager tool
-3. ⬜ User communication tools
-
-**Estimated Effort**: 1 week
+**Estimated Effort**: 1-2 weeks for all tools
 
 #### 📝 **Level 4 Planned** (Tracing & Observability)
 Required for tracer_demo.ts:
@@ -1767,8 +1713,8 @@ Required for tracer_demo.ts:
    - ⬜ Version management
    - ⬜ Publish to npm
 
-**Current Test Coverage**: Jest configured with sample tests
-**Priority**: Add ChatSession, then additional gateways, then complete documentation
+**Current Test Coverage**: 287 tests passing across 12 test suites
+**Priority**: Add ChatSession examples, then additional gateways, then complete documentation
 
 ---
 
@@ -1855,11 +1801,11 @@ This table provides a quick overview of which examples are implemented in each p
 | **2** | image_analysis | ✅ | ✅ | ✅ | ✅ | Multimodal Messages |
 | **2** | broker_examples | ✅ | ✅ | ✅ | ✅ | All Broker Features |
 | **2** | streaming | ✅ | ✅ | ✅ | ✅ | Streaming API with full recursive tool execution (all: Ollama; Py: also OpenAI) |
-| **2** | chat_session | ✅ | ✅ | ✅ | ✅ | ChatSession |
-| **2** | chat_session_with_tool | ✅ | ✅ | ✅ | ✅ | ChatSession + Tools |
+| **2** | chat_session | ✅ | ✅ | ✅ | ❌ | ChatSession |
+| **2** | chat_session_with_tool | ✅ | ✅ | ✅ | ❌ | ChatSession + Tools |
 | **2** | embeddings | ✅ | ✅ | ✅ | ✅ | Embeddings API |
 | **2** | current_datetime_tool | ✅ | ✅ | ✅ | ✅ | DateTime Tool |
-| **3** | file_tool | ✅ | ❌ | ❌ | ❌ | File Tool |
+| **3** | file_tool | ✅ | ✅ | ✅ | ❌ | File Tool |
 | **3** | coding_file_tool | ✅ | ❌ | ❌ | ❌ | Code-aware File Tool |
 | **3** | broker_as_tool | ✅ | ❌ | ❌ | ❌ | Tool Wrapping |
 | **3** | ephemeral_task_manager | ✅ | ✅ | ✅ | ✅ | Task Tool with shared state |
@@ -1877,9 +1823,9 @@ This table provides a quick overview of which examples are implemented in each p
 
 **Summary by Port**:
 - **Python**: 24/24 examples implemented (100%)
-- **Elixir**: 11/24 examples (46%) - Level 1 + Level 2 complete + ephemeral_task_manager
-- **Rust**: 11/24 examples (46%) - Level 1 + Level 2 complete + ephemeral_task_manager
-- **TypeScript**: 11/24 examples (46%) - Level 1 + Level 2 complete + ephemeral_task_manager
+- **Elixir**: 13/24 examples (54%) - Level 1 + Level 2 complete + ephemeral_task_manager + file_tool
+- **Rust**: 13/24 examples (54%) - Level 1 + Level 2 complete + ephemeral_task_manager + file_tool
+- **TypeScript**: 10/24 examples (42%) - Level 1 + Level 2 partial (missing chat_session) + ephemeral_task_manager
 
 ---
 
