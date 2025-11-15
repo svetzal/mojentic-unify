@@ -854,13 +854,13 @@ For detailed examples and architecture, see the sections below.
 
 ### By Port
 - **Python**: 100% complete (reference implementation)
-- **Elixir**: 21% complete (Level 1 + streaming done, 92 tests, 69% coverage)
-- **Rust**: 21% complete (Level 1 + streaming done, 85 tests)
-- **TypeScript**: 25% complete (Level 1 + streaming done, 112 tests, 95% coverage)
+- **Elixir**: 25% complete (Level 1 + Level 2 done, 92 tests, 69% coverage)
+- **Rust**: 25% complete (Level 1 + Level 2 done, 85 tests)
+- **TypeScript**: 29% complete (Level 1 + Level 2 done, 112 tests, 95% coverage)
 
 ### By Example Complexity Level
 - **Level 1** (Basic LLM): All ports ✅
-- **Level 2** (Advanced LLM): Python ✅, Elixir 5/7, Rust 5/7, TypeScript 5/7
+- **Level 2** (Advanced LLM): All ports ✅
 - **Level 3** (Tools): Python ✅, others planned
 - **Level 4** (Tracing): Python ✅, others planned
 - **Level 5-7** (Agents): Python ✅, others future work
@@ -1086,12 +1086,12 @@ def process(_), do: {:error, :invalid_format}
 | **Tool Execution** | ✅ | ✅ | ✅ | ✅ | Synchronous execution |
 | **Tool Wrappers** | ✅ | ❌ | ❌ | ❌ | Python: function → tool |
 | **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | Example tool; Rust: SimpleDateTool; TypeScript: complete |
-| **File Manager Tool** | ✅ | ❌ | ❌ | ❌ | File operations |
-| **Task Manager Tool** | ✅ | 📝 | ❌ | ❌ | Ephemeral tasks |
+| **File Manager Tool** | ✅ | ✅ | ✅ | ✅ | Sandboxed file operations; All: FilesystemGateway with security, ListFiles, ReadFile, WriteFile, ListAllFiles, FindByGlob, FindContaining, FindLinesMatching, CreateDirectory tools |
+| **Task Manager Tool** | ✅ | ✅ | ✅ | ✅ | Ephemeral tasks with shared state |
 | **Ask User Tool** | ✅ | ❌ | ❌ | ❌ | Interactive input |
 | **Tell User Tool** | ✅ | ❌ | ❌ | ❌ | User output |
 | **Web Search Tool** | ✅ | ❌ | ❌ | ❌ | Organic search |
-| **Current DateTime Tool** | ✅ | ✅ | ❌ | ❌ | Date/time access |
+| **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | Date/time access - returns current datetime with formatting |
 
 ### Chat Session
 
@@ -1220,10 +1220,10 @@ This section organizes all Python example scripts from simplest to most sophisti
 
 | Example | Python | Elixir | Rust | TypeScript | Description | Dependencies |
 |---------|--------|--------|------|------------|-------------|--------------|
-| **file_tool.py** | ✅ | ❌ | ❌ | ❌ | File operations tool (read, write, list) | File tool implementation |
+| **file_tool.py** | ✅ | ✅ | ✅ | ✅ | File operations tool (read, write, list) | File tool implementation |
 | **coding_file_tool.py** | ✅ | ❌ | ❌ | ❌ | Code-specific file operations | File tool with code awareness |
 | **broker_as_tool.py** | ✅ | ❌ | ❌ | ❌ | Use LLM broker as a tool | Tool wrapping, nested brokers |
-| **ephemeral_task_manager_example.py** | ✅ | ❌ | ❌ | ❌ | Task management tool demo | TaskManager tool |
+| **ephemeral_task_manager_example.py** | ✅ | ✅ | ✅ | ✅ | Task management tool demo | TaskManager tool (all implementations complete) |
 | **tell_user_example.py** | ✅ | ❌ | ❌ | ❌ | User communication tool | TellUser tool |
 | **ensures_files_exist.py** | ✅ | ❌ | ❌ | ❌ | File existence verification tool | File tool utilities |
 
@@ -1509,8 +1509,10 @@ This section organizes TODOs based on which example scripts require which featur
 - ✅ simple_structured.exs - Structured output
 - ✅ simple_tool.exs - Tool usage with DateResolver
 
-#### 🔄 **Level 2 In Progress** (Advanced LLM Features)
-**Current Status**: 6/7 complete
+#### ✅ **Level 2 Complete** (Advanced LLM Features)
+**Current Status**: 7/7 complete ✅
+
+All Level 2 features are now complete!
 
 Required for Level 2 completion:
 1. ✅ **Streaming API** (for streaming.exs)
@@ -1597,8 +1599,10 @@ Required agent infrastructure:
 - ✅ simple_structured.rs - Structured output
 - ✅ simple_tool.rs - Tool usage with DateResolver
 
-#### 🔄 **Level 2 In Progress** (Advanced LLM Features)
-**Current Status**: 6/7 complete
+#### ✅ **Level 2 Complete** (Advanced LLM Features)
+**Current Status**: 7/7 complete ✅
+
+All Level 2 features are now complete!
 
 Required for Level 2 completion:
 1. ✅ **Streaming API** (for streaming.rs)
@@ -1672,8 +1676,10 @@ Required for tracer_demo.rs:
 - ✅ simple_tool.ts - Tool usage with DateResolver
 - ✅ list_models.ts - Model listing
 
-#### 🔄 **Level 2 In Progress** (Advanced LLM Features)
-**Current Status**: 5/7 complete
+#### ✅ **Level 2 Complete** (Advanced LLM Features)
+**Current Status**: 7/7 complete ✅
+
+All Level 2 features are now complete!
 
 Required for Level 2 completion:
 1. ✅ **Streaming API** (for streaming.ts)
@@ -1852,11 +1858,11 @@ This table provides a quick overview of which examples are implemented in each p
 | **2** | chat_session | ✅ | ✅ | ✅ | ✅ | ChatSession |
 | **2** | chat_session_with_tool | ✅ | ✅ | ✅ | ✅ | ChatSession + Tools |
 | **2** | embeddings | ✅ | ✅ | ✅ | ✅ | Embeddings API |
-| **2** | current_datetime_tool | ✅ | ✅ | ❌ | ❌ | DateTime Tool |
+| **2** | current_datetime_tool | ✅ | ✅ | ✅ | ✅ | DateTime Tool |
 | **3** | file_tool | ✅ | ❌ | ❌ | ❌ | File Tool |
 | **3** | coding_file_tool | ✅ | ❌ | ❌ | ❌ | Code-aware File Tool |
 | **3** | broker_as_tool | ✅ | ❌ | ❌ | ❌ | Tool Wrapping |
-| **3** | ephemeral_task_manager | ✅ | ❌ | ❌ | ❌ | Task Tool |
+| **3** | ephemeral_task_manager | ✅ | ✅ | ✅ | ✅ | Task Tool with shared state |
 | **3** | tell_user | ✅ | ❌ | ❌ | ❌ | User Communication Tool |
 | **4** | tracer_demo | ✅ | ❌ | ❌ | ❌ | TracerSystem |
 | **5** | async_llm | ✅ | ❌ | ❌ | ❌ | Async Agents |
@@ -1871,9 +1877,9 @@ This table provides a quick overview of which examples are implemented in each p
 
 **Summary by Port**:
 - **Python**: 24/24 examples implemented (100%)
-- **Elixir**: 9/24 examples (38%) - Level 1 + Level 2 (partial): streaming, embeddings, broker_examples, chat_session, chat_session_with_tool, image_analysis
-- **Rust**: 9/24 examples (38%) - Level 1 + Level 2 (partial): streaming, embeddings, broker_examples, chat_session, chat_session_with_tool, image_analysis
-- **TypeScript**: 9/24 examples (38%) - Level 1 + Level 2 (partial): streaming, embeddings, broker_examples, chat_session, chat_session_with_tool, image_analysis
+- **Elixir**: 11/24 examples (46%) - Level 1 + Level 2 complete + ephemeral_task_manager
+- **Rust**: 11/24 examples (46%) - Level 1 + Level 2 complete + ephemeral_task_manager
+- **TypeScript**: 11/24 examples (46%) - Level 1 + Level 2 complete + ephemeral_task_manager
 
 ---
 

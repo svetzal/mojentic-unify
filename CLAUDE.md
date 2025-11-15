@@ -33,7 +33,7 @@ This is a **multi-language monorepo** containing four independent implementation
 
 ### When to Delegate to Specialized Agents
 
-Use language-specific agents for:
+Always use language-specific agents for:
 - **Implementation work** - New features, refactoring, bug fixes
 - **Quality assurance** - Code review, testing, linting, security audits
 - **Documentation sync** - Ensuring guides match current implementation
