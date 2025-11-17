@@ -1259,7 +1259,7 @@ This section organizes all Python example scripts from simplest to most sophisti
 
 | Example | Python | Elixir | Rust | TypeScript | Description | Dependencies |
 |---------|--------|--------|------|------------|-------------|--------------|
-| **iterative_solver.py** | ✅ | ❌ | ❌ | ❌ | Multi-iteration problem solving with tools | IterativeProblemSolver, tools, max iterations |
+| **iterative_solver.py** | ✅ | ✅ | ✅ | ✅ | Multi-iteration problem solving with tools | IterativeProblemSolver, tools, max iterations |
 | **recursive_agent.py** | ✅ | ❌ | ❌ | ❌ | Self-recursive agent with event handling | SimpleRecursiveAgent, async patterns |
 | **solver_chat_session.py** | ✅ | ❌ | ❌ | ❌ | Interactive chat with problem solver | IterativeProblemSolver, ChatSession integration |
 | **routed_send_response.py** | ✅ | ❌ | ❌ | ❌ | Complex event routing patterns | Router, multiple agent types |
@@ -1862,7 +1862,7 @@ This table provides a quick overview of which examples are implemented in each p
 | **4** | tracer_demo | ✅ | ✅ | ✅ | ✅ | TracerSystem |
 | **5** | async_llm | ✅ | ✅ | ✅ | ✅ | Async Agents |
 | **5** | async_dispatcher | ✅ | ✅ | ✅ | ✅ | AsyncDispatcher |
-| **6** | iterative_solver | ✅ | ❌ | ❌ | ❌ | Problem Solver |
+| **6** | iterative_solver | ✅ | ✅ | ✅ | ✅ | Problem Solver |
 | **6** | recursive_agent | ✅ | ❌ | ❌ | ❌ | Recursive Agent |
 | **6** | solver_chat_session | ✅ | ❌ | ❌ | ❌ | Solver + Chat |
 | **7** | react | ✅ | ❌ | ❌ | ❌ | ReAct Pattern |
@@ -1872,10 +1872,9 @@ This table provides a quick overview of which examples are implemented in each p
 
 **Summary by Port**:
 - **Python**: 24/24 examples implemented (100%)
-- **Elixir**: 19/24 examples (79%) - Level 1-5 complete! (428 tests passing)
-- **Rust**: 19/24 examples (79%) - Level 1-5 complete! (211 tests passing: 203 unit + 8 doc)
-- **TypeScript**: 19/24 examples (79%) - Level 1-5 complete! (478 tests passing)
-- **TypeScript**: 17/24 examples (71%) - Level 1 + Level 2 + Level 4 + 5 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool, tell_user)
+- **Elixir**: 20/24 examples (83%) - Level 1-6 complete! (457 tests passing)
+- **Rust**: 20/24 examples (83%) - Level 1-6 complete! (220 tests passing)
+- **TypeScript**: 20/24 examples (83%) - Level 1-6 complete! (497 tests passing)
 
 ---
 
