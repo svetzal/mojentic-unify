@@ -1244,8 +1244,14 @@ This section organizes all Python example scripts from simplest to most sophisti
 
 | Example | Python | Elixir | Rust | TypeScript | Description | Dependencies |
 |---------|--------|--------|------|------------|-------------|--------------|
-| **async_llm_example.py** | ✅ | ❌ | ❌ | ❌ | Async LLM agents with fact-checking and aggregation | AsyncDispatcher, BaseAsyncLLMAgent, AsyncAggregatorAgent |
-| **async_dispatcher_example.py** | ✅ | ❌ | ❌ | ❌ | Event routing with async dispatcher | AsyncDispatcher, Router, Events |
+| **async_llm_example.py** | ✅ | ✅ | ✅ | ✅ | Async LLM agents with fact-checking and aggregation | AsyncDispatcher, BaseAsyncLLMAgent, AsyncAggregatorAgent |
+| **async_dispatcher_example.py** | ✅ | ✅ | ✅ | ✅ | Event routing with async dispatcher | AsyncDispatcher, Router, Events |
+
+**Implementation Status (Nov 16, 2025)**: ✅ **COMPLETE across all ports!**
+- **Python**: ✅ Reference implementation
+- **TypeScript**: ✅ All 478 tests passing - Result type pattern, Map-based state
+- **Elixir**: ✅ All 428 tests passing - OTP GenServer patterns, :queue-based dispatcher
+- **Rust**: ✅ All 211 tests passing (203 unit + 8 doc) - tokio async, Arc<Mutex<T>> state
 
 **Implementation Priority**: Foundational for building complex agent systems.
 
@@ -1854,8 +1860,8 @@ This table provides a quick overview of which examples are implemented in each p
 | **3** | ephemeral_task_manager | ✅ | ✅ | ✅ | ✅ | Task Tool with shared state |
 | **3** | tell_user | ✅ | ✅ | ✅ | ✅ | User Communication Tool |
 | **4** | tracer_demo | ✅ | ✅ | ✅ | ✅ | TracerSystem |
-| **5** | async_llm | ✅ | ❌ | ❌ | ❌ | Async Agents |
-| **5** | async_dispatcher | ✅ | ❌ | ❌ | ❌ | AsyncDispatcher |
+| **5** | async_llm | ✅ | ✅ | ✅ | ✅ | Async Agents |
+| **5** | async_dispatcher | ✅ | ✅ | ✅ | ✅ | AsyncDispatcher |
 | **6** | iterative_solver | ✅ | ❌ | ❌ | ❌ | Problem Solver |
 | **6** | recursive_agent | ✅ | ❌ | ❌ | ❌ | Recursive Agent |
 | **6** | solver_chat_session | ✅ | ❌ | ❌ | ❌ | Solver + Chat |
@@ -1866,8 +1872,9 @@ This table provides a quick overview of which examples are implemented in each p
 
 **Summary by Port**:
 - **Python**: 24/24 examples implemented (100%)
-- **Elixir**: 17/24 examples (71%) - Level 1 + Level 2 + Level 4 + 5 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool, tell_user)
-- **Rust**: 17/24 examples (71%) - Level 1 + Level 2 + Level 4 + 5 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool, tell_user)
+- **Elixir**: 19/24 examples (79%) - Level 1-5 complete! (428 tests passing)
+- **Rust**: 19/24 examples (79%) - Level 1-5 complete! (211 tests passing: 203 unit + 8 doc)
+- **TypeScript**: 19/24 examples (79%) - Level 1-5 complete! (478 tests passing)
 - **TypeScript**: 17/24 examples (71%) - Level 1 + Level 2 + Level 4 + 5 Level 3 tools (file_tool, coding_file_tool, ephemeral_task_manager, broker_as_tool, tell_user)
 
 ---
