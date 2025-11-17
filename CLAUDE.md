@@ -138,6 +138,8 @@ npm test && \
 npm audit
 ```
 
+**Note**: `npm run lint` now enforces `--max-warnings 0` by default. **Zero warnings allowed.**
+
 ### Why This Matters
 
 **Examples are executable documentation** - When examples fail to compile, users cannot learn from them. The `--all-targets` flag in linting/checking MUST include examples to catch API mismatches immediately.

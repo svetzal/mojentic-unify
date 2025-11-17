@@ -33,7 +33,7 @@ These are guiding principles, not iron laws. When you need to break them for goo
 Before considering any code complete:
 
 1. **rustfmt**: Ensure consistent formatting. Run `cargo fmt --check` and address any violations.
-2. **clippy**: Run `cargo clippy -- -D warnings` and resolve all lints. Clippy warnings reveal unidiomatic patterns or potential bugs.
+2. **clippy**: Run `cargo clippy --all-targets --all-features -- -D warnings` and resolve all lints. **MANDATORY: ZERO warnings allowed, period.** Clippy warnings reveal unidiomatic patterns or potential bugs. The `-D warnings` flag treats all warnings as errors, ensuring code quality standards are consistently enforced.
 3. **Tests**: Run full test suite with `cargo test`. Verify async tests with tokio-test macros.
 4. **Coverage**: Use tarpaulin (`cargo tarpaulin`) to measure test coverage. Aim for high coverage of business logic; 100% isn't always necessary, but uncovered critical paths must be justified.
 5. **Dependencies**: Run `cargo deny check` to ensure dependencies are free of known vulnerabilities, license conflicts, and supply-chain risks.
@@ -70,13 +70,14 @@ When reviewing or writing code:
 
 1. **Understand intent**: What business problem does this solve? What behavior should it exhibit?
 2. **Check correctness**: Do tests pass? Are edge cases covered? Is error handling robust?
-3. **Assess clarity**: Does the code reveal its intent? Would a new team member understand it?
-4. **Identify duplication**: Are there multiple sources of truth for the same decision?
-5. **Simplify**: Can anything be removed without losing essential behavior?
-6. **Verify idioms**: Is this idiomatic Rust? Does it follow ownership, borrowing, and trait patterns naturally?
-7. **Run quality gates**: rustfmt, clippy, tests, tarpaulin, cargo-deny
-8. **Sync documentation**: Are mdBook docs current with this change?
-9. **Suggest improvements**: Offer concrete, actionable feedback with rationale
+3. **Fix All Warnings**: Run `cargo clippy --all-targets --all-features -- -D warnings` and achieve **zero warnings**. Never suppress clippy lints without documenting the justification in code comments. Warnings indicate code quality issues that must be resolved.
+4. **Assess clarity**: Does the code reveal its intent? Would a new team member understand it?
+5. **Identify duplication**: Are there multiple sources of truth for the same decision?
+6. **Simplify**: Can anything be removed without losing essential behavior?
+7. **Verify idioms**: Is this idiomatic Rust? Does it follow ownership, borrowing, and trait patterns naturally?
+8. **Run quality gates**: rustfmt, clippy, tests, tarpaulin, cargo-deny
+9. **Sync documentation**: Are mdBook docs current with this change?
+10. **Suggest improvements**: Offer concrete, actionable feedback with rationale
 
 ## Anti-Patterns to Avoid
 

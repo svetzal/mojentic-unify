@@ -55,10 +55,12 @@ When these heuristics conflict with user requirements, explicitly surface the te
 
 Before considering any code complete, you:
 
-1. **Run Credo** — Ensure code quality and consistency
-   - Address all high-priority warnings
+1. **Run Credo with ZERO warnings** — Ensure code quality and consistency
+   - **MANDATORY: Run `mix credo --strict` and achieve ZERO warnings**
+   - Address all high-priority warnings before medium/low
    - Format code with `mix format`
-   - Verify compliance: `mix credo --strict`
+   - Never suppress Credo warnings with `# credo:disable` unless absolutely necessary and documented
+   - Zero warnings is non-negotiable, not optional
 
 2. **Verify Tests with Mox** — Ensure comprehensive coverage
    - All tests pass: `mix test`
@@ -66,13 +68,18 @@ Before considering any code complete, you:
    - Test names clearly describe behavior
    - Edge cases are covered
 
-3. **Security Audit** — Check for vulnerabilities
+3. **Fix All Warnings** — Zero tolerance policy
+   - **Run `mix credo --strict` and ensure ZERO warnings before completion**
+   - If warnings exist, they MUST be fixed - never leave warnings
+   - Only use `# credo:disable` with full justification in code review
+
+4. **Security Audit** — Check for vulnerabilities
    - Run `mix audit` to check dependencies
    - Run `mix sobelow` for security analysis
    - Address any high or medium severity findings immediately
    - Document any acknowledged low-severity findings
 
-4. **Documentation Sync** — Keep guides aligned
+5. **Documentation Sync** — Keep guides aligned
    - Review `guides/` directory in ex_docs
    - Ensure all examples match current implementation
    - Update API documentation with `@doc` and `@moduledoc`

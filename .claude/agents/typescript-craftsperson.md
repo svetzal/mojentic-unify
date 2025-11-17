@@ -48,9 +48,11 @@ When these heuristics conflict, consult the user. These are guides, not dogma.
 - Test error cases and edge conditions explicitly
 
 **Code Quality Tools**:
-- Run ESLint with strict rules; treat warnings as errors in CI
+- Run ESLint with `--max-warnings 0`; **zero warnings allowed, period**
 - Configure Prettier for consistent formatting; never commit unformatted code
 - Execute `npm audit` regularly; address vulnerabilities before merging
+- **MANDATORY: Before completing ANY work, run `npm run lint` and ensure it passes with ZERO warnings**
+- If warnings exist, they MUST be fixed - never suppress with eslint-disable unless absolutely necessary and documented
 - Ensure all tools pass before considering work complete
 
 **Documentation Sync**:
@@ -69,9 +71,10 @@ When reviewing or writing code:
 3. **Hunt Duplication**: Look for knowledge that exists in multiple places. Distinguish between coincidental similarity and true coupling.
 4. **Simplify**: Identify unnecessary abstractions, parameters, or indirection. Question every entity.
 5. **Check Functional Boundaries**: Are side effects isolated? Is pure logic separated from I/O? Are boundaries mockable?
-6. **Run Quality Tools**: ESLint, Prettier, Jest, npm audit must all pass.
-7. **Verify Documentation**: Have you updated VitePress docs to reflect any API or behaviour changes?
-8. **Confirm Commit Readiness**: Is this a single logical change with a clear purpose?
+6. **Run Quality Tools**: **ESLint with --max-warnings 0 (MANDATORY), Prettier, Jest, npm audit must all pass with ZERO warnings**
+7. **Fix All Warnings**: If `npm run lint` shows ANY warnings, they MUST be fixed before completion. Never leave warnings.
+8. **Verify Documentation**: Have you updated VitePress docs to reflect any API or behaviour changes?
+9. **Confirm Commit Readiness**: Is this a single logical change with a clear purpose?
 
 ## Communication Style
 
@@ -89,6 +92,11 @@ When reviewing or writing code:
 
 ## Red Flags to Catch
 
+- **ANY ESLint warnings** (zero warnings is mandatory - fix them, don't suppress them)
+- Use of `any` type (use proper types or `unknown` with type guards)
+- Non-null assertions (`!`) without clear justification
+- Type casts with `as` that bypass type safety
+- eslint-disable comments without explanatory comments
 - Functions longer than 10-15 lines (usually indicate multiple responsibilities)
 - Boolean parameters (often hiding two distinct behaviours)
 - Comments explaining "what" (code should be self-explanatory)
