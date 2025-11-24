@@ -8,7 +8,7 @@ This document tracks the implementation status of features across all four imple
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: November 15, 2025
+Last Updated: November 20, 2025
 
 ---
 
@@ -853,17 +853,15 @@ For detailed examples and architecture, see the sections below.
 ## Implementation Status Summary
 
 ### By Port
-- **Python**: 100% complete (reference implementation)
-- **Elixir**: 35% complete (Level 1 + Level 2 + Level 3 partial: 4/6 tools, 279 tests, 85% coverage)
-- **Rust**: 35% complete (Level 1 + Level 2 + Level 3 partial: 4/6 tools, 129 tests: 124 unit + 5 doctests)
-- **TypeScript**: 40% complete (Level 1 + Level 2 + Level 3 partial: 5/6 tools + Level 4 complete, 434 tests passing)
+- **Python**: Reference implementation with OpenAI and Ollama gateways, streaming, and recursive tool calling; tracer is present; agent layer is still lightly covered (177 tests passed; coverage ~57%); `pip-audit` could not run in this environment because external network access was blocked.
+- **Elixir**: Ollama-only gateway with broker, tools, streaming, tokenizer, tracer, and agent modules; 457 tests passed; `mix credo --strict` reported 5 warnings (logger metadata and atom creation); `mix deps.audit` clean.
+- **Rust**: Ollama gateway only; broker, tools, streaming, tracer, and agent scaffolding in place; 220 tests passed (required unsandboxed run for mockito HTTP server); `cargo deny` raised non-blocking warnings about duplicate `base64` versions and unused Windows skips.
+- **TypeScript**: Ollama gateway only; broker, tools, streaming, tracer, and async agent system implemented; 499 tests passed; `npm audit` reports four moderate issues (esbuild via vite/vitepress and js-yaml).
 
-### By Example Complexity Level
-- **Level 1** (Basic LLM): All ports ✅
-- **Level 2** (Advanced LLM): All ports ✅
-- **Level 3** (Tools): Python ✅, Elixir/Rust/TypeScript 4/6 complete (broker_as_tool ✅)
-- **Level 4** (Tracing): Python ✅, others planned
-- **Level 5-7** (Agents): Python ✅, others future work
+### Example Coverage
+- **Common across all ports**: async_llm, broker_as_tool, broker_examples, chat_session, chat_session_with_tool, coding_file_tool, current_datetime, embeddings, ephemeral_task_manager, file_tool, image_analysis, iterative_solver, simple_llm, streaming, structured_output, tell_user, tokenizer_example, tool_usage, tracer_demo.
+- **Python + Elixir**: list_models.
+- **Python-only advanced demos**: ensures_files_exist, recursive_agent, solver_chat_session, react, working_memory, plus additional model-characterization utilities.
 
 See [Quick Reference table](#quick-reference-example-implementation-status) for detailed status of each example.
 
@@ -1460,48 +1458,19 @@ All pipelines include:
 
 ## Summary Statistics
 
-### Overall Completion by Layer
+### Layer Snapshot
 
 | Layer | Python | Elixir | Rust | TypeScript |
 |-------|--------|--------|------|------------|
-| **Layer 1: LLM Integration** | 100% | ~30% | ~70% | ~60% |
-| **Layer 2: Tracer System** | 100% | 100% | 100% | 100% |
-| **Layer 3: Agent System** | 100% | 0% | 0% | 0% |
-| **Overall** | 100% | ~15% | ~30% | ~25% |
+| **Layer 1: LLM Integration** | ✅ OpenAI + Ollama | ⚠️ Ollama only | ⚠️ Ollama only | ⚠️ Ollama only |
+| **Layer 2: Tracer System** | ✅ | ✅ | ✅ | ✅ |
+| **Layer 3: Agent System** | ⚠️ Experimental | ⚠️ Experimental | ⚠️ Experimental | ⚠️ Experimental |
 
-### Feature Count by Status
-
-#### Python (Original - Baseline)
-- Total Features: ~120
-- Implemented: ~120 (100%)
-
-#### Elixir
-- Total Planned: ~120
-- Implemented: ~12 (10%)
-- In Documentation: ~108 (90%)
-- Status: Core Layer 1 infrastructure complete (Broker, Gateway, Tools, Error handling)
-- Test Coverage: 67.43% (68 tests)
-  - 100% coverage: CompletionConfig, DateResolver, Gateway, GatewayResponse, ToolCall, Mojentic
-  - 87.76% coverage: Broker
-  - 55.10% coverage: Ollama gateway
-  - 75% coverage: Tool behaviour, Message
-  - 13.64% coverage: Error module (needs improvement)
-
-#### Rust
-- Total Planned: ~120
-- Implemented: ~30 (25%)
-- Partial: ~10 (8%)
-- Not Started: ~80 (67%)
-- Status: Core infrastructure complete, Layer 1 partially done
-
-#### TypeScript
-- Total Planned: ~120
-- Implemented: ~48 (40%)
-- Partial: ~5 (4%)
-- Not Started: ~67 (56%)
-- Status: Core Layer 1 complete, Layer 2 (Tracer) complete, Layer 3 partial (5/6 tools)
-- Test Infrastructure: Jest with 434 tests passing across 20 test suites
-- Unique Features: Result type pattern, comprehensive TypeScript types, complete tracer system
+### Test & Quality Snapshot (Nov 20, 2025)
+- Python: 177 tests passed; coverage ~57%; `pip-audit` blocked by offline DNS.
+- Elixir: 457 tests passed; `mix credo --strict` reports 5 warnings (logger metadata/atom creation); `mix deps.audit` clean.
+- Rust: 220 tests passed (required unsandboxed run for mockito HTTP server); `cargo deny` emitted non-blocking warnings about duplicate `base64` versions and unused Windows skips.
+- TypeScript: 499 tests passed; `npm audit` reports four moderate advisories (esbuild via vite/vitepress and js-yaml).
 
 ---
 
@@ -1843,38 +1812,39 @@ This table provides a quick overview of which examples are implemented in each p
 
 | Level | Example | Py | Ex | Ru | TS | Key Features Required |
 |-------|---------|----|----|----|----|----------------------|
-| **1** | simple_llm | ✅ | ✅ | ✅ | ✅ | Broker, Gateway, Agent |
-| **1** | list_models | ✅ | ✅ | ✅ | ✅ | Multiple Gateways |
-| **1** | simple_structured | ✅ | ✅ | ✅ | ✅ | Structured Output |
-| **1** | simple_tool | ✅ | ✅ | ✅ | ✅ | Tool System, DateResolver |
-| **2** | image_analysis | ✅ | ✅ | ✅ | ✅ | Multimodal Messages |
-| **2** | broker_examples | ✅ | ✅ | ✅ | ✅ | All Broker Features |
-| **2** | streaming | ✅ | ✅ | ✅ | ✅ | Streaming API with full recursive tool execution (all: Ollama; Py: also OpenAI) |
-| **2** | chat_session | ✅ | ✅ | ✅ | ✅ | ChatSession |
-| **2** | chat_session_with_tool | ✅ | ✅ | ✅ | ✅ | ChatSession + Tools |
+| **1** | simple_llm | ✅ | ✅ | ✅ | ✅ | Basic broker + Ollama |
+| **1** | list_models | ✅ | ✅ | ❌ | ❌ | Model listing example present only in Py/Ex |
+| **1** | structured_output | ✅ | ✅ | ✅ | ✅ | JSON/schema outputs |
+| **1** | tool_usage (simple_tool) | ✅ | ✅ | ✅ | ✅ | Date/tool calling (Py file name: `simple_tool.py`) |
+| **2** | streaming | ✅ | ✅ | ✅ | ✅ | Streaming with recursive tool calls |
+| **2** | image_analysis | ✅ | ✅ | ✅ | ✅ | Multimodal messages |
 | **2** | embeddings | ✅ | ✅ | ✅ | ✅ | Embeddings API |
-| **2** | current_datetime_tool | ✅ | ✅ | ✅ | ✅ | DateTime Tool |
-| **3** | file_tool | ✅ | ✅ | ✅ | ✅ | File Tool |
-| **3** | coding_file_tool | ✅ | ✅ | ✅ | ✅ | Code-aware File Tool |
-| **3** | broker_as_tool | ✅ | ✅ | ✅ | ✅ | Tool Wrapping |
-| **3** | ephemeral_task_manager | ✅ | ✅ | ✅ | ✅ | Task Tool with shared state |
-| **3** | tell_user | ✅ | ✅ | ✅ | ✅ | User Communication Tool |
-| **4** | tracer_demo | ✅ | ✅ | ✅ | ✅ | TracerSystem |
-| **5** | async_llm | ✅ | ✅ | ✅ | ✅ | Async Agents |
-| **5** | async_dispatcher | ✅ | ✅ | ✅ | ✅ | AsyncDispatcher |
-| **6** | iterative_solver | ✅ | ✅ | ✅ | ✅ | Problem Solver |
-| **6** | recursive_agent | ✅ | ❌ | ❌ | ❌ | Recursive Agent |
-| **6** | solver_chat_session | ✅ | ❌ | ❌ | ❌ | Solver + Chat |
-| **7** | react | ✅ | ❌ | ❌ | ❌ | ReAct Pattern |
-| **7** | working_memory | ✅ | ❌ | ❌ | ❌ | Shared Memory |
+| **2** | chat_session | ✅ | ✅ | ✅ | ✅ | Chat session helper |
+| **2** | chat_session_with_tool | ✅ | ✅ | ✅ | ✅ | Chat session + tools |
+| **2** | current_datetime | ✅ | ✅ | ✅ | ✅ | Date/time tool example |
+| **2** | tokenizer_example | ✅ | ✅ | ✅ | ✅ | Token counting/encoding |
+| **3** | broker_examples | ✅ | ✅ | ✅ | ✅ | Config and model options |
+| **3** | file_tool | ✅ | ✅ | ✅ | ✅ | File management tools |
+| **3** | coding_file_tool | ✅ | ✅ | ✅ | ✅ | Code-aware file workflow |
+| **3** | ephemeral_task_manager | ✅ | ✅ | ✅ | ✅ | Task manager tools |
+| **3** | broker_as_tool | ✅ | ✅ | ✅ | ✅ | Wrapping broker as tool |
+| **3** | tell_user | ✅ | ✅ | ✅ | ✅ | User notification tool |
+| **4** | async_llm | ✅ | ✅ | ✅ | ✅ | Async LLM usage |
+| **4** | tracer_demo | ✅ | ✅ | ✅ | ✅ | Tracer system |
+| **4** | iterative_solver | ✅ | ✅ | ✅ | ✅ | Simple solver loop |
+| **5** | ensures_files_exist | ✅ | ❌ | ❌ | ❌ | Python-only tooling utility |
+| **6** | recursive_agent | ✅ | ❌ | ❌ | ❌ | Python-only recursive agent |
+| **6** | solver_chat_session | ✅ | ❌ | ❌ | ❌ | Python-only solver + chat |
+| **7** | react | ✅ | ❌ | ❌ | ❌ | Python-only ReAct pattern |
+| **7** | working_memory | ✅ | ❌ | ❌ | ❌ | Python-only shared memory demo |
 
 **Legend**: Py=Python, Ex=Elixir, Ru=Rust, TS=TypeScript
 
 **Summary by Port**:
-- **Python**: 24/24 examples implemented (100%)
-- **Elixir**: 20/24 examples (83%) - Level 1-6 complete! (457 tests passing)
-- **Rust**: 20/24 examples (83%) - Level 1-6 complete! (220 tests passing)
-- **TypeScript**: 20/24 examples (83%) - Level 1-6 complete! (497 tests passing)
+- **Python**: All shared examples plus additional advanced agent demos.
+- **Elixir**: All shared examples and list_models; no Python-only agent demos.
+- **Rust**: All shared examples; list_models and Python-only agent demos are not present.
+- **TypeScript**: All shared examples; list_models and Python-only agent demos are not present.
 
 ---
 
