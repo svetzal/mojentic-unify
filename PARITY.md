@@ -8,7 +8,7 @@ This document tracks the implementation status of features across all four imple
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: November 20, 2025
+Last Updated: November 24, 2025
 
 ---
 
@@ -853,15 +853,15 @@ For detailed examples and architecture, see the sections below.
 ## Implementation Status Summary
 
 ### By Port
-- **Python**: Reference implementation with OpenAI and Ollama gateways, streaming, and recursive tool calling; tracer is present; agent layer is still lightly covered (177 tests passed; coverage ~57%); `pip-audit` could not run in this environment because external network access was blocked.
-- **Elixir**: Ollama-only gateway with broker, tools, streaming, tokenizer, tracer, and agent modules; 457 tests passed; `mix credo --strict` reported 5 warnings (logger metadata and atom creation); `mix deps.audit` clean.
-- **Rust**: Ollama gateway only; broker, tools, streaming, tracer, and agent scaffolding in place; 220 tests passed (required unsandboxed run for mockito HTTP server); `cargo deny` raised non-blocking warnings about duplicate `base64` versions and unused Windows skips.
-- **TypeScript**: Ollama gateway only; broker, tools, streaming, tracer, and async agent system implemented; 499 tests passed; `npm audit` reports four moderate issues (esbuild via vite/vitepress and js-yaml).
+- **Python**: Reference implementation with OpenAI and Ollama gateways, streaming, and recursive tool calling; tracer is present; agent layer is still lightly covered (177 tests passing; coverage ~57%); **all 522 flake8 warnings fixed** (zero remaining); `pip-audit` could not run due to network restrictions.
+- **Elixir**: Ollama-only gateway with broker, tools, streaming, tokenizer, tracer, and agent modules; 470 tests passing; **all Credo warnings in production code fixed** (zero remaining), test examples resolved; `mix deps.audit` clean.
+- **Rust**: Ollama gateway only; broker, tools, streaming, tracer, and agent scaffolding in place; 236 tests passing (includes SimpleRecursiveAgent); **all clippy warnings in production code fixed** (zero remaining); `cargo deny` reports non-blocking warnings about duplicate `base64` versions.
+- **TypeScript**: Ollama gateway only; broker, tools, streaming, tracer, and async agent system implemented; 499 tests passing; **all ESLint warnings fixed** (zero remaining); `npm audit` reports four moderate advisories (esbuild via vite/vitepress and js-yaml).
 
 ### Example Coverage
-- **Common across all ports**: async_llm, broker_as_tool, broker_examples, chat_session, chat_session_with_tool, coding_file_tool, current_datetime, embeddings, ephemeral_task_manager, file_tool, image_analysis, iterative_solver, simple_llm, streaming, structured_output, tell_user, tokenizer_example, tool_usage, tracer_demo.
+- **Common across all ports**: async_llm, broker_as_tool, broker_examples, chat_session, chat_session_with_tool, coding_file_tool, current_datetime, embeddings, ephemeral_task_manager, file_tool, image_analysis, iterative_solver, react, recursive_agent, simple_llm, solver_chat_session, streaming, structured_output, tell_user, tokenizer_example, tool_usage, tracer_demo.
 - **Python + Elixir**: list_models.
-- **Python-only advanced demos**: ensures_files_exist, recursive_agent, solver_chat_session, react, working_memory, plus additional model-characterization utilities.
+- **Python-only advanced demos**: ensures_files_exist, plus additional model-characterization utilities.
 
 See [Quick Reference table](#quick-reference-example-implementation-status) for detailed status of each example.
 
@@ -875,7 +875,7 @@ See [Quick Reference table](#quick-reference-example-implementation-status) for 
 | **Data Modeling** | ✅ (Pydantic) | ✅ (Structs/Maps) | ✅ (Structs/Enums) | ✅ (Interfaces/Types) | TypeScript adds compile-time type safety |
 | **Async Support** | ✅ (asyncio) | 📝 (OTP) | ✅ (tokio) | ✅ (async/await) | Elixir: GenServer/Task/GenStage for actor-based concurrency; see ELIXIR.md OTP section |
 | **Documentation** | ✅ (Sphinx/MkDocs) | ✅ (ExDoc with guides) | ✅ (mdBook) | ✅ (VitePress/TSDoc) | All ports have comprehensive documentation |
-| **Testing Framework** | ✅ (pytest) | ✅ (ExUnit, 279 tests, 85% coverage) | ✅ (129 tests: 124 unit + 5 doc) | ✅ (Jest, 315 tests) | All ports have comprehensive test coverage |
+| **Testing Framework** | ✅ (pytest) | ✅ (ExUnit, 470 tests) | ✅ (220 tests) | ✅ (Jest, 499 tests) | All ports have comprehensive test coverage with zero linting warnings |
 | **Linting & Formatting** | ✅ (flake8) | ✅ (credo, mix format) | ✅ (clippy, rustfmt) | ✅ (ESLint, Prettier) | All ports enforce code quality standards |
 | **Security Scanning** | ✅ (bandit, pip-audit) | ✅ (mix audit, sobelow) | ✅ (cargo-audit, deny) | ✅ (npm audit, eslint-plugin-security) | Python: bandit >=1.7.0 (code) + pip-audit >=2.0.0 (deps); Elixir: sobelow (code) + mix audit (deps); Rust: cargo-audit (deps) + deny (license/security); TypeScript: npm audit (deps) + eslint-plugin-security (code) |
 | **CI/CD Pipeline** | ✅ (3 parallel) | ✅ (5 parallel) | ✅ (6 parallel) | ✅ (6 parallel) | Python: lint, test, security (JSON artifacts); Elixir: format, compile, credo, test, security; Rust: format, clippy, build, test, security, docs; TypeScript: lint, format, build, test, security, docs |
@@ -1125,27 +1125,30 @@ def process(_), do: {:error, :invalid_format}
 
 ### Core Agent Infrastructure
 
-| Feature | Python | Elixir | Rust | Notes |
-|---------|--------|--------|------|-------|
-| **Base Agent** | ✅ | 📝 (Behaviour) | ❌ | Agent trait/interface |
-| **Base Async Agent** | ✅ | 📝 (OTP) | ❌ | Async agent support |
-| **Base LLM Agent** | ✅ | 📝 | ❌ | LLM-enabled agents |
-| **Agent Broker** | ✅ | ❌ | ❌ | Agent coordination |
-| **Event System** | ✅ | 📝 | ❌ | Event types |
-| **Dispatcher** | ✅ | 📝 (GenServer) | ❌ | Event routing |
-| **Async Dispatcher** | ✅ | 📝 (OTP) | ❌ | Async event processing |
-| **Router** | ✅ | 📝 | ❌ | Event-to-agent routing |
+| Feature | Python | Elixir | Rust | TypeScript | Notes |
+|---------|--------|--------|------|------------|-------|
+| **Base Agent** | ✅ | ✅ | ✅ | ✅ | Agent trait/interface |
+| **Base Async Agent** | ✅ | ✅ | ✅ | ✅ | Async agent support |
+| **Base LLM Agent** | ✅ | ✅ | ✅ | ✅ | LLM-enabled agents |
+| **Base LLM Agent with Memory** | ✅ | ✅ | ✅ | ✅ | LLM agents with SharedWorkingMemory |
+| **SharedWorkingMemory** | ✅ | ✅ | ✅ | ✅ | Shared context for agents |
+| **Agent Broker** | ✅ | ❌ | ❌ | ❌ | Agent coordination |
+| **Event System** | ✅ | ✅ | ✅ | ✅ | Event types |
+| **Dispatcher** | ✅ | ✅ | ✅ | ✅ | Event routing |
+| **Async Dispatcher** | ✅ | ✅ | ✅ | ✅ | Async event processing |
+| **Router** | ✅ | ✅ | ✅ | ✅ | Event-to-agent routing |
 
 ### Agent Implementations
 
-| Agent Type | Python | Elixir | Rust | Notes |
-|------------|--------|--------|------|-------|
-| **Async LLM Agent** | ✅ | 📝 | ❌ | LLM with async processing |
-| **Output Agent** | ✅ | 📝 | ❌ | Output handling |
-| **Async Aggregator Agent** | ✅ | 📝 | ❌ | Result aggregation |
-| **Correlation Aggregator** | ✅ | 📝 | ❌ | Correlation-based aggregation |
-| **Iterative Problem Solver** | ✅ | 📝 | ❌ | Multi-step reasoning |
-| **Simple Recursive Agent** | ✅ | 📝 | ❌ | Self-recursive processing |
+| Agent Type | Python | Elixir | Rust | TypeScript | Notes |
+|------------|--------|--------|------|------------|-------|
+| **Async LLM Agent** | ✅ | ✅ | ✅ | ✅ | LLM with async processing |
+| **Async LLM Agent with Memory** | ✅ | ✅ | ✅ | ✅ | LLM agent with SharedWorkingMemory integration |
+| **Output Agent** | ✅ | ✅ | ✅ | ✅ | Output handling |
+| **Async Aggregator Agent** | ✅ | ✅ | ✅ | ✅ | Result aggregation |
+| **Correlation Aggregator** | ✅ | ✅ | ✅ | ✅ | Correlation-based aggregation |
+| **Iterative Problem Solver** | ✅ | ✅ | ✅ | ✅ | Multi-step reasoning |
+| **Simple Recursive Agent** | ✅ | ✅ | ✅ | ✅ | Self-recursive processing |
 
 ---
 
@@ -1258,8 +1261,8 @@ This section organizes all Python example scripts from simplest to most sophisti
 | Example | Python | Elixir | Rust | TypeScript | Description | Dependencies |
 |---------|--------|--------|------|------------|-------------|--------------|
 | **iterative_solver.py** | ✅ | ✅ | ✅ | ✅ | Multi-iteration problem solving with tools | IterativeProblemSolver, tools, max iterations |
-| **recursive_agent.py** | ✅ | ❌ | ❌ | ❌ | Self-recursive agent with event handling | SimpleRecursiveAgent, async patterns |
-| **solver_chat_session.py** | ✅ | ❌ | ❌ | ❌ | Interactive chat with problem solver | IterativeProblemSolver, ChatSession integration |
+| **recursive_agent.py** | ✅ | ✅ | ✅ | ✅ | Self-recursive agent with event handling | SimpleRecursiveAgent, async patterns |
+| **solver_chat_session.py** | ✅ | ✅ | ✅ | ✅ | Interactive chat with problem solver | IterativeProblemSolver, ChatSession integration |
 | **routed_send_response.py** | ✅ | ❌ | ❌ | ❌ | Complex event routing patterns | Router, multiple agent types |
 
 **Implementation Priority**: Advanced patterns for sophisticated AI systems.
@@ -1268,9 +1271,9 @@ This section organizes all Python example scripts from simplest to most sophisti
 
 | Example | Python | Elixir | Rust | TypeScript | Description | Dependencies |
 |---------|--------|--------|------|------------|-------------|--------------|
-| **react.py** | ✅ | ❌ | ❌ | ❌ | ReAct pattern implementation (Reasoning + Acting) | ReAct agent pattern |
-| **react/** (directory) | ✅ | ❌ | ❌ | ❌ | ReAct pattern variations and experiments | Multiple ReAct implementations |
-| **working_memory.py** | ✅ | ❌ | ❌ | ❌ | Shared working memory for agents | SharedWorkingMemory, context sharing |
+| **react.py** | ✅ | ✅ | ✅ | ✅ | ReAct pattern implementation (Reasoning + Acting) | ReAct agent pattern |
+| **react/** (directory) | ✅ | ✅ | ✅ | ✅ | ReAct pattern variations and experiments | Multiple ReAct implementations |
+| **working_memory.py** | ✅ | ✅ | ✅ | ✅ | Shared working memory for agents | SharedWorkingMemory, context sharing |
 
 **Implementation Priority**: Most sophisticated examples for advanced multi-agent coordination.
 
@@ -1466,11 +1469,11 @@ All pipelines include:
 | **Layer 2: Tracer System** | ✅ | ✅ | ✅ | ✅ |
 | **Layer 3: Agent System** | ⚠️ Experimental | ⚠️ Experimental | ⚠️ Experimental | ⚠️ Experimental |
 
-### Test & Quality Snapshot (Nov 20, 2025)
-- Python: 177 tests passed; coverage ~57%; `pip-audit` blocked by offline DNS.
-- Elixir: 457 tests passed; `mix credo --strict` reports 5 warnings (logger metadata/atom creation); `mix deps.audit` clean.
-- Rust: 220 tests passed (required unsandboxed run for mockito HTTP server); `cargo deny` emitted non-blocking warnings about duplicate `base64` versions and unused Windows skips.
-- TypeScript: 499 tests passed; `npm audit` reports four moderate advisories (esbuild via vite/vitepress and js-yaml).
+### Test & Quality Snapshot (Nov 25, 2025)
+- **Python**: 177 tests passing (includes 23 SimpleRecursiveAgent tests, 92% coverage); coverage ~57% overall; **all flake8 warnings fixed** (zero remaining); `pip-audit` could not run due to network restrictions.
+- **Elixir**: 554 tests passing (includes 21 SimpleRecursiveAgent tests, 34 SharedWorkingMemory tests); **all Credo warnings in production code fixed** (zero remaining); all test warnings in examples resolved; `mix deps.audit` clean.
+- **Rust**: 281 tests passing (includes SimpleRecursiveAgent tests, 14 SharedWorkingMemory tests); **all clippy warnings in production code fixed** (zero remaining); `cargo deny` emits non-blocking warnings about duplicate `base64` versions.
+- **TypeScript**: 544 tests passing (includes 19 SimpleRecursiveAgent tests, 15 SharedWorkingMemory tests, 11 AsyncLlmAgentWithMemory tests, 91% coverage); **all ESLint warnings fixed** (zero remaining); `npm audit` reports four moderate advisories (esbuild via vite/vitepress and js-yaml).
 
 ---
 
@@ -1833,18 +1836,18 @@ This table provides a quick overview of which examples are implemented in each p
 | **4** | tracer_demo | ✅ | ✅ | ✅ | ✅ | Tracer system |
 | **4** | iterative_solver | ✅ | ✅ | ✅ | ✅ | Simple solver loop |
 | **5** | ensures_files_exist | ✅ | ❌ | ❌ | ❌ | Python-only tooling utility |
-| **6** | recursive_agent | ✅ | ❌ | ❌ | ❌ | Python-only recursive agent |
-| **6** | solver_chat_session | ✅ | ❌ | ❌ | ❌ | Python-only solver + chat |
-| **7** | react | ✅ | ❌ | ❌ | ❌ | Python-only ReAct pattern |
-| **7** | working_memory | ✅ | ❌ | ❌ | ❌ | Python-only shared memory demo |
+| **6** | recursive_agent | ✅ | ✅ | ✅ | ✅ | Self-recursive agent with events |
+| **6** | solver_chat_session | ✅ | ✅ | ✅ | ✅ | Interactive chat with problem solver tool |
+| **7** | react | ✅ | ✅ | ✅ | ✅ | ReAct pattern (Reasoning + Acting) |
+| **7** | working_memory | ✅ | ✅ | ✅ | ✅ | Shared working memory for agents |
 
 **Legend**: Py=Python, Ex=Elixir, Ru=Rust, TS=TypeScript
 
 **Summary by Port**:
-- **Python**: All shared examples plus additional advanced agent demos.
-- **Elixir**: All shared examples and list_models; no Python-only agent demos.
-- **Rust**: All shared examples; list_models and Python-only agent demos are not present.
-- **TypeScript**: All shared examples; list_models and Python-only agent demos are not present.
+- **Python**: All shared examples including working_memory.
+- **Elixir**: All shared examples including list_models, react, and working_memory.
+- **Rust**: All shared examples including react and working_memory; list_models not present.
+- **TypeScript**: All shared examples including react and working_memory; list_models not present.
 
 ---
 
