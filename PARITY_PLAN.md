@@ -1,20 +1,20 @@
 # Mojentic Feature Parity Implementation Plan
 
 **Created**: November 25, 2025
-**Updated**: November 25, 2025 - **Phase 1, 2, 3 & 4 COMPLETED** ✅
+**Updated**: November 25, 2025 - **Phase 1, 2, 3, 4, 5 & 6 COMPLETED** ✅
 **Purpose**: Detailed roadmap for achieving feature parity across all four Mojentic implementations while preserving idiomatic traits of each language.
 
 ---
 
-## ✅ Phase 1, 2, 3 & 4 Completion Summary (November 25, 2025)
+## ✅ Phase 1, 2, 3, 4, 5 & 6 Completion Summary (November 25, 2025)
 
-**Status**: Phase 1 (Test Stabilization), Phase 2 (Core API Alignment), Phase 3 (Gateway Parity), and Phase 4 (Tool System Parity) are **COMPLETE** across all four implementations.
+**Status**: Phase 1 (Test Stabilization), Phase 2 (Core API Alignment), Phase 3 (Gateway Parity), Phase 4 (Tool System Parity), Phase 5 (Agent System Parity), and Phase 6 (Message System Parity) are **COMPLETE** across all four implementations.
 
 ### Phase 1: Test Stabilization ✅
 - **Python**: 200/200 tests passing, all quality gates clean
-- **Elixir**: 578/578 tests passing (includes new web search tests)
-- **Rust**: 306 tests passing + doc tests
-- **TypeScript**: 582 tests passing across 28+ test suites
+- **Elixir**: 586/586 tests passing (includes new BaseAgent tests)
+- **Rust**: 311 tests passing + doc tests
+- **TypeScript**: 589 tests passing across 30 test suites
 
 ### Phase 2: Core API Alignment ✅
 
@@ -446,15 +446,15 @@ All implementations have consistent tool interfaces:
 
 ---
 
-## Phase 5: Agent System Parity (Priority: MEDIUM)
+## Phase 5: Agent System Parity (Priority: MEDIUM) - ✅ COMPLETED
 
 ### 5.1 Core Agent Infrastructure
 
 | Component | Python | Elixir | Rust | TypeScript |
 |-----------|--------|--------|------|------------|
-| BaseAgent | ✅ | ❌ | ❌ | ✅ |
+| BaseAgent | ✅ | ✅ | ✅ | ✅ |
 | BaseAsyncAgent | ✅ | ✅ | ✅ | ✅ |
-| BaseLLMAgent | ✅ | ✅ | ⚠️ | ✅ |
+| BaseLLMAgent | ✅ | ✅ | ✅ AsyncLlmAgent | ✅ |
 | BaseLLMAgentWithMemory | ✅ | ✅ | ✅ | ✅ |
 | SharedWorkingMemory | ✅ | ✅ | ✅ | ✅ |
 | EventEmitter | ✅ | ✅ (GenServer) | ✅ | ✅ |
@@ -463,17 +463,38 @@ All implementations have consistent tool interfaces:
 
 **Actions:**
 
-#### 5.1.1 Elixir: Implement BaseAgent Behaviour (Estimated: 1 day)
-- [ ] Create `BaseAgent` behaviour module
-- [ ] Define callback specs
-- [ ] Add documentation
-- [ ] Add tests
+#### 5.1.1 Elixir: Implement BaseAgent Behaviour (Estimated: 1 day) - ✅ COMPLETED November 25, 2025
+- [x] Create `BaseAgent` behaviour module
+- [x] Define callback specs
+- [x] Add documentation
+- [x] Add tests (8 tests)
 
-#### 5.1.2 Rust: Implement Base Agent Trait (Estimated: 1 day)
-- [ ] Create `BaseAgent` trait
-- [ ] Define required methods
-- [ ] Add documentation
-- [ ] Add tests
+**Implementation**: Created `lib/mojentic/agents/base_agent.ex` with:
+- `@callback receive_event(event :: Event.t()) :: [Event.t()]`
+- `__using__` macro for default implementation
+- Full ExDoc documentation
+
+#### 5.1.2 Rust: Implement Base Agent Trait (Estimated: 1 day) - ✅ COMPLETED November 25, 2025
+- [x] Create `BaseAgent` trait
+- [x] Define required methods
+- [x] Add documentation
+- [x] Add tests (5 tests)
+
+**Implementation**: Created `src/agents/base_agent.rs` with:
+- `fn receive_event(&self, event: Box<dyn Event>) -> Vec<Box<dyn Event>>`
+- Exported via `src/agents/mod.rs`
+- Full rustdoc documentation
+
+#### 5.1.3 TypeScript: Implement BaseAgent Interface - ✅ COMPLETED November 25, 2025
+- [x] Create `BaseAgent` interface
+- [x] Add tests (7 tests)
+
+**Implementation**: Created `src/agents/base-agent.ts` with:
+- `receiveEvent(event: Event): Event[]`
+- Exported via `src/agents/index.ts`
+- JSDoc documentation
+
+**Note on BaseLLMAgent in Rust**: Rust's `AsyncLlmAgent` serves as the functional equivalent of Python's `BaseLLMAgent`. Since LLM calls are inherently I/O-bound, async-only implementations are appropriate. Python's synchronous versions use `asyncio.to_thread` internally anyway.
 
 ### 5.2 Agent Implementations
 
@@ -486,7 +507,7 @@ All implementations have consistent tool interfaces:
 | CorrelationAggregator | ✅ | ✅ | ✅ | ✅ |
 | IterativeProblemSolver | ✅ | ✅ | ✅ | ✅ |
 | SimpleRecursiveAgent | ✅ | ✅ | ✅ | ✅ |
-| AgentBroker | ✅ | ❌ | ❌ | ❌ |
+| AgentBroker | ✅ | ❌ Deferred | ❌ Deferred | ❌ Deferred |
 
 **Actions:**
 
@@ -501,7 +522,7 @@ The AgentBroker is a coordinator component in Python. Consider whether this patt
 
 ---
 
-## Phase 6: Message System Parity (Priority: MEDIUM)
+## Phase 6: Message System Parity (Priority: MEDIUM) - ✅ COMPLETED
 
 ### 6.1 Message Types and Features
 
@@ -511,24 +532,27 @@ The AgentBroker is a coordinator component in Python. Consider whether this patt
 | User message | ✅ | ✅ | ✅ | ✅ |
 | Assistant message | ✅ | ✅ | ✅ | ✅ |
 | Tool message | ✅ | ✅ | ✅ | ✅ |
-| Image support | ✅ | 📝 | ⚠️ | ⚠️ |
-| Message composers | ✅ | ❌ | ❌ | ✅ |
-| Audience targeting | ✅ | ❌ | ❌ | ❌ |
-| Priority system | ✅ | ❌ | ❌ | ❌ |
+| Image support | ✅ | ✅ | ✅ | ✅ |
+| Message composers | ✅ | ✅ | ✅ | ✅ |
+| Audience targeting | ✅ | ❌ Deferred | ❌ Deferred | ❌ Deferred |
+| Priority system | ✅ | ❌ Deferred | ❌ Deferred | ❌ Deferred |
 
-**Actions:**
+**Verification Complete (November 25, 2025):**
 
-#### 6.1.1 Message Composers (Estimated: 2 hours each)
-Python and TypeScript have helper builders. Consider adding to other implementations:
+All implementations have full message system parity for core functionality:
 
-- [ ] Elixir: Add `Message.user/1`, `Message.system/1`, etc. convenience functions (if not already present)
-- [ ] Rust: Add `LlmMessage::user()`, `LlmMessage::system()`, etc. constructors
+- **Message composers**: All have helper methods (`Message.user()`, `Message.system()`, etc.)
+- **Image support**: All implementations support multimodal messages with images
+  - Python: `image_paths` field on `LLMMessage`
+  - Elixir: `image_paths` field with `Message.with_images/2` helper
+  - Rust: `image_paths` field with `with_images()` builder method
+  - TypeScript: `ContentItem[]` array supporting `image_url` type (OpenAI-style)
 
-#### 6.1.2 Audience Targeting and Priority (Future - Low Priority)
-These are Python-specific features for advanced multi-agent scenarios:
+**Deferred Features:**
+- **Audience targeting**: Python-only feature for advanced multi-agent scenarios
+- **Priority system**: Python-only feature for message prioritization
 
-- [ ] Document as Python-only advanced features
-- [ ] Consider future implementation if use cases emerge
+These features are deferred until real use cases emerge in other implementations.
 
 ---
 
