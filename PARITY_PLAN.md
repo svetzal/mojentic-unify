@@ -1,20 +1,20 @@
 # Mojentic Feature Parity Implementation Plan
 
 **Created**: November 25, 2025
-**Updated**: November 25, 2025 - **Phase 1 & 2 COMPLETED** ✅
+**Updated**: November 25, 2025 - **Phase 1, 2, 3 & 4 COMPLETED** ✅
 **Purpose**: Detailed roadmap for achieving feature parity across all four Mojentic implementations while preserving idiomatic traits of each language.
 
 ---
 
-## ✅ Phase 1 & 2 Completion Summary (November 25, 2025)
+## ✅ Phase 1, 2, 3 & 4 Completion Summary (November 25, 2025)
 
-**Status**: Both Phase 1 (Test Stabilization) and Phase 2 (Core API Alignment) are **COMPLETE** across all four implementations.
+**Status**: Phase 1 (Test Stabilization), Phase 2 (Core API Alignment), Phase 3 (Gateway Parity), and Phase 4 (Tool System Parity) are **COMPLETE** across all four implementations.
 
 ### Phase 1: Test Stabilization ✅
 - **Python**: 200/200 tests passing, all quality gates clean
-- **Elixir**: 554/554 tests passing (18 doctests, 536 tests)
-- **Rust**: 292 tests passing + 13 doc tests (confirmed stable)
-- **TypeScript**: 550 tests passing across 28 test suites
+- **Elixir**: 578/578 tests passing (includes new web search tests)
+- **Rust**: 306 tests passing + doc tests
+- **TypeScript**: 582 tests passing across 28+ test suites
 
 ### Phase 2: Core API Alignment ✅
 
@@ -29,8 +29,41 @@ All four implementations now have complete, standardized CompletionConfig with t
 - `topK/top_k` - Top-k sampling (all implementations)
 - `responseFormat/response_format` - Structured output (all implementations)
 
+### Phase 3: Gateway Parity ✅
+
+**Ollama Gateway Complete Feature Set:**
+
+| Feature | Python | Elixir | Rust | TypeScript |
+|---------|--------|--------|------|------------|
+| Chat completions | ✅ | ✅ | ✅ | ✅ |
+| Streaming | ✅ | ✅ | ✅ | ✅ |
+| Streaming + Tools | ✅ | ✅ | ✅ | ✅ |
+| Structured output | ✅ | ✅ | ✅ | ✅ |
+| Tool calling | ✅ | ✅ | ✅ | ✅ |
+| Image analysis | ✅ | ✅ | ✅ | ✅ |
+| Model listing | ✅ | ✅ | ✅ | ✅ |
+| Model pulling | ✅ | ✅ | ✅ | ✅ |
+| Embeddings | ✅ | ✅ | ✅ | ✅ |
+
+### Phase 4: Tool System Parity ✅
+
+**All Tools Now Available Across All Implementations:**
+
+| Tool | Python | Elixir | Rust | TypeScript |
+|------|--------|--------|------|------------|
+| DateResolver | ✅ | ✅ | ✅ | ✅ |
+| CurrentDateTime | ✅ | ✅ | ✅ | ✅ |
+| File Manager | ✅ | ✅ | ✅ | ✅ |
+| Task Manager | ✅ | ✅ | ✅ | ✅ |
+| Tell User | ✅ | ✅ | ✅ | ✅ |
+| Ask User | ✅ | ✅ | ✅ | ✅ |
+| Tool Wrapper | ✅ | ✅ | ✅ | ✅ |
+| **Web Search** | ✅ SerpAPI | ✅ DuckDuckGo | ✅ DuckDuckGo | ✅ DuckDuckGo |
+
+**Web Search Highlight**: Elixir, Rust, and TypeScript now have FREE web search using DuckDuckGo (no API key required), while Python uses paid SerpAPI.
+
 **Quality Metrics:**
-- Total tests across all implementations: **1,616 tests** (all passing)
+- Total tests across all implementations: **1,666+ tests** (all passing)
 - Zero linting warnings across all implementations
 - All security audits clean
 - 100% backward compatibility maintained
@@ -195,11 +228,11 @@ interface CompletionConfig {
 
 ---
 
-## Phase 3: Gateway Parity (Priority: HIGH)
+## Phase 3: Gateway Parity (Priority: HIGH) - ✅ COMPLETED November 25, 2025
 
-### 3.1 Ollama Gateway Feature Completion
+### 3.1 Ollama Gateway Feature Completion ✅
 
-All implementations have basic Ollama support. Ensure feature parity:
+All implementations now have complete Ollama gateway parity:
 
 | Feature | Python | Elixir | Rust | TypeScript |
 |---------|--------|--------|------|------------|
@@ -208,40 +241,116 @@ All implementations have basic Ollama support. Ensure feature parity:
 | Streaming + Tools | ✅ | ✅ | ✅ | ✅ |
 | Structured output | ✅ | ✅ | ✅ | ✅ |
 | Tool calling | ✅ | ✅ | ✅ | ✅ |
-| Image analysis | ✅ | ❌ | ❌ | ⚠️ |
+| Image analysis | ✅ | ✅ | ✅ | ✅ |
 | Model listing | ✅ | ✅ | ✅ | ✅ |
-| Model pulling | ✅ | 📝 | ✅ | ❌ |
+| Model pulling | ✅ | ✅ | ✅ | ✅ |
 | Embeddings | ✅ | ✅ | ✅ | ✅ |
 
 **Actions:**
 
-#### 3.1.1 Elixir: Image Analysis Support (Estimated: 1 day)
-- [ ] Implement multimodal message handling in Ollama gateway
-- [ ] Add image encoding utilities (Base64)
-- [ ] Update Message struct to support image_paths
-- [ ] Add tests with sample images
-- [ ] Update `image_analysis.exs` example
+#### 3.1.1 Elixir: Image Analysis Support - ✅ COMPLETED November 25, 2025
 
-#### 3.1.2 Rust: Image Analysis Support (Estimated: 1 day)
-- [ ] Implement image base64 encoding in Ollama gateway
-- [ ] Verify `image_paths` field in `LlmMessage` works
-- [ ] Add tests
-- [ ] Update `image_analysis.rs` example
+**Status**: ✅ Already fully implemented - verified and enhanced
 
-#### 3.1.3 TypeScript: Complete Image Analysis (Estimated: 0.5 days)
-- [ ] Verify current implementation works end-to-end
-- [ ] Add integration tests
-- [ ] Update `image_analysis.ts` example
+**Implementation details:**
+- ✅ `image_paths` field already exists in Message struct
+- ✅ `with_images/2` helper function for adding image paths
+- ✅ Base64 encoding in `maybe_add_images/2` function
+- ✅ File read error handling with logging
+- ✅ Comprehensive tests (4 test cases for images)
+- ✅ `image_analysis.exs` example with vision model
 
-#### 3.1.4 Elixir: Model Pull Support (Estimated: 0.5 days)
-- [ ] Implement `pull_model/2` function in Ollama gateway
-- [ ] Add progress callback support
-- [ ] Add tests
+**Quality gates:**
+- ✅ mix format: Clean
+- ✅ mix credo --strict: ZERO warnings (fixed 5 pre-existing warnings)
+- ✅ mix test: 553 tests passing
 
-#### 3.1.5 TypeScript: Model Pull Support (Estimated: 0.5 days)
-- [ ] Implement `pullModel` method in Ollama gateway
-- [ ] Add progress streaming support
-- [ ] Add tests
+#### 3.1.2 Rust: Image Analysis Support (Estimated: 1 day) - ✅ COMPLETED November 25, 2025
+
+**Status**: ✅ Completed - Image analysis support is already fully implemented
+
+**Verification:**
+1. ✅ `image_paths` field already exists in `LlmMessage` struct (src/llm/models.rs)
+2. ✅ Base64 encoding already implemented in Ollama gateway (src/llm/gateways/ollama.rs)
+3. ✅ Comprehensive tests exist:
+   - `test_adapt_messages_with_images` - Tests Base64 encoding with temporary files
+   - `test_message_with_images` - Tests message construction with image paths
+   - All 292 unit tests passing + 13 doc tests passing
+4. ✅ `image_analysis.rs` example already exists and works (examples/image_analysis.rs)
+5. ✅ Test image available at `examples/images/flash_rom.jpg`
+
+**Implementation details:**
+- Uses `base64` crate (v0.22) for encoding
+- Reads image files from paths specified in `LlmMessage.image_paths`
+- Encodes as Base64 using `base64::engine::general_purpose::STANDARD`
+- Includes encoded images in `images` field of Ollama API requests
+- Supports multiple images per message
+
+**Documentation:**
+- ✅ Updated `book/src/core/image_analysis.md` with comprehensive guide
+- ✅ Includes usage examples, error handling, and supported models
+- ✅ Documents the complete workflow from file reading to API transmission
+
+**Quality gates:**
+- ✅ cargo fmt --check: Clean (formatting passes)
+- ✅ cargo clippy --all-targets --all-features -- -D warnings: ZERO warnings
+- ✅ cargo test: All 292 tests passing
+- ✅ cargo tarpaulin: 64.65% coverage (1227/1898 lines)
+- ✅ cargo deny check: Advisories ok, bans ok, licenses ok, sources ok
+
+#### 3.1.3 TypeScript: Complete Image Analysis - ✅ COMPLETED November 25, 2025
+
+**Status**: ✅ Already implemented - enhanced with tests and documentation
+
+**Implementation details:**
+- ✅ Image utilities in `src/llm/image-utils.ts` (encodeImageToBase64, createImageContent, createTextContent)
+- ✅ ContentItem interface supports multimodal messages
+- ✅ Ollama gateway extracts base64 from data URIs
+- ✅ Added 2 new tests for image handling
+- ✅ Updated `image_analysis.ts` example
+- ✅ Created comprehensive `docs/image-analysis.md` documentation
+
+**Quality gates:**
+- ✅ npm run lint: ZERO warnings
+- ✅ npm test: 552 tests passing
+- ✅ npm audit: Zero vulnerabilities
+
+#### 3.1.4 Elixir: Model Pull Support - ✅ COMPLETED November 25, 2025
+
+**Status**: ✅ Implemented with streaming progress support
+
+**Implementation details:**
+- ✅ Added `pull_model/2` function to Ollama gateway
+- ✅ Optional progress callback receives status updates (status, completed, total, digest)
+- ✅ Streams newline-delimited JSON from `/api/pull` endpoint
+- ✅ Robust chunk buffering for incomplete JSON
+- ✅ Returns `{:ok, model_name}` or `{:error, reason}`
+- ✅ 8 comprehensive tests covering all cases
+- ✅ Created `examples/pull_model.exs` with progress display
+
+**Quality gates:**
+- ✅ mix format: Clean
+- ✅ mix credo --strict: ZERO warnings
+- ✅ mix test: 557 tests passing
+
+#### 3.1.5 TypeScript: Model Pull Support - ✅ COMPLETED November 25, 2025
+
+**Status**: ✅ Implemented with streaming progress support
+
+**Implementation details:**
+- ✅ Added `pullModel` method to OllamaGateway class
+- ✅ `PullProgress` interface with status, digest, total, completed fields
+- ✅ Optional `PullProgressCallback` for progress tracking
+- ✅ Streams from `/api/pull` endpoint with JSON parsing
+- ✅ Returns `Result<void, Error>` for functional error handling
+- ✅ 8 comprehensive tests covering success, errors, empty names
+- ✅ Created `examples/pull_model.ts` with rich progress display
+- ✅ Added `npm run example:pull-model` script
+
+**Quality gates:**
+- ✅ npm run lint: ZERO warnings
+- ✅ npm test: 560 tests passing (38 Ollama tests)
+- ✅ npm audit: Zero vulnerabilities
 
 ### 3.2 OpenAI Gateway (Future - Lower Priority)
 
@@ -254,31 +363,37 @@ Python is the only implementation with OpenAI gateway. This is documented as low
 
 ---
 
-## Phase 4: Tool System Parity (Priority: HIGH)
+## Phase 4: Tool System Parity (Priority: HIGH) - ✅ COMPLETED November 25, 2025
 
-### 4.1 Core Tool Interface
+### 4.1 Core Tool Interface ✅
 
-All implementations have the base tool system. Verify consistency:
+All implementations have consistent tool interfaces:
 
 | Tool Feature | Python | Elixir | Rust | TypeScript |
 |-------------|--------|--------|------|------------|
 | Base trait/interface | ✅ | ✅ (behaviour) | ✅ (trait) | ✅ (interface) |
 | `descriptor()` | ✅ | ✅ | ✅ | ✅ |
 | `run(args)` | ✅ | ✅ | ✅ | ✅ |
-| `matches(name)` | ✅ | ✅ | ✅ | ✅ `name()` |
+| `matches(name)` | ✅ | ✅ | ✅ | ✅ |
 | Tool wrapper | ✅ | ✅ | ✅ | ✅ |
 
 **Actions:**
 
-#### 4.1.1 Standardize Tool Name Matching (Estimated: 2 hours)
-- [ ] Python: Uses `matches(name)` method
-- [ ] Elixir: Uses `Tool.matches?/2` behaviour callback
-- [ ] Rust: Uses `matches(&str)` method
-- [ ] TypeScript: Uses `name()` method for comparison
+#### 4.1.1 Standardize Tool Name Matching - ✅ COMPLETED November 25, 2025
 
-**Decision**: Keep idiomatic approaches. Document the differences.
+**Status**: ✅ All implementations now have consistent `matches(name)` functionality
 
-### 4.2 Tool Implementations Parity
+**Verification findings**:
+- Python: `matches(name)` method on BaseTool - compares against `self.name`
+- Elixir: `Tool.matches?/2` module function - compares against descriptor name
+- Rust: `matches(&str)` trait method with default impl - compares against descriptor name
+- TypeScript: `matches(name)` method added to BaseTool - compares against `this.name()`
+
+**All implementations are functionally equivalent** - they all perform exact string equality matching.
+
+**TypeScript Enhancement**: Added `matches(name: string): boolean` method to BaseTool class for API parity (previously only had `name()` accessor).
+
+### 4.2 Tool Implementations Parity ✅
 
 | Tool | Python | Elixir | Rust | TypeScript |
 |------|--------|--------|------|------------|
@@ -289,17 +404,45 @@ All implementations have the base tool system. Verify consistency:
 | Tell User | ✅ | ✅ | ✅ | ✅ |
 | Ask User | ✅ | ✅ | ✅ | ✅ |
 | Tool Wrapper | ✅ | ✅ | ✅ | ✅ |
-| Web Search | ✅ | ❌ | ❌ | ❌ |
+| Web Search | ✅ SerpAPI | ✅ DuckDuckGo | ✅ DuckDuckGo | ✅ DuckDuckGo |
 
-**Actions:**
+#### 4.2.1 DateResolver Naming Alignment - ✅ DOCUMENTED November 25, 2025
 
-#### 4.2.1 DateResolver Naming Alignment (Estimated: 1 hour)
-- [ ] Rust: Consider renaming `SimpleDateTool` to `DateResolverTool` for consistency
-- [ ] Or document the naming difference and rationale
+**Decision**: Keep `SimpleDateTool` name in Rust - it accurately reflects the simpler implementation.
 
-#### 4.2.2 Web Search Tool (Future - Low Priority)
-- Requires external API integration
-- Keep as Python-only for now
+**Rationale**:
+- Rust's SimpleDateTool uses basic pattern matching (simpler than Python's parsedatetime NLP)
+- The LLM-facing function name (`resolve_date`) is already consistent across all languages
+- Renaming would break backward compatibility for no functional benefit
+- The name "Simple" is semantically accurate
+
+#### 4.2.2 Web Search Tool - ✅ IMPLEMENTED November 25, 2025
+
+**Status**: ✅ Implemented in Elixir, Rust, and TypeScript using FREE DuckDuckGo endpoint
+
+**Implementation Details**:
+- Uses DuckDuckGo's lite endpoint (https://lite.duckduckgo.com/lite/) - **NO API KEY REQUIRED**
+- Parses HTML to extract organic search results (title, URL, snippet)
+- Returns up to 10 results to minimize token usage
+- Robust error handling for network failures, empty results, etc.
+
+**TypeScript** (`src/llm/tools/web-search-tool.ts`):
+- 18 tests, all passing
+- Uses native fetch API
+- Comprehensive HTML entity decoding
+- ESLint: ZERO warnings
+
+**Elixir** (`lib/mojentic/llm/tools/web_search_tool.ex`):
+- 20 tests, all passing (91.67% coverage)
+- Uses HTTPoison for HTTP, regex for parsing
+- mix credo --strict: ZERO warnings
+
+**Rust** (`src/llm/tools/web_search_tool.rs`):
+- 14 tests, all passing
+- Uses scraper crate for HTML parsing
+- cargo clippy: ZERO warnings
+
+**Advantage over Python**: Free (no API key) vs Python's SerpAPI (requires paid API key)
 
 ---
 
@@ -524,11 +667,16 @@ The tracer system is complete across all implementations. Verify integration qua
 - ✅ Broker API parameter alignment (numPredict added to TypeScript)
 - ✅ Message constructor helpers (verified across implementations)
 
-### Sprint 3: Gateway Features (Weeks 3-4) - IN PROGRESS
-- [ ] Image analysis support (Elixir, Rust, TypeScript)
-- [ ] Model pull support (Elixir, TypeScript)
+### Sprint 3: Gateway Features (Weeks 3-4) - ✅ COMPLETED November 25, 2025
+- ✅ Image analysis support (Elixir, Rust, TypeScript) - All verified/enhanced
+- ✅ Model pull support (Elixir, TypeScript) - Implemented with streaming progress
 
-### Sprint 4: Agent System (Weeks 5-6)
+### Sprint 4: Tool System (Week 5) - ✅ COMPLETED November 25, 2025
+- ✅ Tool name matching standardized (TypeScript matches() method added)
+- ✅ DateResolver naming documented (Rust SimpleDateTool kept with rationale)
+- ✅ Web Search Tool implemented (FREE DuckDuckGo in Elixir, Rust, TypeScript)
+
+### Sprint 5: Agent System (Weeks 6-7) - IN PROGRESS
 - [ ] BaseAgent implementations (Elixir, Rust)
 - [ ] Agent integration verification
 
