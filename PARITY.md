@@ -25,6 +25,195 @@ These features are **fully implemented in Python, Elixir, Rust, and TypeScript**
 
 ---
 
+## Detailed Feature Reference
+
+This section provides comprehensive feature tables for implementing new ports (e.g., Swift).
+
+### Layer 1: LLM Integration
+
+#### Core Broker & Gateway
+
+| Feature | Python | Elixir | Rust | TypeScript | Notes |
+|---------|--------|--------|------|------------|-------|
+| **LLM Broker** | ✅ | ✅ | ✅ | ✅ | Core interface for LLM interactions |
+| **Gateway Trait/Behaviour** | ✅ | ✅ | ✅ | ✅ | Abstract interface for providers |
+| **Text Generation** | ✅ | ✅ | ✅ | ✅ | Basic completion API |
+| **Structured Output** | ✅ | ✅ | ✅ | ✅ | JSON schema-based responses |
+| **Streaming Responses** | ✅ | ✅ | ✅ | ✅ | Ollama with full recursive tool execution |
+| **Tool Calling** | ✅ | ✅ | ✅ | ✅ | Recursive tool execution |
+| **Message History** | ✅ | ✅ | ✅ | ✅ | Conversation context |
+| **Correlation IDs** | ✅ | ✅ | ✅ | ✅ | Request tracing |
+
+#### Gateway Implementations
+
+| Gateway | Python | Elixir | Rust | TypeScript | Notes |
+|---------|--------|--------|------|------------|-------|
+| **OpenAI** | ✅ | ✅ | ✅ | ✅ | Full featured |
+| **Ollama** | ✅ | ✅ | ✅ | ✅ | Full impl with streaming |
+| **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | Python only; TypeScript planned |
+| **File Gateway** | ✅ | ❌ | ❌ | ❌ | Python: file-based mocking |
+| **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | Token counting |
+| **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | Vector embeddings |
+
+#### Ollama Gateway Features
+
+| Feature | Python | Elixir | Rust | TypeScript |
+|---------|--------|--------|------|------------|
+| Chat Completions | ✅ | ✅ | ✅ | ✅ |
+| Structured Output | ✅ | ✅ | ✅ | ✅ |
+| Tool Calling | ✅ | ✅ | ✅ | ✅ |
+| Streaming | ✅ | ✅ | ✅ | ✅ |
+| Streaming + Tools | ✅ | ✅ | ✅ | ✅ |
+| Image Analysis | ✅ | ✅ | ✅ | ✅ |
+| Model Listing | ✅ | ✅ | ✅ | ✅ |
+| Embeddings | ✅ | ✅ | ✅ | ✅ |
+| Message Adaptation | ✅ | ✅ | ✅ | ✅ |
+
+#### Message System
+
+| Feature | Python | Elixir | Rust | TypeScript | Notes |
+|---------|--------|--------|------|------------|-------|
+| **Message Types** | ✅ | ✅ | ✅ | ✅ | System, User, Assistant, Tool |
+| **Multimodal (Images)** | ✅ | ✅ | ✅ | ✅ | Image content in messages |
+| **Tool Call Messages** | ✅ | ✅ | ✅ | ✅ | Tool request/response |
+| **Message Composers** | ✅ | ✅ | ✅ | ✅ | Helper builders |
+| **Content Annotations** | ✅ | ❌ | ❌ | ❌ | Python-only: metadata |
+| **Audience Targeting** | ✅ | ❌ | ❌ | ❌ | Python-only: routing |
+| **Priority System** | ✅ | ❌ | ❌ | ❌ | Python-only: importance |
+
+#### Tool System
+
+| Feature | Python | Elixir | Rust | TypeScript | Notes |
+|---------|--------|--------|------|------------|-------|
+| **Tool Trait/Behaviour** | ✅ | ✅ | ✅ | ✅ | Base interface |
+| **Tool Descriptors** | ✅ | ✅ | ✅ | ✅ | JSON schema definitions |
+| **Tool Execution** | ✅ | ✅ | ✅ | ✅ | Synchronous execution |
+| **Tool Wrapper** | ✅ | ✅ | ✅ | ✅ | Agent as tool (delegation) |
+| **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | Natural language dates |
+| **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | Current time access |
+| **File Tools (8 tools)** | ✅ | ✅ | ✅ | ✅ | Read/Write/List/etc. |
+| **Task Manager Tool** | ✅ | ✅ | ✅ | ✅ | Ephemeral tasks |
+| **Ask User Tool** | ✅ | ✅ | ✅ | ✅ | Interactive input |
+| **Tell User Tool** | ✅ | ✅ | ✅ | ✅ | User output |
+| **Web Search Tool** | ✅ | ✅ | ✅ | ✅ | Organic search |
+
+#### Chat Session
+
+| Feature | Python | Elixir | Rust | TypeScript | Notes |
+|---------|--------|--------|------|------------|-------|
+| **Session Management** | ✅ | ✅ | ✅ | ✅ | Conversation state |
+| **Message History** | ✅ | ✅ | ✅ | ✅ | Context retention |
+| **Context Window** | ✅ | ✅ | ✅ | ✅ | Token limit management |
+| **System Prompts** | ✅ | ✅ | ✅ | ✅ | Initial instructions |
+| **Tool Integration** | ✅ | ✅ | ✅ | ✅ | Session-level tools |
+
+### Layer 2: Tracer System
+
+| Feature | Python | Elixir | Rust | TypeScript | Notes |
+|---------|--------|--------|------|------------|-------|
+| **Tracer System** | ✅ | ✅ | ✅ | ✅ | Event recording |
+| **Event Store** | ✅ | ✅ | ✅ | ✅ | Event persistence |
+| **Event Types** | ✅ | ✅ | ✅ | ✅ | LLM/Tool/Agent events |
+| **Null Tracer** | ✅ | ✅ | ✅ | ✅ | Null object pattern |
+| **Correlation Tracking** | ✅ | ✅ | ✅ | ✅ | Request correlation |
+| **Performance Metrics** | ✅ | ✅ | ✅ | ✅ | Duration tracking |
+| **Event Querying** | ✅ | ✅ | ✅ | ✅ | Filter/search events |
+| **LLM Call Events** | ✅ | ✅ | ✅ | ✅ | Call tracking |
+| **LLM Response Events** | ✅ | ✅ | ✅ | ✅ | Response tracking |
+| **Tool Call Events** | ✅ | ✅ | ✅ | ✅ | Tool invocation tracking |
+| **Agent Events** | ✅ | ✅ | ✅ | ✅ | Agent lifecycle |
+
+### Layer 3: Agent System
+
+#### Core Agent Infrastructure
+
+| Feature | Python | Elixir | Rust | TypeScript | Notes |
+|---------|--------|--------|------|------------|-------|
+| **Base Agent** | ✅ | ✅ | ✅ | ✅ | Agent trait/interface |
+| **Base Async Agent** | ✅ | ✅ | ✅ | ✅ | Async agent support |
+| **Base LLM Agent** | ✅ | ✅ | ✅ | ✅ | LLM-enabled agents |
+| **AgentEventAdapter** | ✅ | ❌ | ❌ | ❌ | Event-driven agent wrapper |
+| **Event System** | ✅ | ✅ | ✅ | ✅ | Event types |
+| **Dispatcher** | ✅ | ✅ | ✅ | ✅ | Event routing |
+| **Async Dispatcher** | ✅ | ✅ | ✅ | ✅ | Async event processing |
+| **Router** | ✅ | ✅ | ✅ | ✅ | Event-to-agent routing |
+| **Shared Working Memory** | ✅ | ✅ | ✅ | ✅ | Context sharing |
+
+#### Agent Implementations
+
+| Agent Type | Python | Elixir | Rust | TypeScript | Notes |
+|------------|--------|--------|------|------------|-------|
+| **Async LLM Agent** | ✅ | ✅ | ✅ | ✅ | LLM with async processing |
+| **Async Aggregator Agent** | ✅ | ✅ | ✅ | ✅ | Result aggregation |
+| **Iterative Problem Solver** | ✅ | ✅ | ✅ | ✅ | Multi-step reasoning |
+| **Simple Recursive Agent** | ✅ | ✅ | ✅ | ✅ | Self-recursive processing |
+| **ReAct Pattern** | ✅ | ✅ | ✅ | ✅ | Reasoning + Acting |
+
+### Examples by Complexity Level
+
+#### Level 1: Basic LLM Usage
+
+| Example | Description | Dependencies |
+|---------|-------------|--------------|
+| **simple_llm** | Basic text generation | Broker, Gateway |
+| **list_models** | List available models | Gateway |
+| **simple_structured** | Schema-based structured output | Broker, JSON Schema |
+| **simple_tool** | Single tool usage (DateResolver) | Broker, Tool system |
+
+#### Level 2: Advanced LLM Features
+
+| Example | Description | Dependencies |
+|---------|-------------|--------------|
+| **broker_examples** | Comprehensive broker features | All broker features |
+| **streaming** | Streaming with tool support | Streaming API |
+| **chat_session** | Interactive chat | ChatSession |
+| **chat_session_with_tool** | Chat with tools | ChatSession, Tools |
+| **image_analysis** | Multimodal image analysis | Vision models |
+| **embeddings** | Vector embeddings | Embeddings API |
+| **current_datetime_tool** | DateTime tool demo | CurrentDateTimeTool |
+
+#### Level 3: Tool System & Extensions
+
+| Example | Description | Dependencies |
+|---------|-------------|--------------|
+| **file_tool** | File operations | File tools |
+| **coding_file_tool** | Code-aware file ops | File tools |
+| **broker_as_tool** | Broker as tool (delegation) | Tool wrapping |
+| **ephemeral_task_manager** | Task management | TaskManager |
+| **tell_user** | User communication | TellUser tool |
+| **ask_user** | User input | AskUser tool |
+| **web_search** | Web search | WebSearch tool |
+
+#### Level 4: Tracing & Observability
+
+| Example | Description | Dependencies |
+|---------|-------------|--------------|
+| **tracer_demo** | Tracer system demo | TracerSystem |
+
+#### Level 5: Agent System Basics
+
+| Example | Description | Dependencies |
+|---------|-------------|--------------|
+| **async_llm** | Async LLM agents | AsyncDispatcher, Agents |
+| **async_dispatcher** | Event routing | AsyncDispatcher, Router |
+
+#### Level 6: Advanced Agent Patterns
+
+| Example | Description | Dependencies |
+|---------|-------------|--------------|
+| **iterative_solver** | Multi-iteration solving | IterativeProblemSolver |
+| **recursive_agent** | Self-recursive agent | SimpleRecursiveAgent |
+| **solver_chat_session** | Interactive solver | Solver + ChatSession |
+
+#### Level 7: Multi-Agent & Specialized
+
+| Example | Description | Dependencies |
+|---------|-------------|--------------|
+| **react** | ReAct pattern | ReAct agent |
+| **working_memory** | Shared memory | SharedWorkingMemory |
+
+---
+
 ## Remaining Differences
 
 ### Gateway Coverage
