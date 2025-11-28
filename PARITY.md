@@ -260,6 +260,77 @@ These utility scripts exist only in Python and are not planned for other ports:
 
 ---
 
+## Documentation Philosophy
+
+The Mojentic documentation follows a structured approach that emphasizes learning through practical use cases while maintaining comprehensive API reference material.
+
+### Core Principles
+
+1. **Tools as Examples**: Provided tools (File Tools, Task Management, Web Search) are reference implementations demonstrating how to build custom tools, not core library features.
+2. **Use Cases First**: Documentation is organized around practical tutorials that guide users through complete scenarios.
+3. **Self-Contained Tutorials**: Each use case guide includes all necessary context, imports, and explanations without requiring navigation across multiple pages.
+4. **Clear Separation**: Documentation is structured into distinct sections:
+   - **Use Cases**: Complete, tutorial-style guides for common scenarios
+   - **Examples**: Reference implementations of tools and patterns
+   - **Core Concepts**: API documentation and technical details
+
+### Documentation Structure
+
+Each library's documentation site includes:
+
+| Section | Purpose | Content Type |
+|---------|---------|--------------|
+| **Use Cases** | Learning path for common scenarios | Self-contained tutorials with Why/When/How structure |
+| **Examples** | Reference implementations | Code examples with explanations |
+| **Core Concepts** | API reference | Technical documentation of library features |
+
+### Use Case Coverage
+
+Each library provides tutorials for these core use cases:
+
+| Use Case | Description | Key Features Demonstrated |
+|----------|-------------|--------------------------|
+| **Building Chatbots** | Creating conversational agents with context | Chat sessions, message history, system prompts |
+| **Structured Output** | Extracting data from unstructured text | Schema definition, JSON validation, type safety |
+| **Building Agents** | Creating autonomous problem-solving systems | Tool usage, reasoning loops, multi-step execution |
+| **Image Analysis** | Working with multimodal inputs | Vision models, image processing |
+
+### Library-Specific Documentation Adherence
+
+| Library | Use Cases Section | Examples Section | Tutorial Format | Self-Contained | Notes |
+|---------|------------------|------------------|-----------------|----------------|-------|
+| **Python** | ✅ | ✅ | ✅ | ✅ | Reference implementation; most comprehensive |
+| **Elixir** | ✅ | ✅ | ✅ | ✅ | Uses ExDoc with grouped extras |
+| **Rust** | ✅ | ✅ | ✅ | ✅ | Uses mdBook with chapter organization |
+| **TypeScript** | ✅ | ✅ | ✅ | ✅ | Uses VitePress with sidebar navigation |
+
+### Documentation Tooling
+
+| Library | Tool | Config File | Structure |
+|---------|------|-------------|-----------|
+| **Python** | MkDocs | `mkdocs.yml` | Navigation-based sections |
+| **Elixir** | ExDoc | `mix.exs` | Grouped extras with regex patterns |
+| **Rust** | mdBook | `book/src/SUMMARY.md` | Chapter-based hierarchy |
+| **TypeScript** | VitePress | `docs/.vitepress/config.mts` | Sidebar item groups |
+
+### Example Tool Documentation
+
+All provided tools are documented as examples with emphasis on extensibility:
+
+| Tool Category | Python | Elixir | Rust | TypeScript | Presentation |
+|---------------|--------|--------|------|------------|--------------|
+| **File Tools** | ✅ | ✅ | ✅ | ✅ | "Example: File Tools" |
+| **Task Management** | ✅ | ✅ | ✅ | ✅ | "Example: Task Management" |
+| **Web Search** | ✅ | ✅ | ✅ | ✅ | "Example: Web Search" |
+
+Each example guide includes:
+- Introduction emphasizing it's a reference implementation
+- Description of what the tool demonstrates
+- Complete usage examples
+- Guidance on customization and extension
+
+---
+
 ## Philosophical Differences: Data Modeling Approaches
 
 The three implementations represent fundamentally different approaches to working with data, each with distinct advantages:
