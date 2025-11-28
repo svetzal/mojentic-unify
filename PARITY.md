@@ -46,7 +46,7 @@ These features are **fully implemented in Python, Elixir, Rust, and TypeScript**
 
 | Feature | Python | Elixir | Rust | TypeScript |
 |---------|--------|--------|------|------------|
-| Agent Broker | ✅ | ❌ | ❌ | ❌ |
+| AgentEventAdapter | ✅ | ❌ | ❌ | ❌ |
 | Configuration Files | ✅ | 📝 | ⚠️ | 📝 |
 | Builder Pattern | ✅ | ❌ | ⚠️ | 📝 |
 | Connection Pooling | ⚠️ | 📝 | ⚠️ | 📝 |
