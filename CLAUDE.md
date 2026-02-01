@@ -49,11 +49,15 @@ Do not begin implementation until the 👍 signal is present.
 
 Read the issue description and full comment history. Validate the request against the **Mojentic project charter**:
 
-> Mojentic is a multi-language LLM integration framework providing a clean, layered API for text generation, structured output, streaming, tool calling, and chat sessions across local (Ollama) and cloud LLM providers. Features must be implementable idiomatically across Python, Elixir, Rust, and TypeScript.
+> **Mojentic** is a multi-language LLM integration framework and message-driven agent system. It provides a clean, layered API for text generation, structured output, streaming, tool calling, chat sessions, and event-driven agent coordination. It targets developers building LLM-powered applications.
+>
+> **Provider strategy**: Ollama and OpenAI are both first-class providers. Local model support is a priority.
+>
+> **Cross-language commitment**: Every key feature must exist across all four languages (Python, Elixir, Rust, TypeScript) in its appropriate idiomatic form. Implementation details that don't translate are acceptable, but the user-facing capability must be equivalent. Feature requests that don't make sense across all implementations are likely too technology-specific — either restate the request in terms of the intended end-user goal, or drop it.
 
 Reject or flag requests that:
 - Fall outside the framework's scope (e.g., application-level features, UI concerns)
-- Cannot be reasonably implemented across all four languages
+- Are too technology-specific to implement meaningfully across all four languages (ask the requester to restate the end-user goal instead)
 - Conflict with the existing architecture (three-layer design, gateway abstraction)
 
 #### 2. Plan Across All Languages
