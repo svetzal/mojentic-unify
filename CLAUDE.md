@@ -126,7 +126,19 @@ Once all quality gates pass:
    ```
    If the remote has diverged, `git pull --rebase` first, then push. If rebase changes the commit hash, verify the tag still points to the correct content.
 
-4. **Update the parent repo**:
+4. **Create GitHub Releases** for each submodule (this triggers publish pipelines):
+   ```bash
+   gh release create v<VERSION> --title "v<VERSION>" --notes "<release notes>"
+   ```
+   **CRITICAL**: Tags alone do NOT trigger publishing. All four repos use `release: published` as the CI trigger for npm/PyPI/Hex/crates.io publishing. You must create a GitHub Release for each submodule.
+
+5. **Verify publish pipelines** are running:
+   ```bash
+   gh run list --limit 1
+   ```
+   Confirm each repo shows an `in_progress` or `completed` run triggered by `release`.
+
+6. **Update the parent repo**:
    - Stage updated submodule references
    - Update `PARITY.md` with new feature status
    - Commit and push `mojentic-unify`
