@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: November 25, 2025
+Last Updated: February 1, 2026
 
 ---
 
@@ -16,7 +16,7 @@ Last Updated: November 25, 2025
 
 These features are **fully implemented in Python, Elixir, Rust, and TypeScript**:
 
-- **Layer 1 (LLM Integration)**: Broker, OpenAI + Ollama gateways, structured output, tool calling, streaming with recursive tool execution, image analysis, tokenizer, embeddings
+- **Layer 1 (LLM Integration)**: Broker, OpenAI + Ollama gateways, structured output, tool calling, streaming with recursive tool execution, streaming chat sessions, image analysis, tokenizer, embeddings
 - **Layer 2 (Tracer System)**: Event recording, correlation tracking, event filtering, broker/tool integration
 - **Layer 3 (Agent System - Core)**: Base agents, async agents, event system, dispatcher, router, aggregators, iterative solver, recursive agent, ReAct pattern, shared working memory
 - **Tools**: DateResolver, File tools (8 tools), Task manager, Tell user, Ask user, Web search, Current datetime, Tool wrapper (broker as tool)
@@ -106,6 +106,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Context Window** | ✅ | ✅ | ✅ | ✅ | Token limit management |
 | **System Prompts** | ✅ | ✅ | ✅ | ✅ | Initial instructions |
 | **Tool Integration** | ✅ | ✅ | ✅ | ✅ | Session-level tools |
+| **Streaming Send** | ✅ | ✅ | ✅ | ✅ | Stream responses with auto history management |
 
 ### Layer 2: Tracer System
 
