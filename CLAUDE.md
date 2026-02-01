@@ -22,6 +22,128 @@ This is a **multi-language monorepo** containing four independent implementation
 
 **CRITICAL**: The Python implementation (`mojentic-py`) is the **reference implementation**. All other implementations must achieve feature parity with it. **Always consult `PARITY.md`** before implementing features to understand current status and priorities.
 
+## Incoming Request Workflow
+
+This is the primary workflow for handling feature requests, bug reports, and enhancements that arrive as GitHub issues on any of the `mojentic-*` repositories.
+
+### Repositories to Monitor
+
+Issues may be filed against any of these repos:
+- `svetzal/mojentic` (Python)
+- `svetzal/mojentic-ts` (TypeScript)
+- `svetzal/mojentic-ex` (Elixir)
+- `svetzal/mojentic-ru` (Rust)
+
+### Approval Signal
+
+When **@svetzal** reacts with a **thumbs-up (👍) emoji** on an open issue, that means:
+- Discussion is complete
+- The full context of the request is captured in the issue description and comment history
+- The work is approved and ready to begin
+
+Do not begin implementation until the 👍 signal is present.
+
+### End-to-End Process
+
+#### 1. Assess the Request
+
+Read the issue description and full comment history. Validate the request against the **Mojentic project charter**:
+
+> Mojentic is a multi-language LLM integration framework providing a clean, layered API for text generation, structured output, streaming, tool calling, and chat sessions across local (Ollama) and cloud LLM providers. Features must be implementable idiomatically across Python, Elixir, Rust, and TypeScript.
+
+Reject or flag requests that:
+- Fall outside the framework's scope (e.g., application-level features, UI concerns)
+- Cannot be reasonably implemented across all four languages
+- Conflict with the existing architecture (three-layer design, gateway abstraction)
+
+#### 2. Plan Across All Languages
+
+Enter plan mode and:
+1. Read the issue context thoroughly — description + all comments
+2. Check `PARITY.md` for current feature status
+3. If the feature exists in one language but not others, use the existing implementation as reference
+4. If the feature is new, design it for the Python reference first
+5. For each language, identify the idiomatic approach (patterns may differ — e.g., Elixir's immutability requires two-phase APIs where other languages use mutation)
+6. Determine the version bump (semver: patch for fixes, minor for features, major for breaking changes)
+7. Present the plan for approval before implementation
+
+#### 3. Implement with Language-Specific Agents
+
+Delegate to specialized agents for each language, running them in parallel where possible:
+
+```
+@python-craftsperson:    Implement/update in Python (reference implementation)
+@typescript-craftsperson: Implement in TypeScript (idiomatic async generators, Result types)
+@elixir-craftsperson:    Implement in Elixir (idiomatic OTP patterns, immutable data)
+@rust-craftsperson:      Implement in Rust (idiomatic ownership, Pin<Box<dyn Stream>>)
+```
+
+Each agent must:
+- Implement the feature idiomatically for their language
+- Write comprehensive tests mirroring the same scenarios across all languages
+- Update language-specific documentation (mkdocs/ex_doc/mdBook/markdown docs)
+- Update CHANGELOG.md with the new version entry
+- Bump the version number in the project manifest
+
+#### 4. Pass All Quality Gates
+
+Run quality gates for **every** implementation before proceeding. All must be green:
+
+| Language | Commands |
+|----------|----------|
+| Python | `flake8 src && pytest && pip-audit` |
+| TypeScript | `npm run lint && npm run format:check && npm test && npm audit` |
+| Elixir | `mix format --check-formatted && mix credo --strict && mix test && mix audit` |
+| Rust | `cargo fmt --check && cargo clippy --all-targets --all-features -- -D warnings && cargo test && cargo deny check` |
+
+If any gate fails, fix the issue and re-run all checks before proceeding.
+
+#### 5. Commit, Tag, and Push
+
+Once all quality gates pass:
+
+1. **Commit each submodule** with a conventional commit message:
+   ```
+   feat: <concise description of the change>
+
+   <body explaining what was added/changed and why>
+
+   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+   ```
+
+2. **Tag each submodule** with the new version using `v` prefix:
+   ```bash
+   git tag v<VERSION>
+   ```
+
+3. **Push each submodule** — branch and tags:
+   ```bash
+   git push origin main --tags
+   ```
+   If the remote has diverged, `git pull --rebase` first, then push. If rebase changes the commit hash, verify the tag still points to the correct content.
+
+4. **Update the parent repo**:
+   - Stage updated submodule references
+   - Update `PARITY.md` with new feature status
+   - Commit and push `mojentic-unify`
+
+#### 6. Clean Up
+
+After the release is pushed:
+
+1. **Close the originating issue** with a comment referencing the version and commit
+2. **Close any redundant PRs** that were superseded by the cross-language implementation
+3. **Delete orphaned branches** (e.g., feature branches from PRs that were closed without merge)
+4. **Check all four repos** for related issues that may also be resolved
+
+### Version Coordination
+
+All four implementations maintain **synchronized version numbers**. When bumping versions:
+- All submodules bump to the same version (e.g., all go to `1.0.1`)
+- Version is updated in the language-specific manifest (`pyproject.toml`, `package.json`, `mix.exs`, `Cargo.toml`)
+- CHANGELOG.md is updated in each submodule
+- Tags use the `v` prefix convention (e.g., `v1.0.1`)
+
 ## Working with Language-Specific Agents
 
 **IMPORTANT**: This monorepo has four specialized agents for quality work in each language:
