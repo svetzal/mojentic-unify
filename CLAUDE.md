@@ -309,6 +309,44 @@ If quality checks reveal errors:
 3. **Re-run all checks** - Ensure the fix didn't introduce new issues
 4. **Document exceptions** - If suppressing a lint, explain why in comments
 
+## Pre-Push Git Hooks
+
+Each submodule has a versioned `.githooks/pre-push` script that runs the same quality checks as CI before allowing `git push`. This prevents broken code from reaching the pipeline.
+
+### Activating Hooks (One-Time Setup)
+
+After cloning or updating the repo, run this in **each submodule** to point git at the versioned hooks:
+
+```bash
+cd mojentic-py && git config core.hooksPath .githooks
+cd ../mojentic-ts && git config core.hooksPath .githooks
+cd ../mojentic-ex && git config core.hooksPath .githooks
+cd ../mojentic-ru && git config core.hooksPath .githooks
+```
+
+This only needs to be done once per clone. The setting persists in each submodule's local git config.
+
+### What the Hooks Run
+
+Each hook runs the full quality gate for its language (same checks as CI):
+
+| Language | Checks |
+|----------|--------|
+| Python | flake8 (critical errors), pytest, bandit, pip-audit |
+| TypeScript | ESLint (zero warnings), Prettier, build, Jest, npm audit |
+| Elixir | mix format, compile --warnings-as-errors, credo --strict, test, deps.audit, sobelow |
+| Rust | cargo fmt, clippy, test, audit, deny check |
+
+### Bypassing Hooks
+
+If you need to push without running checks (e.g., WIP branch, emergency):
+
+```bash
+git push --no-verify
+```
+
+Use sparingly — CI will still catch issues, but the feedback loop is slower.
+
 ## Working Across Language Boundaries
 
 ### Before Implementing a Feature
