@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: February 1, 2026
+Last Updated: February 5, 2026
 
 ---
 
@@ -16,7 +16,7 @@ Last Updated: February 1, 2026
 
 These features are **fully implemented in Python, Elixir, Rust, and TypeScript**:
 
-- **Layer 1 (LLM Integration)**: Broker, OpenAI + Ollama gateways, structured output, tool calling, streaming with recursive tool execution, streaming chat sessions, image analysis, tokenizer, embeddings
+- **Layer 1 (LLM Integration)**: Broker, CompletionConfig, reasoning effort control, OpenAI + Ollama gateways, structured output, tool calling, streaming with recursive tool execution, streaming chat sessions, image analysis, tokenizer, embeddings
 - **Layer 2 (Tracer System)**: Event recording, correlation tracking, event filtering, broker/tool integration
 - **Layer 3 (Agent System - Core)**: Base agents, async agents, event system, dispatcher, router, aggregators, iterative solver, recursive agent, ReAct pattern, shared working memory
 - **Tools**: DateResolver, File tools (8 tools), Task manager, Tell user, Ask user, Web search, Current datetime, Tool wrapper (broker as tool)
@@ -43,6 +43,9 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Tool Calling** | ✅ | ✅ | ✅ | ✅ | Recursive tool execution |
 | **Message History** | ✅ | ✅ | ✅ | ✅ | Conversation context |
 | **Correlation IDs** | ✅ | ✅ | ✅ | ✅ | Request tracing |
+| **CompletionConfig** | ✅ | ✅ | ✅ | ✅ | Unified config object for LLM parameters |
+| **Reasoning Effort** | ✅ | ✅ | ✅ | ✅ | low/medium/high reasoning effort control |
+| **Thinking Traces** | ✅ | ✅ | ✅ | ✅ | Model reasoning traces in gateway response |
 
 #### Gateway Implementations
 
@@ -68,6 +71,8 @@ This section provides comprehensive feature tables for implementing new ports (e
 | Model Listing | ✅ | ✅ | ✅ | ✅ |
 | Embeddings | ✅ | ✅ | ✅ | ✅ |
 | Message Adaptation | ✅ | ✅ | ✅ | ✅ |
+| Reasoning Effort (think) | ✅ | ✅ | ✅ | ✅ |
+| Thinking Traces | ✅ | ✅ | ✅ | ✅ |
 
 #### Message System
 
@@ -446,10 +451,10 @@ def process(_), do: {:error, :invalid_format}
 
 | Port | Tests | Coverage | Lint Warnings | Security |
 |------|-------|----------|---------------|----------|
-| Python | 200 | ~62% | 0 (flake8) | pip-audit (network-blocked) |
-| Elixir | 625 | 81.56% | 0 (Credo) | mix deps.audit clean |
-| Rust | 365 | tarpaulin | 0 (clippy) | cargo deny (non-blocking warnings) |
-| TypeScript | 625 | Jest | 0 (ESLint) | npm audit (4 moderate advisories) |
+| Python | 227 | ~63% | 0 (flake8) | pip-audit (network-blocked) |
+| Elixir | 634 | 81.56% | 0 (Credo) | mix deps.audit clean |
+| Rust | 365+ | tarpaulin | 0 (clippy) | cargo deny (non-blocking warnings) |
+| TypeScript | 656 | Jest | 0 (ESLint) | npm audit clean |
 
 ---
 
