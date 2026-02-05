@@ -89,6 +89,23 @@ Each agent must:
 - Update CHANGELOG.md with the new version entry
 - Bump the version number in the project manifest
 
+**CRITICAL — Coordinator responsibility**: When writing task prompts for agents, you MUST include documentation, CHANGELOG, and version bump requirements in each prompt. Do NOT rely on agents discovering these obligations from their own guidance — explicit task prompts override agent defaults. If the plan's "Changes Per File" section omits docs/changelog/version, the coordinator must add them before delegating. Every agent prompt should end with a deliverables checklist:
+
+```
+### Deliverables Checklist (all required)
+1. [ ] Implementation code changes
+2. [ ] Tests passing
+3. [ ] CHANGELOG.md updated with version entry
+4. [ ] Version bumped in manifest (pyproject.toml/package.json/mix.exs/Cargo.toml)
+5. [ ] Documentation updated or created (new features need docs)
+6. [ ] Quality gates green
+```
+
+**Planning phase responsibility**: The plan MUST include a "Documentation Changes" section alongside "Changes Per File". For each language, identify:
+- Which existing docs need updating (search for references to changed modules)
+- Whether new docs are needed (new user-facing features always need docs)
+- CHANGELOG entries for the version being released
+
 #### 4. Pass All Quality Gates
 
 Run quality gates for **every** implementation before proceeding. All must be green:
