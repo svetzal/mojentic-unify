@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 3-A shipped — full `TracerSystem` + `EventStore` + sealed `TracerEvent` union + `ParallelToolRunner` + `tracer-demo` example**. 198 tests passing across JVM, Android-host, and iOS-simulator). Previously: mojentic-kt Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0); mojentic-kt Phase 1.
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 3-B shipped — AskUser / TellUser tools + `UserInteractionGateway`, `EphemeralTaskList` + 7 task-tools via `taskToolsFor(list)`, three new examples**. 261 tests passing across JVM, Android-host, and iOS-simulator). Previously: mojentic-kt Phase 3-A (TracerSystem + ParallelToolRunner); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
 
 ---
 
@@ -99,9 +99,9 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Natural language dates (Kotlin: Phase 1 minimal parser — today/tomorrow/yesterday/in N units/N units ago/next-or-last weekday/ISO passthrough. No full `parsedatetime` equivalent on Native yet.) |
 | **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Current time access |
 | **File Tools (8 tools)** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Read/Write/List/etc. |
-| **Task Manager Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Ephemeral tasks |
-| **Ask User Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Interactive input |
-| **Tell User Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | User output |
+| **Task Manager Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Ephemeral tasks; Kotlin: `EphemeralTaskList` + 7 tools via `taskToolsFor(list)` |
+| **Ask User Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Interactive input; Kotlin: `AskUserTool` + `UserInteractionGateway`, JVM `ConsoleUserInteractionGateway` |
+| **Tell User Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | User output; same gateway abstraction as ask_user |
 | **Web Search Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Organic search |
 
 #### Chat Session

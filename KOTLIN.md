@@ -1,6 +1,6 @@
 # Mojentic Kotlin Port — Plan
 
-Status: **🚧 Phase 3 in progress (slice A shipped)** — slice A landed the full `TracerSystem` + `EventStore` + sealed `TracerEvent` union + `ParallelToolRunner` + `tracer-demo` example. Phase 2 (`ChatSession`, `mojentic-openai`, embeddings, tokenizer, image analysis) shipped on 2026-05-18; Phase 1 (core LLM + broker + Ollama gateway) shipped the same day. Quality gate green on JVM + Android-host + iOS-simulator (198 tests).
+Status: **🚧 Phase 3 in progress (slices A + B shipped)** — slice A landed the full `TracerSystem` + `EventStore` + sealed `TracerEvent` union + `ParallelToolRunner` + `tracer-demo` example. Slice B added the `AskUser` + `TellUser` tools (via `UserInteractionGateway` + JVM `ConsoleUserInteractionGateway`), the `EphemeralTaskList` + seven task-tools, and three examples (`ask-user`, `tell-user`, `ephemeral-task-manager`). Phase 2 (`ChatSession`, `mojentic-openai`, embeddings, tokenizer, image analysis) shipped on 2026-05-18; Phase 1 (core LLM + broker + Ollama gateway) shipped the same day. Quality gate green on JVM + Android-host + iOS-simulator (261 tests).
 Target sub-project directory: `mojentic-kt/`
 Last updated: 2026-05-18
 
@@ -495,10 +495,19 @@ Each phase ends with a passing quality gate, tagged release, and an updated PARI
 - ✅ `tracer-demo` example wiring the TracerSystem + ParallelToolRunner + CurrentDateTimeTool into the broker and dumping every recorded event.
 - ✅ Quality gate: ktlint + Detekt clean, `./gradlew build allTests` green; 198 tests on JVM + Android-host + iOS-simulator.
 
-**Slice B — Provided tools** (next)
+**Slice B — User-interaction + Task Manager tools** ✅ Shipped (2026-05-18)
+- ✅ `UserInteractionGateway` interface in `commonMain`; JVM-only `ConsoleUserInteractionGateway` in `jvmMain` (stdin / stdout). Native consumers inject their own.
+- ✅ `AskUserTool` — emits `ask_user`, returns `{ "user_response": "..." }`.
+- ✅ `TellUserTool` — emits `tell_user`, returns `{ "status": "delivered" }`.
+- ✅ `EphemeralTaskList` in `llm/tools/tasks/` — `Mutex`-protected in-memory list, state machine (`Pending` → `InProgress` → `Completed`).
+- ✅ Seven task tools (`append_task`, `prepend_task`, `insert_task_after`, `start_task`, `complete_task`, `list_tasks`, `clear_tasks`); `taskToolsFor(list)` factory wires them all.
+- ✅ Examples: `ask-user`, `tell-user`, `ephemeral-task-manager` (JVM-only Gradle subprojects).
+- ✅ Quality gate: ktlint + Detekt clean, `./gradlew build allTests` green; 261 tests on JVM + Android-host + iOS-simulator.
+
+**Slice C — File tools + WebSearch + ToolWrapper** (next)
 - File tools (8) with `expect/actual` for platform-specific file I/O via okio.
-- Task manager, AskUser, TellUser, WebSearch, ToolWrapper.
-- Examples: `file-tool`, `coding-file-tool`, `broker-as-tool`, `ephemeral-task-manager`, `tell-user`, `ask-user`, `web-search`.
+- `WebSearchTool` (vendor: SerpApi or similar) + `ToolWrapper` (agent-as-tool, ships with Phase 4 dispatcher).
+- Examples: `file-tool`, `coding-file-tool`, `web-search`, `broker-as-tool`.
 
 ### Phase 4 — Agent System
 - `BaseAgent`, `BaseAsyncAgent`, `AsyncLlmAgent`, `AsyncAggregatorAgent`.
