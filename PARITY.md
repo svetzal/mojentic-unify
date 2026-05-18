@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 3-B shipped — AskUser / TellUser tools + `UserInteractionGateway`, `EphemeralTaskList` + 7 task-tools via `taskToolsFor(list)`, three new examples**. 261 tests passing across JVM, Android-host, and iOS-simulator). Previously: mojentic-kt Phase 3-A (TracerSystem + ParallelToolRunner); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 3-C shipped — `FilesystemGateway` + okio-backed sandboxed impl + 8 file tools via `fileToolsFor(fs)`, `WebSearchGateway` + `OrganicWebSearchTool` + new `mojentic-websearch-serpapi` module, two new examples (`file-tool`, `web-search`)**). Previously: mojentic-kt Phase 3-B (AskUser / TellUser tools + EphemeralTaskList + task tools); Phase 3-A (TracerSystem + ParallelToolRunner); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
 
 ---
 
@@ -98,11 +98,11 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Tool Wrapper** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Agent as tool (delegation) |
 | **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Natural language dates (Kotlin: Phase 1 minimal parser — today/tomorrow/yesterday/in N units/N units ago/next-or-last weekday/ISO passthrough. No full `parsedatetime` equivalent on Native yet.) |
 | **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Current time access |
-| **File Tools (8 tools)** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Read/Write/List/etc. |
+| **File Tools (8 tools)** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Read/Write/List/etc. Kotlin: sandboxed `FilesystemGateway` + okio-backed impl; `fileToolsFor(fs)` |
 | **Task Manager Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Ephemeral tasks; Kotlin: `EphemeralTaskList` + 7 tools via `taskToolsFor(list)` |
 | **Ask User Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Interactive input; Kotlin: `AskUserTool` + `UserInteractionGateway`, JVM `ConsoleUserInteractionGateway` |
 | **Tell User Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | User output; same gateway abstraction as ask_user |
-| **Web Search Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Organic search |
+| **Web Search Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Organic search; Kotlin: `WebSearchGateway` + `OrganicWebSearchTool`, SerpApi-backed gateway in `mojentic-websearch-serpapi` |
 
 #### Chat Session
 
@@ -347,9 +347,9 @@ All provided tools are documented as examples with emphasis on extensibility:
 
 | Tool Category | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Presentation |
 | --------------- | -------- | -------- | ------ | ------------ | ------- | ------- | -------------- |
-| **File Tools** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: File Tools" |
-| **Task Management** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: Task Management" |
-| **Web Search** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: Web Search" |
+| **File Tools** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | "Example: File Tools" (Kotlin: `examples/file-tool`) |
+| **Task Management** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | "Example: Task Management" (Kotlin: `examples/ephemeral-task-manager`) |
+| **Web Search** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | "Example: Web Search" (Kotlin: `examples/web-search`) |
 
 Each example guide includes:
 - Introduction emphasizing it's a reference implementation

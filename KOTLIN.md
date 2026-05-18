@@ -1,6 +1,6 @@
 # Mojentic Kotlin Port — Plan
 
-Status: **🚧 Phase 3 in progress (slices A + B shipped)** — slice A landed the full `TracerSystem` + `EventStore` + sealed `TracerEvent` union + `ParallelToolRunner` + `tracer-demo` example. Slice B added the `AskUser` + `TellUser` tools (via `UserInteractionGateway` + JVM `ConsoleUserInteractionGateway`), the `EphemeralTaskList` + seven task-tools, and three examples (`ask-user`, `tell-user`, `ephemeral-task-manager`). Phase 2 (`ChatSession`, `mojentic-openai`, embeddings, tokenizer, image analysis) shipped on 2026-05-18; Phase 1 (core LLM + broker + Ollama gateway) shipped the same day. Quality gate green on JVM + Android-host + iOS-simulator (261 tests).
+Status: **🚧 Phase 3 in progress (slices A + B + C shipped)** — slice A landed the full `TracerSystem` + `EventStore` + sealed `TracerEvent` union + `ParallelToolRunner` + `tracer-demo` example. Slice B added the `AskUser` + `TellUser` tools (via `UserInteractionGateway` + JVM `ConsoleUserInteractionGateway`), the `EphemeralTaskList` + seven task-tools, and three examples (`ask-user`, `tell-user`, `ephemeral-task-manager`). Slice C shipped the sandboxed `FilesystemGateway` + okio-backed implementation, the eight file tools, the vendor-agnostic `WebSearchGateway` + `OrganicWebSearchTool` and the new `mojentic-websearch-serpapi` module, plus `file-tool` and `web-search` examples. `ToolWrapper` (agent-as-tool) is deferred to Phase 4 alongside the dispatcher. Phase 2 (`ChatSession`, `mojentic-openai`, embeddings, tokenizer, image analysis) shipped on 2026-05-18; Phase 1 (core LLM + broker + Ollama gateway) shipped the same day. Quality gate green on JVM + Android-host + iOS-simulator.
 Target sub-project directory: `mojentic-kt/`
 Last updated: 2026-05-18
 
@@ -504,10 +504,15 @@ Each phase ends with a passing quality gate, tagged release, and an updated PARI
 - ✅ Examples: `ask-user`, `tell-user`, `ephemeral-task-manager` (JVM-only Gradle subprojects).
 - ✅ Quality gate: ktlint + Detekt clean, `./gradlew build allTests` green; 261 tests on JVM + Android-host + iOS-simulator.
 
-**Slice C — File tools + WebSearch + ToolWrapper** (next)
-- File tools (8) with `expect/actual` for platform-specific file I/O via okio.
-- `WebSearchTool` (vendor: SerpApi or similar) + `ToolWrapper` (agent-as-tool, ships with Phase 4 dispatcher).
-- Examples: `file-tool`, `coding-file-tool`, `web-search`, `broker-as-tool`.
+**Slice C — File tools + WebSearch** ✅ Shipped (2026-05-18)
+- ✅ `FilesystemGateway` interface in `llm/tools/files/` — sandboxed multiplatform file-system abstraction. Backed by `OkioFilesystemGateway`, a thin wrapper around `okio.FileSystem.SYSTEM` that resolves every path against a base directory and raises `SandboxEscapeException` on `..` / absolute escapes. Tests use `okio-fakefilesystem`.
+- ✅ Eight file tools wired to the gateway: `list_files`, `read_file`, `write_file`, `list_all_files`, `find_files_by_glob`, `find_files_containing`, `find_lines_matching`, `create_directory`. Glob patterns support `*`, `**`, `?`, `[abc]` via the internal `globToRegex` helper. `fileToolsFor(fs)` factory returns all eight.
+- ✅ `WebSearchGateway` interface in `llm/tools/websearch/` returning `WebSearchResult(title, link, snippet)`; `OrganicWebSearchTool` delegates to the gateway and emits a JSON array.
+- ✅ New module `mojentic-websearch-serpapi` — Ktor-Client `SerpApiWebSearchGateway` hitting `serpapi.com/search.json`. Failures surface as `WebSearchGatewayException` (sealed sibling of `LlmGatewayException`).
+- ✅ Examples: `file-tool` (sandboxed demo), `web-search` (SerpApi-backed answer).
+- ✅ okio bumped to 3.16.4 to fix a binary-incompat between okio-fakefilesystem 3.11.0 and kotlinx-datetime 0.7.1's removed `kotlinx.datetime.Clock`.
+- ✅ Quality gate: ktlint + Detekt clean, `./gradlew build allTests` green across JVM + Android-host + iOS-simulator.
+- ⏭ **Deferred to Phase 4**: `ToolWrapper` (agent-as-tool) ships with the dispatcher; `coding-file-tool` and `broker-as-tool` examples wait for that.
 
 ### Phase 4 — Agent System
 - `BaseAgent`, `BaseAsyncAgent`, `AsyncLlmAgent`, `AsyncAggregatorAgent`.
