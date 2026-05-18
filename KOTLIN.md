@@ -1,6 +1,6 @@
 # Mojentic Kotlin Port — Plan
 
-Status: **🚧 Phase 3 in progress (slices A + B + C shipped)** — slice A landed the full `TracerSystem` + `EventStore` + sealed `TracerEvent` union + `ParallelToolRunner` + `tracer-demo` example. Slice B added the `AskUser` + `TellUser` tools (via `UserInteractionGateway` + JVM `ConsoleUserInteractionGateway`), the `EphemeralTaskList` + seven task-tools, and three examples (`ask-user`, `tell-user`, `ephemeral-task-manager`). Slice C shipped the sandboxed `FilesystemGateway` + okio-backed implementation, the eight file tools, the vendor-agnostic `WebSearchGateway` + `OrganicWebSearchTool` and the new `mojentic-websearch-serpapi` module, plus `file-tool` and `web-search` examples. `ToolWrapper` (agent-as-tool) is deferred to Phase 4 alongside the dispatcher. Phase 2 (`ChatSession`, `mojentic-openai`, embeddings, tokenizer, image analysis) shipped on 2026-05-18; Phase 1 (core LLM + broker + Ollama gateway) shipped the same day. Quality gate green on JVM + Android-host + iOS-simulator.
+Status: **🚧 Phase 4 in progress (slices A + B shipped)** — slice A landed `Event` / `TerminateEvent` / `Agent` / `BaseAsyncLlmAgent`, the KClass-keyed `Router`, the coroutine-driven `AsyncDispatcher`, and `ToolWrapper` (agent-as-tool). Slice B added `SharedWorkingMemory`, `BaseAsyncLlmAgentWithMemory`, `AsyncAggregatorAgent`, `IterativeProblemSolver`, `SimpleRecursiveAgent` (with `SolverEvent` history), plus `agent-dispatcher` and `iterative-solver` examples. The remaining `ReActAgent` + smaller examples are deferred to a slice C polish pass. Phase 3 (Tracer, ParallelToolRunner, AskUser/TellUser, EphemeralTaskList + seven task tools, FilesystemGateway + eight file tools, WebSearch + SerpApi) shipped on 2026-05-18; Phase 2 (`ChatSession`, `mojentic-openai`, embeddings, tokenizer, image analysis) shipped on 2026-05-18; Phase 1 (core LLM + broker + Ollama gateway) shipped the same day. Quality gate green on JVM + Android-host + iOS-simulator.
 Target sub-project directory: `mojentic-kt/`
 Last updated: 2026-05-18
 
@@ -514,12 +514,27 @@ Each phase ends with a passing quality gate, tagged release, and an updated PARI
 - ✅ Quality gate: ktlint + Detekt clean, `./gradlew build allTests` green across JVM + Android-host + iOS-simulator.
 - ⏭ **Deferred to Phase 4**: `ToolWrapper` (agent-as-tool) ships with the dispatcher; `coding-file-tool` and `broker-as-tool` examples wait for that.
 
-### Phase 4 — Agent System
-- `BaseAgent`, `BaseAsyncAgent`, `AsyncLlmAgent`, `AsyncAggregatorAgent`.
-- `AsyncDispatcher`, `Router`, event types.
-- `SharedWorkingMemory`.
-- `IterativeProblemSolver`, `SimpleRecursiveAgent`, `ReActAgent`.
-- Examples: `async-llm`, `async-dispatcher`, `iterative-solver`, `recursive-agent`, `solver-chat-session`, `react`, `working-memory`.
+### Phase 4 — Agent System (🚧 slices A + B shipped)
+
+**Slice A — Foundations + ToolWrapper** ✅ Shipped (2026-05-18)
+- ✅ `Event` / `TerminateEvent` in `mojentic-core/commonMain/agents` — open base classes carrying `source: KClass<*>?` + mutable `correlationId`.
+- ✅ `Agent` interface (single `suspend fun receiveEvent(event): List<Event>` surface — Kotlin collapses Python's sync / async split because `suspend` already handles both).
+- ✅ `Router` (KClass-keyed) + `AsyncDispatcher` (coroutine-driven queue, `start(scope)` / `stop()` / `waitForEmptyQueue(timeoutMs)`, `TerminateEvent` stops the loop, routes through `Tracer.recordAgentInteraction`).
+- ✅ `BaseAsyncLlmAgent` — LLM-backed agent reusing `LlmBroker` + `LlmTool`; mutable tool list via `addTool`; `generateResponse(content): LlmGatewayResponse`.
+- ✅ `ToolWrapper` — wraps a `BaseAsyncLlmAgent` as an `LlmTool` (agent-as-tool pattern).
+
+**Slice B — Shared memory + aggregator + iterative solvers** ✅ Shipped (2026-05-18)
+- ✅ `SharedWorkingMemory` in `mojentic-core/commonMain/context` — `Mutex`-protected `Map<String, JsonElement>` with snapshot / merge / replace.
+- ✅ `BaseAsyncLlmAgentWithMemory` — injects memory snapshot into the prompt before each turn.
+- ✅ `AsyncAggregatorAgent` — buffers events by `correlationId` until all required `KClass<out Event>` types arrive, then delivers them to `processEvents`; external `waitForEvents` via `CompletableDeferred`.
+- ✅ `IterativeProblemSolver` — chat-loop calling LLM up to `maxIterations`, stops on `DONE` / `FAIL`, asks for final summary.
+- ✅ `SimpleRecursiveAgent` — same loop with `withTimeoutOrNull` wall-clock deadline; emits `SolverEvent` snapshots via `history()`.
+- ✅ Examples: `agent-dispatcher` (`Router` + `AsyncDispatcher` + `ToolWrapper`), `iterative-solver` (date-tool driven planning).
+- ✅ Quality gate: ktlint + Detekt clean, `./gradlew build allTests` green on JVM + Android-host + iOS-simulator.
+
+**Slice C — ReAct + remaining examples** ⏭ Deferred
+- `ReActAgent` (reasoning-action loop with custom system prompt).
+- Examples: `async-llm`, `recursive-agent`, `solver-chat-session`, `react`, `working-memory`, `coding-file-tool` (uses `ToolWrapper` over file tools), `broker-as-tool`.
 
 ### Phase 5 — Realtime Voice
 - `mojentic-realtime-openai` module.

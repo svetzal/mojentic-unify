@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 3-C shipped — `FilesystemGateway` + okio-backed sandboxed impl + 8 file tools via `fileToolsFor(fs)`, `WebSearchGateway` + `OrganicWebSearchTool` + new `mojentic-websearch-serpapi` module, two new examples (`file-tool`, `web-search`)**). Previously: mojentic-kt Phase 3-B (AskUser / TellUser tools + EphemeralTaskList + task tools); Phase 3-A (TracerSystem + ParallelToolRunner); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 4 slices A + B shipped — `Event` / `Agent` / `Router` / `AsyncDispatcher`, `BaseAsyncLlmAgent`, `ToolWrapper`, `SharedWorkingMemory`, `AsyncAggregatorAgent`, `IterativeProblemSolver`, `SimpleRecursiveAgent`, two new examples (`agent-dispatcher`, `iterative-solver`); `ReActAgent` deferred to slice C polish pass**). Previously: mojentic-kt Phase 3-C (FilesystemGateway + 8 file tools + WebSearch + SerpApi); Phase 3-B (AskUser / TellUser tools + EphemeralTaskList + task tools); Phase 3-A (TracerSystem + ParallelToolRunner); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
 
 ---
 
@@ -95,7 +95,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Tool Execution** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Kotlin: `suspend fun execute(arguments)` |
 | **Parallel Tool Execution** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `ToolRunner` abstraction; serial default for the chat broker; Kotlin: `ParallelToolRunner` opt-in (Phase 3-A) |
 | **Tool Cancellation (AbortSignal)** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Idiomatic per language: asyncio.Event / Task.shutdown / CancellationToken / AbortSignal / Swift Task.checkCancellation / Kotlin coroutine cancellation |
-| **Tool Wrapper** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Agent as tool (delegation) |
+| **Tool Wrapper** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Agent as tool (delegation) |
 | **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Natural language dates (Kotlin: Phase 1 minimal parser — today/tomorrow/yesterday/in N units/N units ago/next-or-last weekday/ISO passthrough. No full `parsedatetime` equivalent on Native yet.) |
 | **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Current time access |
 | **File Tools (8 tools)** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Read/Write/List/etc. Kotlin: sandboxed `FilesystemGateway` + okio-backed impl; `fileToolsFor(fs)` |
@@ -130,7 +130,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **LLM Response Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Response tracking |
 | **Tool Call Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Tool invocation tracking |
 | **Tool Batch Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Aggregate per-batch stats (parallel runner) |
-| **Agent Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Agent lifecycle; Kotlin: `AgentInteractionEvent` declared, dispatcher emits in Phase 4 |
+| **Agent Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Agent lifecycle; Kotlin: `AgentInteractionEvent` emitted by `AsyncDispatcher` |
 
 ### Layer 4: Realtime Voice
 
@@ -153,24 +153,24 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 | Feature | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **Base Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Agent trait/interface |
-| **Base Async Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Async agent support (Swift: typealias to BaseAgent — async-first) |
-| **Base LLM Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | LLM-enabled agents (Swift: async-first — covered by `AsyncLLMAgent`, see SWIFT.md §4 Layer 3) |
+| **Base Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Agent trait/interface (Kotlin: single `Agent` interface; `suspend` collapses sync/async) |
+| **Base Async Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Async agent support (Kotlin/Swift: async-first — single surface) |
+| **Base LLM Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | LLM-enabled agents (Kotlin: `BaseAsyncLlmAgent`; Swift: `AsyncLLMAgent`) |
 | **AgentEventAdapter** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Event-driven agent wrapper |
-| **Event System** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Event types |
-| **Dispatcher** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Event routing (Swift: async-first — covered by `AsyncDispatcher`, see SWIFT.md §4 Layer 3) |
-| **Async Dispatcher** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Async event processing |
-| **Router** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Event-to-agent routing |
-| **Shared Working Memory** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Context sharing |
+| **Event System** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Event types (Kotlin: `Event` / `TerminateEvent`) |
+| **Dispatcher** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Event routing (Kotlin/Swift: async-first — covered by `AsyncDispatcher`) |
+| **Async Dispatcher** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Async event processing (Kotlin: coroutine queue + `TerminateEvent` shutdown) |
+| **Router** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Event-to-agent routing (Kotlin: `KClass<out Event>`-keyed) |
+| **Shared Working Memory** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Context sharing (Kotlin: `Mutex`-protected `Map<String, JsonElement>`) |
 
 #### Agent Implementations
 
 | Agent Type | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | ------------ | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **Async LLM Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | LLM with async processing |
-| **Async Aggregator Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Result aggregation |
-| **Iterative Problem Solver** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Multi-step reasoning |
-| **Simple Recursive Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Self-recursive processing |
+| **Async LLM Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | LLM with async processing (Kotlin: `BaseAsyncLlmAgent`) |
+| **Async Aggregator Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Result aggregation (Kotlin: `AsyncAggregatorAgent` keyed by correlationId) |
+| **Iterative Problem Solver** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Multi-step reasoning (Kotlin: chat-session loop with DONE/FAIL termination) |
+| **Simple Recursive Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Self-recursive processing (Kotlin: `SolverEvent` history + `withTimeoutOrNull`) |
 | **ReAct Pattern** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Reasoning + Acting (Swift: collapses Thought/Action/Observation into broker's recursive tool loop with ReAct system prompt) |
 
 ### Examples by Complexity Level
