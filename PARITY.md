@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 2 shipped — OpenAI gateway, ChatSession, Tokenizer/Embeddings gateways, multimodal image messages, five additional examples, Detekt now scans every KMP source set**. 144 tests passing across JVM, Android-host, and iOS-simulator). Previously: mojentic-sw Phase 7 (Swift port complete at v1.4.0); mojentic-kt Phase 1.
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 3-A shipped — full `TracerSystem` + `EventStore` + sealed `TracerEvent` union + `ParallelToolRunner` + `tracer-demo` example**. 198 tests passing across JVM, Android-host, and iOS-simulator). Previously: mojentic-kt Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0); mojentic-kt Phase 1.
 
 ---
 
@@ -93,7 +93,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Tool Trait/Behaviour** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Base interface |
 | **Tool Descriptors** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | JSON schema definitions |
 | **Tool Execution** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Kotlin: `suspend fun execute(arguments)` |
-| **Parallel Tool Execution** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | `ToolRunner` abstraction; serial default for the chat broker (Kotlin: Phase 3) |
+| **Parallel Tool Execution** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `ToolRunner` abstraction; serial default for the chat broker; Kotlin: `ParallelToolRunner` opt-in (Phase 3-A) |
 | **Tool Cancellation (AbortSignal)** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Idiomatic per language: asyncio.Event / Task.shutdown / CancellationToken / AbortSignal / Swift Task.checkCancellation / Kotlin coroutine cancellation |
 | **Tool Wrapper** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Agent as tool (delegation) |
 | **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Natural language dates (Kotlin: Phase 1 minimal parser — today/tomorrow/yesterday/in N units/N units ago/next-or-last weekday/ISO passthrough. No full `parsedatetime` equivalent on Native yet.) |
@@ -119,18 +119,18 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 | Feature | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **Tracer System** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Event recording |
-| **Event Store** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Event persistence |
-| **Event Types** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | LLM/Tool/Agent events |
-| **Null Tracer** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Null object pattern |
-| **Correlation Tracking** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Request correlation |
-| **Performance Metrics** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Duration tracking |
-| **Event Querying** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Filter/search events |
-| **LLM Call Events** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Call tracking |
-| **LLM Response Events** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Response tracking |
-| **Tool Call Events** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Tool invocation tracking |
-| **Tool Batch Events** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Aggregate per-batch stats (parallel runner) |
-| **Agent Events** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Agent lifecycle |
+| **Tracer System** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Event recording |
+| **Event Store** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Event persistence; Kotlin: `Mutex`-protected buffer + `SharedFlow` live stream |
+| **Event Types** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | LLM/Tool/Agent events; Kotlin: `sealed interface TracerEvent` |
+| **Null Tracer** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Null object pattern |
+| **Correlation Tracking** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Request correlation |
+| **Performance Metrics** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Duration tracking (kotlin.time.Duration) |
+| **Event Querying** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Filter/search events (type / time-window / predicate / getLastN) |
+| **LLM Call Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Call tracking |
+| **LLM Response Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Response tracking |
+| **Tool Call Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Tool invocation tracking |
+| **Tool Batch Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Aggregate per-batch stats (parallel runner) |
+| **Agent Events** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Agent lifecycle; Kotlin: `AgentInteractionEvent` declared, dispatcher emits in Phase 4 |
 
 ### Layer 4: Realtime Voice
 

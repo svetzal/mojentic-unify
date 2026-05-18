@@ -1,6 +1,6 @@
 # Mojentic Kotlin Port — Plan
 
-Status: **✅ Phase 2 shipped** — Phase 1 (core LLM + broker + Ollama gateway) plus `ChatSession`, `mojentic-openai` module (`OpenAIGateway`, `OpenAIEmbeddingsGateway`, `OpenAIModelRegistry`), `TokenizerGateway` (JVM jtokkit) + `EmbeddingsGateway` interfaces, five additional examples, Detekt now scans every KMP source set. Quality gate green on JVM + Android-host + iOS-simulator (144 tests).
+Status: **🚧 Phase 3 in progress (slice A shipped)** — slice A landed the full `TracerSystem` + `EventStore` + sealed `TracerEvent` union + `ParallelToolRunner` + `tracer-demo` example. Phase 2 (`ChatSession`, `mojentic-openai`, embeddings, tokenizer, image analysis) shipped on 2026-05-18; Phase 1 (core LLM + broker + Ollama gateway) shipped the same day. Quality gate green on JVM + Android-host + iOS-simulator (198 tests).
 Target sub-project directory: `mojentic-kt/`
 Last updated: 2026-05-18
 
@@ -483,13 +483,22 @@ Each phase ends with a passing quality gate, tagged release, and an updated PARI
 - ✅ Quality gate green: `./gradlew ktlintCheck detekt build allTests`. 144 tests passing on JVM, Android-host, and iOS-simulator combined.
 - ⏭ **Deferred**: Maven Central publishing pipeline; OWASP dependency-check; `ParallelToolRunner` (slated for Phase 3 with the Tracer + Provided Tools work).
 
-### Phase 3 — Tracer + Provided Tools
-- `Tracer`, `NullTracer`, `EventStore`, full sealed-event union.
-- Broker + tool runner integration with tracer.
+### Phase 3 — Tracer + Provided Tools (🚧 in progress)
+
+**Slice A — Tracer foundation + ParallelToolRunner** ✅ Shipped (2026-05-18)
+- ✅ `Tracer` interface extended with `recordToolBatch` + `recordAgentInteraction`; all recorder methods are now `suspend` (the broker already calls them from suspend contexts).
+- ✅ `TracerEvent` sealed interface with `LlmCallEvent`, `LlmResponseEvent`, `ToolCallEvent`, `ToolBatchEvent`, `AgentInteractionEvent`. Each variant carries a `kotlin.time.Instant` timestamp, correlation ID, and a `printableSummary()` helper.
+- ✅ `EventStore` — `Mutex`-protected append-only buffer plus a hot `SharedFlow<TracerEvent>` for live consumers; type / time-window / predicate filters; `getLastN` helper.
+- ✅ `TracerSystem : Tracer` forwarding every recorder call to its `EventStore`; `enable()` / `disable()` toggle.
+- ✅ `ParallelToolRunner` — opt-in alternative to `SerialToolRunner` using `coroutineScope { ... awaitAll() }`. Emits one `ToolBatchEvent` per batch (success / failure counts + wall-clock duration); per-call `ToolCallEvent`s still land individually.
+- ✅ `ToolRunner.runBatch` gained a `correlationId` parameter so batch events correlate with the originating LLM call.
+- ✅ `tracer-demo` example wiring the TracerSystem + ParallelToolRunner + CurrentDateTimeTool into the broker and dumping every recorded event.
+- ✅ Quality gate: ktlint + Detekt clean, `./gradlew build allTests` green; 198 tests on JVM + Android-host + iOS-simulator.
+
+**Slice B — Provided tools** (next)
 - File tools (8) with `expect/actual` for platform-specific file I/O via okio.
 - Task manager, AskUser, TellUser, WebSearch, ToolWrapper.
-- `ParallelToolRunner`.
-- Examples: `file-tool`, `coding-file-tool`, `broker-as-tool`, `ephemeral-task-manager`, `tell-user`, `ask-user`, `web-search`, `tracer-demo`.
+- Examples: `file-tool`, `coding-file-tool`, `broker-as-tool`, `ephemeral-task-manager`, `tell-user`, `ask-user`, `web-search`.
 
 ### Phase 4 — Agent System
 - `BaseAgent`, `BaseAsyncAgent`, `AsyncLlmAgent`, `AsyncAggregatorAgent`.
