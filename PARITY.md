@@ -93,8 +93,8 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Tool Trait/Behaviour** | ✅ | ✅ | ✅ | ✅ | Base interface |
 | **Tool Descriptors** | ✅ | ✅ | ✅ | ✅ | JSON schema definitions |
 | **Tool Execution** | ✅ | ✅ | ✅ | ✅ | Synchronous execution |
-| **Parallel Tool Execution** | ✅ | ✅ | 📝 | ✅ | `ToolRunner` abstraction; serial default for sync broker |
-| **Tool Cancellation (AbortSignal)** | ✅ | ✅ | 📝 | ✅ | Idiomatic per language: asyncio.Event / Task.shutdown / AbortSignal |
+| **Parallel Tool Execution** | ✅ | ✅ | ✅ | ✅ | `ToolRunner` abstraction; serial default for the chat broker |
+| **Tool Cancellation (AbortSignal)** | ✅ | ✅ | ✅ | ✅ | Idiomatic per language: asyncio.Event / Task.shutdown / CancellationToken / AbortSignal |
 | **Tool Wrapper** | ✅ | ✅ | ✅ | ✅ | Agent as tool (delegation) |
 | **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | Natural language dates |
 | **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | Current time access |
@@ -129,23 +129,23 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **LLM Call Events** | ✅ | ✅ | ✅ | ✅ | Call tracking |
 | **LLM Response Events** | ✅ | ✅ | ✅ | ✅ | Response tracking |
 | **Tool Call Events** | ✅ | ✅ | ✅ | ✅ | Tool invocation tracking |
-| **Tool Batch Events** | ✅ | ✅ | 📝 | ✅ | Aggregate per-batch stats (parallel runner) |
+| **Tool Batch Events** | ✅ | ✅ | ✅ | ✅ | Aggregate per-batch stats (parallel runner) |
 | **Agent Events** | ✅ | ✅ | ✅ | ✅ | Agent lifecycle |
 
 ### Layer 4: Realtime Voice
 
 | Feature | Python | Elixir | Rust | TypeScript | Notes |
 |---------|--------|--------|------|------------|-------|
-| **RealtimeVoiceBroker** | ✅ | ✅ | 📝 | ✅ | Sibling to LlmBroker |
-| **OpenAI Realtime Gateway** | ✅ | ✅ | 📝 | ✅ | WebSocket transport |
-| **Server VAD turn detection** | ✅ | ✅ | 📝 | ✅ | |
-| **Manual VAD / push-to-talk** | ✅ | ✅ | 📝 | ✅ | `turnDetection: 'none'` |
-| **Interruption / barge-in** | ✅ | ✅ | 📝 | ✅ | Manual + speech_started |
-| **Parallel tool calls in voice turn** | ✅ | ✅ | 📝 | ✅ | Inherits ParallelToolRunner |
-| **Vendor-neutral event union** | ✅ | ✅ | 📝 | ✅ | RealtimeEvent struct + raw access |
-| **Raw event escape hatch** | ✅ | ✅ | 📝 | ✅ | `session.raw_events()` / `rawEvents()` / transport pid |
-| **Audio in/out streams** | ✅ | ✅ | 📝 | ✅ | numpy int16 / binary PCM16 / Int16Array |
-| **Tool cancellation on interrupt** | ✅ | ✅ | 📝 | ✅ | asyncio.Event / atomics ref / AbortSignal |
+| **RealtimeVoiceBroker** | ✅ | ✅ | ✅ | ✅ | Sibling to LlmBroker |
+| **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | WebSocket transport |
+| **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | |
+| **Manual VAD / push-to-talk** | ✅ | ✅ | ✅ | ✅ | turn_detection: 'none' |
+| **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | Manual + speech_started |
+| **Parallel tool calls in voice turn** | ✅ | ✅ | ✅ | ✅ | Inherits ParallelToolRunner |
+| **Vendor-neutral event union** | ✅ | ✅ | ✅ | ✅ | RealtimeEvent enum / struct + raw access |
+| **Raw event escape hatch** | ✅ | ✅ | ✅ | ✅ | session.raw_events() / rawEvents() / transport pid |
+| **Audio in/out streams** | ✅ | ✅ | ✅ | ✅ | numpy int16 / binary PCM16 / Vec<i16> / Int16Array |
+| **Tool cancellation on interrupt** | ✅ | ✅ | ✅ | ✅ | asyncio.Event / atomics ref / CancellationToken / AbortSignal |
 
 ### Layer 3: Agent System
 
