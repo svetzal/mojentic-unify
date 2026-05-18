@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 17, 2026 (mojentic-kt: Phase 0 skeleton landed — Kotlin Multiplatform project scaffolding with JVM/Android/iOS targets and quality-gate wiring)
+Last Updated: May 18, 2026 (mojentic-kt: Phase 0 shipped — KMP skeleton on Kotlin 2.3.21 / Gradle 9.5.1 / AGP 9.2.0; smoke test green on JVM; ktlint + Detekt clean; CI matrix on `ubuntu-latest` + `macos-latest`). Previously: May 17, 2026 — mojentic-sw Phase 2 shipped (OpenAI gateway, ChatSession, multimodal images, tokenizer + embeddings gateways).
 
 ---
 
@@ -51,12 +51,12 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 | Gateway | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **OpenAI** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Full featured (Phase 2) |
+| **OpenAI** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Full featured |
 | **Ollama** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Full impl with streaming |
 | **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | 📝 | 📝 | Python only; TypeScript planned; Swift Phase 6 |
 | **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Python: file-based mocking |
-| **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Token counting (Phase 2) |
-| **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Vector embeddings (Phase 2) |
+| **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Token counting (Swift: approximate `chars/4` default; bring-your-own protocol) |
+| **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Vector embeddings |
 
 #### Ollama Gateway Features
 
@@ -67,9 +67,9 @@ This section provides comprehensive feature tables for implementing new ports (e
 | Tool Calling | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
 | Streaming | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
 | Streaming + Tools | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
-| Image Analysis | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 |
+| Image Analysis | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
 | Model Listing | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
-| Embeddings | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 |
+| Embeddings | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
 | Message Adaptation | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
 | Reasoning Effort (think) | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
 | Thinking Traces | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |
@@ -79,7 +79,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | Feature | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
 | **Message Types** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | System, User, Assistant, Tool |
-| **Multimodal (Images)** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Image content in messages (Phase 2) |
+| **Multimodal (Images)** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Image content in messages |
 | **Tool Call Messages** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Tool request/response |
 | **Message Composers** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Helper builders |
 | **Content Annotations** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Python-only: metadata |
@@ -108,12 +108,12 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 | Feature | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **Session Management** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Conversation state |
-| **Message History** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Context retention |
-| **Context Window** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Token limit management |
-| **System Prompts** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Initial instructions |
-| **Tool Integration** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Session-level tools |
-| **Streaming Send** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | Stream responses with auto history management |
+| **Session Management** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Conversation state |
+| **Message History** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Context retention |
+| **Context Window** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Token limit management |
+| **System Prompts** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Initial instructions |
+| **Tool Integration** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Session-level tools |
+| **Streaming Send** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Stream responses with auto history management |
 
 ### Layer 2: Tracer System
 
@@ -477,8 +477,8 @@ def process(_), do: {:error, :invalid_format}
 | Elixir | 634 | 81.56% | 0 (Credo) | mix deps.audit clean |
 | Rust | 365+ | tarpaulin | 0 (clippy) | cargo deny (non-blocking warnings) |
 | TypeScript | 656 | Jest | 0 (ESLint) | npm audit clean |
-| Swift | 30 (Phase 1) | not yet measured | 0 (swift-format strict); SwiftLint via CI | Dependabot (CI) |
-| Kotlin | — | — | — | — (📝 Planned — see KOTLIN.md; ktlint + Detekt, `kotlin.test` + Turbine, OWASP Dependency-Check) |
+| Swift | 52 (through Phase 2) | not yet measured | 0 (swift-format strict); SwiftLint via CI | Dependabot (CI) |
+| Kotlin | 3 (Phase 0 smoke) | not yet measured | 0 (ktlint + Detekt strict) | 📝 Phase 1+ (OWASP Dependency-Check planned) |
 
 ---
 

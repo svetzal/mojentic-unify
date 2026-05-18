@@ -1,8 +1,8 @@
 # Mojentic Kotlin Port — Plan
 
-Status: **📝 Planned** (not yet started)
+Status: **✅ Phase 0 shipped** — Kotlin Multiplatform skeleton with JVM/Android/iOS targets, smoke-test green on JVM, ktlint + Detekt clean, CI matrix wired on `ubuntu-latest` (JVM + Android) and `macos-latest` (iOS). Phase 1+ work pending.
 Target sub-project directory: `mojentic-kt/`
-Last updated: 2026-05-17
+Last updated: 2026-05-18
 
 This document plans a sixth Mojentic port: a **Kotlin Multiplatform (KMP)** implementation targeting JVM/Android, iOS, and (later) other Kotlin/Native targets. Distributed via Maven Central for JVM/Android and as an XCFramework (consumable from Swift Package Manager or CocoaPods) for iOS.
 
@@ -163,24 +163,43 @@ mojentic-kt/
     └── audit.sh
 ```
 
-**Gradle setup highlights**
+**Gradle setup highlights (Phase 0 actuals)**
 
-- Kotlin **2.0+** (K2 compiler stable; required for the latest KMP ergonomics).
-- Kotlin Multiplatform plugin (`org.jetbrains.kotlin.multiplatform`).
-- `kotlinx.serialization` plugin.
+- **Kotlin 2.3.21** (latest stable May 2026; K2 compiler stable; standard-library `kotlin.uuid.Uuid` available).
+- **Gradle 9.5.1** (May 14, 2026; required floor for AGP 9.2).
+- **AGP 9.2.0** with the KMP-native `com.android.kotlin.multiplatform.library` plugin. AGP 9.0+ **refuses to load** the legacy `com.android.library` plugin alongside `org.jetbrains.kotlin.multiplatform`, so the standard `androidTarget()` pattern from older guides no longer applies.
+- Kotlin Multiplatform plugin (`org.jetbrains.kotlin.multiplatform`) + `kotlinx.serialization` plugin.
 - Dokka v2.
 - **Version catalog** (`libs.versions.toml`) for all dependency versions — no scattered version literals.
-- **No** `org.jetbrains.kotlin.android` plugin in any module — we want pure JVM consumers (Spring, Ktor server) to work too. Android support comes via the standard `androidTarget()` declaration in KMP, which produces an AAR consumable from Android projects without forcing Android compilation on JVM consumers.
+- We still do **not** use `org.jetbrains.kotlin.android`; that plugin is for pure Android-app builds, not KMP libraries.
 
-**Target declarations (`mojentic-core/build.gradle.kts` sketch)**
+**Target declarations (`mojentic-core/build.gradle.kts` sketch — Phase 0 actual)**
 
 ```kotlin
+plugins {
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
+}
+
 kotlin {
     jvmToolchain(17)
+
     jvm()
-    androidTarget {
-        publishLibraryVariants("release")
+
+    // AGP 9.x KMP target. Android config lives inside the kotlin extension,
+    // NOT in a separate top-level `android { ... }` block.
+    android {
+        namespace = "com.mojentic.core"
+        compileSdk = 36
+        minSdk = 24
+
+        // Run common tests against the local JVM as android-host tests too.
+        withHostTest {}
     }
+
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -326,7 +345,7 @@ public data class ToolDescriptor(
 - `interface Tracer` with default no-op methods.
 - `object NullTracer : Tracer`.
 - `class EventStore` backed by `MutableSharedFlow<TracerEvent>(replay = …)` for live consumers + `Mutex`-protected list for snapshot queries.
-- `sealed interface TracerEvent` with `data class` variants: `LlmCallEvent`, `LlmResponseEvent`, `ToolCallEvent`, `ToolBatchEvent`, `AgentEvent`. Correlation IDs are `kotlin.uuid.Uuid` (Kotlin 2.0+ has standard-library UUIDs).
+- `sealed interface TracerEvent` with `data class` variants: `LlmCallEvent`, `LlmResponseEvent`, `ToolCallEvent`, `ToolBatchEvent`, `AgentEvent`. Correlation IDs are `kotlin.uuid.Uuid` (standard-library since Kotlin 2.0; we're on 2.3.21).
 - `ParallelToolRunner` emits a single `ToolBatchEvent` summarising the batch (per-call durations, success/failure counts, aggregate latency) in addition to the per-call `ToolCallEvent`s; `SerialToolRunner` emits only `ToolCallEvent`s. Parity with the Rust and TypeScript ports.
 
 ### Layer 3 — Agents
@@ -433,12 +452,13 @@ CI builds **all** examples on every commit — an example that doesn't compile i
 
 Each phase ends with a passing quality gate, tagged release, and an updated PARITY.md row.
 
-### Phase 0 — Skeleton (1–2 days)
-- Create `mojentic-kt/` with `settings.gradle.kts`, `build.gradle.kts`, `libs.versions.toml`, `AGENTS.md`, `CHARTER.md`, `README.md`, `CHANGELOG.md`, license, `detekt.yml`, `.editorconfig`.
-- Empty `mojentic-core` module with JVM + Android + iOS targets configured; `Hello`-level test passing on all three.
-- CI workflows (Linux for JVM/Android, macOS for iOS) running ktlint + detekt + build + tests.
-- Maven Central publishing job wired (publishing to a `-SNAPSHOT` channel until first real release).
-- Add Kotlin row to PARITY.md.
+### Phase 0 — Skeleton ✅ Shipped (2026-05-18)
+- ✅ Created `mojentic-kt/` with `settings.gradle.kts`, root + module `build.gradle.kts`, `libs.versions.toml`, `AGENTS.md`, `CHARTER.md`, `README.md`, `CHANGELOG.md`, `LICENSE` (MIT), `detekt.yml`, `.editorconfig`, `.gitignore`, `CLAUDE.md → @AGENTS.md`.
+- ✅ `mojentic-core` module with JVM + Android + iOS (x64 / arm64 / simulatorArm64) targets configured. `Mojentic.greet(...)` smoke surface in `commonMain`; `MojenticTest` (3 cases) green on JVM. Native test runs are wired but blocked locally on toolchain provisioning — CI on `macos-latest` validates the iOS path.
+- ✅ Committed Gradle wrapper at 9.5.1 (jar + scripts) so fresh clones build immediately.
+- ✅ CI workflow (`.github/workflows/build.yml`) running ktlint + Detekt + JVM/Android build + tests on `ubuntu-latest` and iOS simulator build + tests on `macos-latest`.
+- ⏭ **Deferred to Phase 1**: Maven Central publishing job. There's nothing to publish yet (no public API), and the gradle-maven-publish-plugin setup is meaningful work that we'll do once Phase 1 has a real artifact. The skeleton intentionally does not pretend to be releasable.
+- ✅ Added Kotlin row/column to root `AGENTS.md` and `PARITY.md`.
 
 ### Phase 1 — Core LLM (Ollama only)
 - `LlmMessage`, `CompletionConfig`, `ReasoningEffort`, `MojenticException`.
