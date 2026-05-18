@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 17, 2026 (Swift columns added — port is 📝 Planned, see SWIFT.md)
+Last Updated: May 17, 2026 (mojentic-ex: realtime barge-in + tool cancellation fully wired — async Task dispatch with atomics cancel_ref)
 
 ---
 
@@ -140,12 +140,12 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | 📝 | WebSocket transport |
 | **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | 📝 | |
 | **Manual VAD / push-to-talk** | ✅ | ✅ | ✅ | ✅ | 📝 | turn_detection: 'none' |
-| **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | 📝 | Manual + speech_started |
+| **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | 📝 | Manual + speech_started; Elixir: async Task keeps GenServer responsive |
 | **Parallel tool calls in voice turn** | ✅ | ✅ | ✅ | ✅ | 📝 | Inherits ParallelToolRunner |
 | **Vendor-neutral event union** | ✅ | ✅ | ✅ | ✅ | 📝 | RealtimeEvent enum / struct + raw access |
 | **Raw event escape hatch** | ✅ | ✅ | ✅ | ✅ | 📝 | session.raw_events() / rawEvents() / transport pid |
 | **Audio in/out streams** | ✅ | ✅ | ✅ | ✅ | 📝 | numpy int16 / binary PCM16 / Vec<i16> / Int16Array |
-| **Tool cancellation on interrupt** | ✅ | ✅ | ✅ | ✅ | 📝 | asyncio.Event / atomics ref / CancellationToken / AbortSignal |
+| **Tool cancellation on interrupt** | ✅ | ✅ | ✅ | ✅ | 📝 | asyncio.Event / atomics ref (wired to interrupt/1) / CancellationToken / AbortSignal |
 
 ### Layer 3: Agent System
 
