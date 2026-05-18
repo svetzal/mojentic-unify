@@ -8,19 +8,19 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 17, 2026
+Last Updated: May 17, 2026 (Swift columns added — port is 📝 Planned, see SWIFT.md)
 
 ---
 
 ## What's Complete (Uniform Across All Ports)
 
-These features are **fully implemented in Python, Elixir, Rust, and TypeScript**:
+These features are **fully implemented in Python, Elixir, Rust, and TypeScript** (Swift port is 📝 Planned — see SWIFT.md):
 
 - **Layer 1 (LLM Integration)**: Broker, CompletionConfig, reasoning effort control, OpenAI + Ollama gateways, structured output, tool calling, streaming with recursive tool execution, streaming chat sessions, image analysis, tokenizer, embeddings
 - **Layer 2 (Tracer System)**: Event recording, correlation tracking, event filtering, broker/tool integration
 - **Layer 3 (Agent System - Core)**: Base agents, async agents, event system, dispatcher, router, aggregators, iterative solver, recursive agent, ReAct pattern, shared working memory
 - **Tools**: DateResolver, File tools (8 tools), Task manager, Tell user, Ask user, Web search, Current datetime, Tool wrapper (broker as tool)
-- **Examples**: 24 shared examples implemented across all ports
+- **Examples**: 26 shared examples implemented across all ports (Python, Elixir, Rust, TypeScript)
 - **Infrastructure**: Full test suites, zero lint warnings, CI/CD pipelines, documentation
 
 ---
@@ -33,145 +33,145 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 #### Core Broker & Gateway
 
-| Feature | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **LLM Broker** | ✅ | ✅ | ✅ | ✅ | Core interface for LLM interactions |
-| **Gateway Trait/Behaviour** | ✅ | ✅ | ✅ | ✅ | Abstract interface for providers |
-| **Text Generation** | ✅ | ✅ | ✅ | ✅ | Basic completion API |
-| **Structured Output** | ✅ | ✅ | ✅ | ✅ | JSON schema-based responses |
-| **Streaming Responses** | ✅ | ✅ | ✅ | ✅ | Ollama with full recursive tool execution |
-| **Tool Calling** | ✅ | ✅ | ✅ | ✅ | Recursive tool execution |
-| **Message History** | ✅ | ✅ | ✅ | ✅ | Conversation context |
-| **Correlation IDs** | ✅ | ✅ | ✅ | ✅ | Request tracing |
-| **CompletionConfig** | ✅ | ✅ | ✅ | ✅ | Unified config object for LLM parameters |
-| **Reasoning Effort** | ✅ | ✅ | ✅ | ✅ | low/medium/high reasoning effort control |
-| **Thinking Traces** | ✅ | ✅ | ✅ | ✅ | Model reasoning traces in gateway response |
+| Feature | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **LLM Broker** | ✅ | ✅ | ✅ | ✅ | 📝 | Core interface for LLM interactions |
+| **Gateway Trait/Behaviour** | ✅ | ✅ | ✅ | ✅ | 📝 | Abstract interface for providers |
+| **Text Generation** | ✅ | ✅ | ✅ | ✅ | 📝 | Basic completion API |
+| **Structured Output** | ✅ | ✅ | ✅ | ✅ | 📝 | JSON schema-based responses |
+| **Streaming Responses** | ✅ | ✅ | ✅ | ✅ | 📝 | Ollama with full recursive tool execution |
+| **Tool Calling** | ✅ | ✅ | ✅ | ✅ | 📝 | Recursive tool execution |
+| **Message History** | ✅ | ✅ | ✅ | ✅ | 📝 | Conversation context |
+| **Correlation IDs** | ✅ | ✅ | ✅ | ✅ | 📝 | Request tracing |
+| **CompletionConfig** | ✅ | ✅ | ✅ | ✅ | 📝 | Unified config object for LLM parameters |
+| **Reasoning Effort** | ✅ | ✅ | ✅ | ✅ | 📝 | low/medium/high reasoning effort control |
+| **Thinking Traces** | ✅ | ✅ | ✅ | ✅ | 📝 | Model reasoning traces in gateway response |
 
 #### Gateway Implementations
 
-| Gateway | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **OpenAI** | ✅ | ✅ | ✅ | ✅ | Full featured |
-| **Ollama** | ✅ | ✅ | ✅ | ✅ | Full impl with streaming |
-| **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | Python only; TypeScript planned |
-| **File Gateway** | ✅ | ❌ | ❌ | ❌ | Python: file-based mocking |
-| **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | Token counting |
-| **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | Vector embeddings |
+| Gateway | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **OpenAI** | ✅ | ✅ | ✅ | ✅ | 📝 | Full featured |
+| **Ollama** | ✅ | ✅ | ✅ | ✅ | 📝 | Full impl with streaming |
+| **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | 📝 | Python only; TypeScript planned |
+| **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | Python: file-based mocking |
+| **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | 📝 | Token counting |
+| **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | 📝 | Vector embeddings |
 
 #### Ollama Gateway Features
 
-| Feature | Python | Elixir | Rust | TypeScript |
-|---------|--------|--------|------|------------|
-| Chat Completions | ✅ | ✅ | ✅ | ✅ |
-| Structured Output | ✅ | ✅ | ✅ | ✅ |
-| Tool Calling | ✅ | ✅ | ✅ | ✅ |
-| Streaming | ✅ | ✅ | ✅ | ✅ |
-| Streaming + Tools | ✅ | ✅ | ✅ | ✅ |
-| Image Analysis | ✅ | ✅ | ✅ | ✅ |
-| Model Listing | ✅ | ✅ | ✅ | ✅ |
-| Embeddings | ✅ | ✅ | ✅ | ✅ |
-| Message Adaptation | ✅ | ✅ | ✅ | ✅ |
-| Reasoning Effort (think) | ✅ | ✅ | ✅ | ✅ |
-| Thinking Traces | ✅ | ✅ | ✅ | ✅ |
+| Feature | Python | Elixir | Rust | TypeScript | Swift |
+|---------|--------|--------|------|------------|-------|
+| Chat Completions | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Structured Output | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Tool Calling | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Streaming | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Streaming + Tools | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Image Analysis | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Model Listing | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Embeddings | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Message Adaptation | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Reasoning Effort (think) | ✅ | ✅ | ✅ | ✅ | 📝 |
+| Thinking Traces | ✅ | ✅ | ✅ | ✅ | 📝 |
 
 #### Message System
 
-| Feature | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **Message Types** | ✅ | ✅ | ✅ | ✅ | System, User, Assistant, Tool |
-| **Multimodal (Images)** | ✅ | ✅ | ✅ | ✅ | Image content in messages |
-| **Tool Call Messages** | ✅ | ✅ | ✅ | ✅ | Tool request/response |
-| **Message Composers** | ✅ | ✅ | ✅ | ✅ | Helper builders |
-| **Content Annotations** | ✅ | ❌ | ❌ | ❌ | Python-only: metadata |
-| **Audience Targeting** | ✅ | ❌ | ❌ | ❌ | Python-only: routing |
-| **Priority System** | ✅ | ❌ | ❌ | ❌ | Python-only: importance |
+| Feature | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **Message Types** | ✅ | ✅ | ✅ | ✅ | 📝 | System, User, Assistant, Tool |
+| **Multimodal (Images)** | ✅ | ✅ | ✅ | ✅ | 📝 | Image content in messages |
+| **Tool Call Messages** | ✅ | ✅ | ✅ | ✅ | 📝 | Tool request/response |
+| **Message Composers** | ✅ | ✅ | ✅ | ✅ | 📝 | Helper builders |
+| **Content Annotations** | ✅ | ❌ | ❌ | ❌ | ❌ | Python-only: metadata |
+| **Audience Targeting** | ✅ | ❌ | ❌ | ❌ | ❌ | Python-only: routing |
+| **Priority System** | ✅ | ❌ | ❌ | ❌ | ❌ | Python-only: importance |
 
 #### Tool System
 
-| Feature | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **Tool Trait/Behaviour** | ✅ | ✅ | ✅ | ✅ | Base interface |
-| **Tool Descriptors** | ✅ | ✅ | ✅ | ✅ | JSON schema definitions |
-| **Tool Execution** | ✅ | ✅ | ✅ | ✅ | Synchronous execution |
-| **Parallel Tool Execution** | ✅ | ✅ | ✅ | ✅ | `ToolRunner` abstraction; serial default for the chat broker |
-| **Tool Cancellation (AbortSignal)** | ✅ | ✅ | ✅ | ✅ | Idiomatic per language: asyncio.Event / Task.shutdown / CancellationToken / AbortSignal |
-| **Tool Wrapper** | ✅ | ✅ | ✅ | ✅ | Agent as tool (delegation) |
-| **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | Natural language dates |
-| **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | Current time access |
-| **File Tools (8 tools)** | ✅ | ✅ | ✅ | ✅ | Read/Write/List/etc. |
-| **Task Manager Tool** | ✅ | ✅ | ✅ | ✅ | Ephemeral tasks |
-| **Ask User Tool** | ✅ | ✅ | ✅ | ✅ | Interactive input |
-| **Tell User Tool** | ✅ | ✅ | ✅ | ✅ | User output |
-| **Web Search Tool** | ✅ | ✅ | ✅ | ✅ | Organic search |
+| Feature | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **Tool Trait/Behaviour** | ✅ | ✅ | ✅ | ✅ | 📝 | Base interface |
+| **Tool Descriptors** | ✅ | ✅ | ✅ | ✅ | 📝 | JSON schema definitions |
+| **Tool Execution** | ✅ | ✅ | ✅ | ✅ | 📝 | Synchronous execution |
+| **Parallel Tool Execution** | ✅ | ✅ | ✅ | ✅ | 📝 | `ToolRunner` abstraction; serial default for the chat broker |
+| **Tool Cancellation (AbortSignal)** | ✅ | ✅ | ✅ | ✅ | 📝 | Idiomatic per language: asyncio.Event / Task.shutdown / CancellationToken / AbortSignal |
+| **Tool Wrapper** | ✅ | ✅ | ✅ | ✅ | 📝 | Agent as tool (delegation) |
+| **Date Resolver Tool** | ✅ | ✅ | ✅ | ✅ | 📝 | Natural language dates |
+| **Current DateTime Tool** | ✅ | ✅ | ✅ | ✅ | 📝 | Current time access |
+| **File Tools (8 tools)** | ✅ | ✅ | ✅ | ✅ | 📝 | Read/Write/List/etc. |
+| **Task Manager Tool** | ✅ | ✅ | ✅ | ✅ | 📝 | Ephemeral tasks |
+| **Ask User Tool** | ✅ | ✅ | ✅ | ✅ | 📝 | Interactive input |
+| **Tell User Tool** | ✅ | ✅ | ✅ | ✅ | 📝 | User output |
+| **Web Search Tool** | ✅ | ✅ | ✅ | ✅ | 📝 | Organic search |
 
 #### Chat Session
 
-| Feature | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **Session Management** | ✅ | ✅ | ✅ | ✅ | Conversation state |
-| **Message History** | ✅ | ✅ | ✅ | ✅ | Context retention |
-| **Context Window** | ✅ | ✅ | ✅ | ✅ | Token limit management |
-| **System Prompts** | ✅ | ✅ | ✅ | ✅ | Initial instructions |
-| **Tool Integration** | ✅ | ✅ | ✅ | ✅ | Session-level tools |
-| **Streaming Send** | ✅ | ✅ | ✅ | ✅ | Stream responses with auto history management |
+| Feature | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **Session Management** | ✅ | ✅ | ✅ | ✅ | 📝 | Conversation state |
+| **Message History** | ✅ | ✅ | ✅ | ✅ | 📝 | Context retention |
+| **Context Window** | ✅ | ✅ | ✅ | ✅ | 📝 | Token limit management |
+| **System Prompts** | ✅ | ✅ | ✅ | ✅ | 📝 | Initial instructions |
+| **Tool Integration** | ✅ | ✅ | ✅ | ✅ | 📝 | Session-level tools |
+| **Streaming Send** | ✅ | ✅ | ✅ | ✅ | 📝 | Stream responses with auto history management |
 
 ### Layer 2: Tracer System
 
-| Feature | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **Tracer System** | ✅ | ✅ | ✅ | ✅ | Event recording |
-| **Event Store** | ✅ | ✅ | ✅ | ✅ | Event persistence |
-| **Event Types** | ✅ | ✅ | ✅ | ✅ | LLM/Tool/Agent events |
-| **Null Tracer** | ✅ | ✅ | ✅ | ✅ | Null object pattern |
-| **Correlation Tracking** | ✅ | ✅ | ✅ | ✅ | Request correlation |
-| **Performance Metrics** | ✅ | ✅ | ✅ | ✅ | Duration tracking |
-| **Event Querying** | ✅ | ✅ | ✅ | ✅ | Filter/search events |
-| **LLM Call Events** | ✅ | ✅ | ✅ | ✅ | Call tracking |
-| **LLM Response Events** | ✅ | ✅ | ✅ | ✅ | Response tracking |
-| **Tool Call Events** | ✅ | ✅ | ✅ | ✅ | Tool invocation tracking |
-| **Tool Batch Events** | ✅ | ✅ | ✅ | ✅ | Aggregate per-batch stats (parallel runner) |
-| **Agent Events** | ✅ | ✅ | ✅ | ✅ | Agent lifecycle |
+| Feature | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **Tracer System** | ✅ | ✅ | ✅ | ✅ | 📝 | Event recording |
+| **Event Store** | ✅ | ✅ | ✅ | ✅ | 📝 | Event persistence |
+| **Event Types** | ✅ | ✅ | ✅ | ✅ | 📝 | LLM/Tool/Agent events |
+| **Null Tracer** | ✅ | ✅ | ✅ | ✅ | 📝 | Null object pattern |
+| **Correlation Tracking** | ✅ | ✅ | ✅ | ✅ | 📝 | Request correlation |
+| **Performance Metrics** | ✅ | ✅ | ✅ | ✅ | 📝 | Duration tracking |
+| **Event Querying** | ✅ | ✅ | ✅ | ✅ | 📝 | Filter/search events |
+| **LLM Call Events** | ✅ | ✅ | ✅ | ✅ | 📝 | Call tracking |
+| **LLM Response Events** | ✅ | ✅ | ✅ | ✅ | 📝 | Response tracking |
+| **Tool Call Events** | ✅ | ✅ | ✅ | ✅ | 📝 | Tool invocation tracking |
+| **Tool Batch Events** | ✅ | ✅ | ✅ | ✅ | 📝 | Aggregate per-batch stats (parallel runner) |
+| **Agent Events** | ✅ | ✅ | ✅ | ✅ | 📝 | Agent lifecycle |
 
 ### Layer 4: Realtime Voice
 
-| Feature | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **RealtimeVoiceBroker** | ✅ | ✅ | ✅ | ✅ | Sibling to LlmBroker |
-| **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | WebSocket transport |
-| **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | |
-| **Manual VAD / push-to-talk** | ✅ | ✅ | ✅ | ✅ | turn_detection: 'none' |
-| **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | Manual + speech_started |
-| **Parallel tool calls in voice turn** | ✅ | ✅ | ✅ | ✅ | Inherits ParallelToolRunner |
-| **Vendor-neutral event union** | ✅ | ✅ | ✅ | ✅ | RealtimeEvent enum / struct + raw access |
-| **Raw event escape hatch** | ✅ | ✅ | ✅ | ✅ | session.raw_events() / rawEvents() / transport pid |
-| **Audio in/out streams** | ✅ | ✅ | ✅ | ✅ | numpy int16 / binary PCM16 / Vec<i16> / Int16Array |
-| **Tool cancellation on interrupt** | ✅ | ✅ | ✅ | ✅ | asyncio.Event / atomics ref / CancellationToken / AbortSignal |
+| Feature | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **RealtimeVoiceBroker** | ✅ | ✅ | ✅ | ✅ | 📝 | Sibling to LlmBroker |
+| **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | 📝 | WebSocket transport |
+| **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | 📝 | |
+| **Manual VAD / push-to-talk** | ✅ | ✅ | ✅ | ✅ | 📝 | turn_detection: 'none' |
+| **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | 📝 | Manual + speech_started |
+| **Parallel tool calls in voice turn** | ✅ | ✅ | ✅ | ✅ | 📝 | Inherits ParallelToolRunner |
+| **Vendor-neutral event union** | ✅ | ✅ | ✅ | ✅ | 📝 | RealtimeEvent enum / struct + raw access |
+| **Raw event escape hatch** | ✅ | ✅ | ✅ | ✅ | 📝 | session.raw_events() / rawEvents() / transport pid |
+| **Audio in/out streams** | ✅ | ✅ | ✅ | ✅ | 📝 | numpy int16 / binary PCM16 / Vec<i16> / Int16Array |
+| **Tool cancellation on interrupt** | ✅ | ✅ | ✅ | ✅ | 📝 | asyncio.Event / atomics ref / CancellationToken / AbortSignal |
 
 ### Layer 3: Agent System
 
 #### Core Agent Infrastructure
 
-| Feature | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **Base Agent** | ✅ | ✅ | ✅ | ✅ | Agent trait/interface |
-| **Base Async Agent** | ✅ | ✅ | ✅ | ✅ | Async agent support |
-| **Base LLM Agent** | ✅ | ✅ | ✅ | ✅ | LLM-enabled agents |
-| **AgentEventAdapter** | ✅ | ❌ | ❌ | ❌ | Event-driven agent wrapper |
-| **Event System** | ✅ | ✅ | ✅ | ✅ | Event types |
-| **Dispatcher** | ✅ | ✅ | ✅ | ✅ | Event routing |
-| **Async Dispatcher** | ✅ | ✅ | ✅ | ✅ | Async event processing |
-| **Router** | ✅ | ✅ | ✅ | ✅ | Event-to-agent routing |
-| **Shared Working Memory** | ✅ | ✅ | ✅ | ✅ | Context sharing |
+| Feature | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **Base Agent** | ✅ | ✅ | ✅ | ✅ | 📝 | Agent trait/interface |
+| **Base Async Agent** | ✅ | ✅ | ✅ | ✅ | 📝 | Async agent support |
+| **Base LLM Agent** | ✅ | ✅ | ✅ | ✅ | 📝 | LLM-enabled agents (Swift: async-first — covered by `AsyncLLMAgent`, see SWIFT.md §4 Layer 3) |
+| **AgentEventAdapter** | ✅ | ❌ | ❌ | ❌ | ❌ | Event-driven agent wrapper |
+| **Event System** | ✅ | ✅ | ✅ | ✅ | 📝 | Event types |
+| **Dispatcher** | ✅ | ✅ | ✅ | ✅ | 📝 | Event routing (Swift: async-first — covered by `AsyncDispatcher`, see SWIFT.md §4 Layer 3) |
+| **Async Dispatcher** | ✅ | ✅ | ✅ | ✅ | 📝 | Async event processing |
+| **Router** | ✅ | ✅ | ✅ | ✅ | 📝 | Event-to-agent routing |
+| **Shared Working Memory** | ✅ | ✅ | ✅ | ✅ | 📝 | Context sharing |
 
 #### Agent Implementations
 
-| Agent Type | Python | Elixir | Rust | TypeScript | Notes |
-|------------|--------|--------|------|------------|-------|
-| **Async LLM Agent** | ✅ | ✅ | ✅ | ✅ | LLM with async processing |
-| **Async Aggregator Agent** | ✅ | ✅ | ✅ | ✅ | Result aggregation |
-| **Iterative Problem Solver** | ✅ | ✅ | ✅ | ✅ | Multi-step reasoning |
-| **Simple Recursive Agent** | ✅ | ✅ | ✅ | ✅ | Self-recursive processing |
-| **ReAct Pattern** | ✅ | ✅ | ✅ | ✅ | Reasoning + Acting |
+| Agent Type | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|------------|--------|--------|------|------------|-------|-------|
+| **Async LLM Agent** | ✅ | ✅ | ✅ | ✅ | 📝 | LLM with async processing |
+| **Async Aggregator Agent** | ✅ | ✅ | ✅ | ✅ | 📝 | Result aggregation |
+| **Iterative Problem Solver** | ✅ | ✅ | ✅ | ✅ | 📝 | Multi-step reasoning |
+| **Simple Recursive Agent** | ✅ | ✅ | ✅ | ✅ | 📝 | Self-recursive processing |
+| **ReAct Pattern** | ✅ | ✅ | ✅ | ✅ | 📝 | Reasoning + Acting |
 
 ### Examples by Complexity Level
 
@@ -242,28 +242,28 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 ### Gateway Coverage
 
-| Gateway | Python | Elixir | Rust | TypeScript | Notes |
-|---------|--------|--------|------|------------|-------|
-| **Anthropic** | ✅ | ❌ | ❌ | 📝 | Python-only currently; TypeScript planned |
-| **File Gateway** | ✅ | ❌ | ❌ | ❌ | Python: file-based mocking for tests |
+| Gateway | Python | Elixir | Rust | TypeScript | Swift | Notes |
+|---------|--------|--------|------|------------|-------|-------|
+| **Anthropic** | ✅ | ❌ | ❌ | 📝 | 📝 | Python-only currently; TypeScript planned |
+| **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | Python: file-based mocking for tests |
 
 ### Message Features (Python-only)
 
-| Feature | Python | Others | Notes |
-|---------|--------|--------|-------|
-| Content Annotations | ✅ | ❌ | Message metadata |
-| Audience Targeting | ✅ | ❌ | Message routing |
-| Priority System | ✅ | ❌ | Message importance levels |
+| Feature | Python | Others | Swift | Notes |
+|---------|--------|--------|-------|-------|
+| Content Annotations | ✅ | ❌ | ❌ | Message metadata |
+| Audience Targeting | ✅ | ❌ | ❌ | Message routing |
+| Priority System | ✅ | ❌ | ❌ | Message importance levels |
 
 ### Advanced Features
 
-| Feature | Python | Elixir | Rust | TypeScript |
-|---------|--------|--------|------|------------|
-| AgentEventAdapter | ✅ | ❌ | ❌ | ❌ |
-| Configuration Files | ✅ | 📝 | ⚠️ | 📝 |
-| Builder Pattern | ✅ | ❌ | ⚠️ | 📝 |
-| Connection Pooling | ⚠️ | 📝 | ⚠️ | 📝 |
-| Retry Logic | ⚠️ | ❌ | ❌ | ❌ |
+| Feature | Python | Elixir | Rust | TypeScript | Swift |
+|---------|--------|--------|------|------------|-------|
+| AgentEventAdapter | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Configuration Files | ✅ | 📝 | ⚠️ | 📝 | ❌ |
+| Builder Pattern | ✅ | ❌ | ⚠️ | 📝 | ❌ |
+| Connection Pooling | ⚠️ | 📝 | ⚠️ | 📝 | ❌ |
+| Retry Logic | ⚠️ | ❌ | ❌ | ❌ | ❌ |
 
 ### Python-Only Examples
 
@@ -327,6 +327,7 @@ Each library provides tutorials for these core use cases:
 | **Elixir** | ✅ | ✅ | ✅ | ✅ | Uses ExDoc with grouped extras |
 | **Rust** | ✅ | ✅ | ✅ | ✅ | Uses mdBook with chapter organization |
 | **TypeScript** | ✅ | ✅ | ✅ | ✅ | Uses VitePress with sidebar navigation |
+| **Swift** | 📝 | 📝 | 📝 | 📝 | DocC; structure planned in SWIFT.md §6 |
 
 ### Documentation Tooling
 
@@ -336,16 +337,17 @@ Each library provides tutorials for these core use cases:
 | **Elixir** | ExDoc | `mix.exs` | Grouped extras with regex patterns |
 | **Rust** | mdBook | `book/src/SUMMARY.md` | Chapter-based hierarchy |
 | **TypeScript** | VitePress | `docs/.vitepress/config.mts` | Sidebar item groups |
+| **Swift** (📝 Planned) | DocC | `Sources/Mojentic/Mojentic.docc/` | DocC tutorials + auto-generated API reference |
 
 ### Example Tool Documentation
 
 All provided tools are documented as examples with emphasis on extensibility:
 
-| Tool Category | Python | Elixir | Rust | TypeScript | Presentation |
-|---------------|--------|--------|------|------------|--------------|
-| **File Tools** | ✅ | ✅ | ✅ | ✅ | "Example: File Tools" |
-| **Task Management** | ✅ | ✅ | ✅ | ✅ | "Example: Task Management" |
-| **Web Search** | ✅ | ✅ | ✅ | ✅ | "Example: Web Search" |
+| Tool Category | Python | Elixir | Rust | TypeScript | Swift | Presentation |
+|---------------|--------|--------|------|------------|-------|--------------|
+| **File Tools** | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: File Tools" |
+| **Task Management** | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: Task Management" |
+| **Web Search** | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: Web Search" |
 
 Each example guide includes:
 - Introduction emphasizing it's a reference implementation
@@ -473,6 +475,7 @@ def process(_), do: {:error, :invalid_format}
 | Elixir | 634 | 81.56% | 0 (Credo) | mix deps.audit clean |
 | Rust | 365+ | tarpaulin | 0 (clippy) | cargo deny (non-blocking warnings) |
 | TypeScript | 656 | Jest | 0 (ESLint) | npm audit clean |
+| Swift | — | — | — | — (📝 Planned — see SWIFT.md; targets swift-format + SwiftLint, Swift Testing, Dependabot) |
 
 ---
 
@@ -485,4 +488,4 @@ def process(_), do: {:error, :invalid_format}
 
 ---
 
-*This document is maintained alongside ELIXIR.md, RUST.md, and TYPESCRIPT.md.*
+*This document is maintained alongside ELIXIR.md, RUST.md, TYPESCRIPT.md, and SWIFT.md.*
