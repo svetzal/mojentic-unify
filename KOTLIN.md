@@ -1,6 +1,6 @@
 # Mojentic Kotlin Port — Plan
 
-Status: **✅ Phase 0 shipped** — Kotlin Multiplatform skeleton with JVM/Android/iOS targets, smoke-test green on JVM, ktlint + Detekt clean, CI matrix wired on `ubuntu-latest` (JVM + Android) and `macos-latest` (iOS). Phase 1+ work pending.
+Status: **✅ Phase 1 shipped** — Core LLM types, broker (suspend + streaming + recursive tool execution + structured output via `SerialDescriptor` schema generation), `mojentic-ollama` gateway over Ktor, two provided tools (CurrentDateTime, DateResolver), five runnable examples, full quality gate green on JVM + Android-host + iOS-simulator. Phase 0 skeleton remains the foundation.
 Target sub-project directory: `mojentic-kt/`
 Last updated: 2026-05-18
 
@@ -460,13 +460,16 @@ Each phase ends with a passing quality gate, tagged release, and an updated PARI
 - ⏭ **Deferred to Phase 1**: Maven Central publishing job. There's nothing to publish yet (no public API), and the gradle-maven-publish-plugin setup is meaningful work that we'll do once Phase 1 has a real artifact. The skeleton intentionally does not pretend to be releasable.
 - ✅ Added Kotlin row/column to root `AGENTS.md` and `PARITY.md`.
 
-### Phase 1 — Core LLM (Ollama only)
-- `LlmMessage`, `CompletionConfig`, `ReasoningEffort`, `MojenticException`.
-- `LlmGateway` interface in core; `OllamaGateway` in `mojentic-ollama` module (complete, completeJson, streaming, tools).
-- `LlmBroker` with non-streaming + streaming + recursive tool execution.
-- `LlmTool` interface, `ToolDescriptor`, `SerialToolRunner`; `CurrentDateTimeTool`, `DateResolverTool`.
-- `JsonSchemaGenerator` from `SerialDescriptor`.
-- Examples: `simple-llm`, `list-models`, `simple-structured`, `simple-tool`, `streaming`.
+### Phase 1 — Core LLM (Ollama only) ✅ Shipped (2026-05-18)
+- ✅ `LlmMessage` (with multimodal `MessageContent` parts), `LlmToolCall`, `LlmGatewayResponse`, `CompletionConfig`, `ReasoningEffort`, sealed `MojenticException` hierarchy.
+- ✅ `LlmGateway` interface in core. `OllamaGateway` in `mojentic-ollama` module — complete, completeJson, streaming (NDJSON line-by-line), tool calls, `think: true` reasoning traces, model listing — built on Ktor Client (OkHttp engine on JVM/Android, Darwin on iOS).
+- ✅ `LlmBroker` with non-streaming `complete`, structured-output `completeJson<T>` (schema derived from `T`'s `SerialDescriptor` at compile time via `inline reified`), streaming `stream(): Flow<StreamEvent>`, recursive tool execution across all three paths, `maxToolIterations` ceiling.
+- ✅ `LlmTool` interface + `ToolDescriptor`, `ToolOutcome`, `ToolRunner` + `SerialToolRunner` (broker default). `CurrentDateTimeTool` (kotlinx-datetime); `DateResolverTool` (multiplatform-safe minimal parser covering today / tomorrow / yesterday / in N units / N units ago / next-or-last weekday / ISO-8601 passthrough — Phase 1 trade-off in lieu of a Native `parsedatetime` equivalent).
+- ✅ `JsonSchemaGenerator` in `internal/` — walks a `SerialDescriptor` and emits a JSON Schema `JsonObject` for primitives, objects, lists, maps, and enums. ~95 LOC, no external dependency, no KSP/codegen.
+- ✅ `Tracer` interface + `NullTracer` object as broker integration points. Full Tracer / EventStore lands in Phase 3.
+- ✅ Examples: `simple-llm`, `list-models`, `simple-structured`, `simple-tool`, `streaming` as JVM-only Gradle subprojects under `examples/`.
+- ✅ 35+ tests green on JVM, Android host, and iOS simulator (`kotlin.test`, `kotlinx-coroutines-test`, Turbine, Ktor MockEngine). Quality gate: ktlint clean, `./gradlew build allTests` green.
+- ⏭ **Deferred**: Detekt is wired but reports `NO-SOURCE` for KMP source sets (a known KMP / Detekt gap). Phase 2 will register per-target `detektMain` / `detektTest` tasks so it actually scans. Maven Central publishing also deferred to a later phase.
 
 ### Phase 2 — OpenAI Gateway + ChatSession + Image Analysis
 - `mojentic-openai` module: `OpenAIGateway`, `OpenAIMessageAdapter`, `OpenAIModelRegistry`.
