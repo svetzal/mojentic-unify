@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 4 slices A + B shipped — `Event` / `Agent` / `Router` / `AsyncDispatcher`, `BaseAsyncLlmAgent`, `ToolWrapper`, `SharedWorkingMemory`, `AsyncAggregatorAgent`, `IterativeProblemSolver`, `SimpleRecursiveAgent`, two new examples (`agent-dispatcher`, `iterative-solver`); `ReActAgent` deferred to slice C polish pass**). Previously: mojentic-kt Phase 3-C (FilesystemGateway + 8 file tools + WebSearch + SerpApi); Phase 3-B (AskUser / TellUser tools + EphemeralTaskList + task tools); Phase 3-A (TracerSystem + ParallelToolRunner); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 4 ✅ shipped — slice C added `ReActAgent` (single-class reasoning loop) plus seven new examples: `async-llm`, `recursive-agent`, `solver-chat-session`, `react`, `working-memory`, `coding-file-tool`, `broker-as-tool`**). Previously: mojentic-kt Phase 4 slices A + B (`Event` / `Agent` / `Router` / `AsyncDispatcher`, `BaseAsyncLlmAgent`, `ToolWrapper`, `SharedWorkingMemory`, `AsyncAggregatorAgent`, `IterativeProblemSolver`, `SimpleRecursiveAgent`, `agent-dispatcher`, `iterative-solver`); Phase 3-C (FilesystemGateway + 8 file tools + WebSearch + SerpApi); Phase 3-B (AskUser / TellUser tools + EphemeralTaskList + task tools); Phase 3-A (TracerSystem + ParallelToolRunner); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
 
 ---
 
@@ -171,7 +171,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Async Aggregator Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Result aggregation (Kotlin: `AsyncAggregatorAgent` keyed by correlationId) |
 | **Iterative Problem Solver** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Multi-step reasoning (Kotlin: chat-session loop with DONE/FAIL termination) |
 | **Simple Recursive Agent** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Self-recursive processing (Kotlin: `SolverEvent` history + `withTimeoutOrNull`) |
-| **ReAct Pattern** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Reasoning + Acting (Swift: collapses Thought/Action/Observation into broker's recursive tool loop with ReAct system prompt) |
+| **ReAct Pattern** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Reasoning + Acting (Swift: collapses Thought/Action/Observation into broker's recursive tool loop with ReAct system prompt; Kotlin: single-class `ReActAgent` with `FINAL ANSWER:` marker, reuses broker's recursive tool dispatch) |
 
 ### Examples by Complexity Level
 
