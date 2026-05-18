@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 4 ✅ shipped — slice C added `ReActAgent` (single-class reasoning loop) plus seven new examples: `async-llm`, `recursive-agent`, `solver-chat-session`, `react`, `working-memory`, `coding-file-tool`, `broker-as-tool`**). Previously: mojentic-kt Phase 4 slices A + B (`Event` / `Agent` / `Router` / `AsyncDispatcher`, `BaseAsyncLlmAgent`, `ToolWrapper`, `SharedWorkingMemory`, `AsyncAggregatorAgent`, `IterativeProblemSolver`, `SimpleRecursiveAgent`, `agent-dispatcher`, `iterative-solver`); Phase 3-C (FilesystemGateway + 8 file tools + WebSearch + SerpApi); Phase 3-B (AskUser / TellUser tools + EphemeralTaskList + task tools); Phase 3-A (TracerSystem + ParallelToolRunner); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 5 ✅ shipped — Realtime Voice: `mojentic-realtime-openai` over Ktor WebSockets, `RealtimeVoiceBroker` + `RealtimeSession` with vendor-neutral `RealtimeEvent` union, server + manual VAD, barge-in via coroutine cancellation, parallel tool calls in voice turns, `realtime-text` example**). Previously: mojentic-kt Phase 4 (`ReActAgent` + nine agent examples); Phase 3 (Tracer + ParallelToolRunner + user-interaction tools + file tools + WebSearch); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
 
 ---
 
@@ -136,16 +136,16 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 | Feature | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **RealtimeVoiceBroker** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Sibling to LlmBroker |
-| **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | WebSocket transport |
-| **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 |  |
-| **Manual VAD / push-to-talk** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | turn_detection: 'none' |
-| **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Manual + speech_started; Elixir: async Task keeps GenServer responsive; Swift: cooperative Task cancellation |
-| **Parallel tool calls in voice turn** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Inherits ParallelToolRunner |
-| **Vendor-neutral event union** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | RealtimeEvent enum / struct + raw access |
-| **Raw event escape hatch** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | session.raw_events() / rawEvents() / transport pid |
-| **Audio in/out streams** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | numpy int16 / binary PCM16 / Vec<i16> / Int16Array / Swift [Int16] @ 24kHz |
-| **Tool cancellation on interrupt** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | asyncio.Event / atomics ref (wired to interrupt/1) / CancellationToken / AbortSignal / Swift Task.cancel |
+| **RealtimeVoiceBroker** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Sibling to LlmBroker |
+| **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | WebSocket transport; Kotlin: Ktor Client (OkHttp on JVM/Android, Darwin on iOS) |
+| **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
+| **Manual VAD / push-to-talk** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | turn_detection: 'none' / `VadConfig.Manual` + `session.commit()` |
+| **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Manual + speech_started; Elixir: async Task keeps GenServer responsive; Swift: cooperative Task cancellation; Kotlin: cooperative `Job.cancel()` on the tool-dispatch job + `ResponseCancel` |
+| **Parallel tool calls in voice turn** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Inherits ParallelToolRunner |
+| **Vendor-neutral event union** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | RealtimeEvent enum / struct + raw access; Kotlin: sealed interface |
+| **Raw event escape hatch** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | session.raw_events() / rawEvents() / transport pid; Kotlin: `session.rawEvents: Flow<JsonObject>` |
+| **Audio in/out streams** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | numpy int16 / binary PCM16 / Vec<i16> / Int16Array / Swift [Int16] @ 24kHz; Kotlin: `Flow<AudioFrame>` carrying `ShortArray` @ 24kHz |
+| **Tool cancellation on interrupt** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | asyncio.Event / atomics ref (wired to interrupt/1) / CancellationToken / AbortSignal / Swift Task.cancel; Kotlin: cooperative coroutine cancellation on the dispatch `Job` |
 
 ### Layer 3: Agent System
 
