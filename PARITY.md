@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 5 ✅ shipped — Realtime Voice: `mojentic-realtime-openai` over Ktor WebSockets, `RealtimeVoiceBroker` + `RealtimeSession` with vendor-neutral `RealtimeEvent` union, server + manual VAD, barge-in via coroutine cancellation, parallel tool calls in voice turns, `realtime-text` example**). Previously: mojentic-kt Phase 4 (`ReActAgent` + nine agent examples); Phase 3 (Tracer + ParallelToolRunner + user-interaction tools + file tools + WebSearch); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 6 ✅ shipped — Anthropic Gateway: `mojentic-anthropic` module with `AnthropicGateway` over Ktor Client. complete / completeJson (via forced `respond_in_json` tool) / stream (SSE) / model listing; tool calls round-trip through `tool_use` / `tool_result` content blocks; system messages route through the top-level `system` field; multimodal images encoded as base64 sources; `reasoning_effort` filtered with warning until Anthropic accepts it**). Previously: mojentic-kt Phase 5 (Realtime Voice: `mojentic-realtime-openai` over Ktor WebSockets, `RealtimeVoiceBroker` + `RealtimeSession`, server + manual VAD, barge-in); Phase 4 (`ReActAgent` + nine agent examples); Phase 3 (Tracer + ParallelToolRunner + user-interaction tools + file tools + WebSearch); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
 
 ---
 
@@ -53,7 +53,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
 | **OpenAI** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Full featured (Kotlin: `mojentic-openai` module, Ktor Client, JSON schema response format, SSE streaming, parallel tool calls, reasoning effort for o-series) |
 | **Ollama** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Full impl with streaming |
-| **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | ✅ | 📝 | Python + Swift (Swift: behind `anthropic` package trait); TypeScript planned |
+| **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | ✅ | ✅ | Python + Swift + Kotlin (Swift: behind `anthropic` package trait; Kotlin: `mojentic-anthropic` module — Messages API, system→top-level field, tool_use/tool_result blocks, base64 images, SSE streaming, forced-tool completeJson, `reasoning_effort` filtered with warning); TypeScript planned |
 | **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Python: file-based mocking |
 | **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Token counting (Swift: approximate `chars/4` default; bring-your-own protocol. Kotlin: JVM-only `JtokkitTokenizerGateway` shipped in `mojentic-openai`; Kotlin/Native consumers inject their own implementation) |
 | **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Vector embeddings (Kotlin: `OpenAIEmbeddingsGateway`) |
@@ -244,7 +244,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 | Gateway | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **Anthropic** | ✅ | ❌ | ❌ | 📝 | 📝 | 📝 | Python-only currently; TypeScript planned |
+| **Anthropic** | ✅ | ❌ | ❌ | 📝 | 📝 | ✅ | Python + Kotlin currently; TypeScript planned |
 | **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Python: file-based mocking for tests |
 
 ### Message Features (Python-only)
