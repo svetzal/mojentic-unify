@@ -8,7 +8,7 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 6 ✅ shipped — Anthropic Gateway: `mojentic-anthropic` module with `AnthropicGateway` over Ktor Client. complete / completeJson (via forced `respond_in_json` tool) / stream (SSE) / model listing; tool calls round-trip through `tool_use` / `tool_result` content blocks; system messages route through the top-level `system` field; multimodal images encoded as base64 sources; `reasoning_effort` filtered with warning until Anthropic accepts it**). Previously: mojentic-kt Phase 5 (Realtime Voice: `mojentic-realtime-openai` over Ktor WebSockets, `RealtimeVoiceBroker` + `RealtimeSession`, server + manual VAD, barge-in); Phase 4 (`ReActAgent` + nine agent examples); Phase 3 (Tracer + ParallelToolRunner + user-interaction tools + file tools + WebSearch); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 7 ✅ shipped — Documentation polish & 1.x stabilization: Dokka v2 multi-module HTML across all six library modules, four handwritten Use Case guides under `docs/use-cases/`, binary-compatibility-validator baselined (`apiCheck` in the quality gate), Android Compose sample + iOS SPM smoke recipe under `samples/`. Maven Central publishing + GitHub Pages deploy + OWASP dependencyCheckAggregate deferred to 0.7.1 as infrastructure followups**). Previously: mojentic-kt Phase 6 (Anthropic Gateway: `mojentic-anthropic` over Ktor Client; system messages route through top-level `system`; multimodal images as base64; `reasoning_effort` filtered); Phase 5 (Realtime Voice: `mojentic-realtime-openai` over Ktor WebSockets, `RealtimeVoiceBroker` + `RealtimeSession`, server + manual VAD, barge-in); Phase 4 (`ReActAgent` + nine agent examples); Phase 3 (Tracer + ParallelToolRunner + user-interaction tools + file tools + WebSearch); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
 
 ---
 
@@ -328,7 +328,7 @@ Each library provides tutorials for these core use cases:
 | **Rust** | ✅ | ✅ | ✅ | ✅ | Uses mdBook with chapter organization |
 | **TypeScript** | ✅ | ✅ | ✅ | ✅ | Uses VitePress with sidebar navigation |
 | **Swift** | ✅ | ✅ | ✅ | ✅ | DocC catalog shipped per SWIFT.md §6 |
-| **Kotlin** | 📝 | 📝 | 📝 | 📝 | Dokka v2 + handwritten Markdown; structure planned in KOTLIN.md §6 |
+| **Kotlin** | ✅ | ✅ | ✅ | ✅ | Dokka v2 multi-module HTML shipped Phase 7; four Use Case guides under `docs/use-cases/` |
 
 ### Documentation Tooling
 
@@ -339,7 +339,7 @@ Each library provides tutorials for these core use cases:
 | **Rust** | mdBook | `book/src/SUMMARY.md` | Chapter-based hierarchy |
 | **TypeScript** | VitePress | `docs/.vitepress/config.mts` | Sidebar item groups |
 | **Swift** | DocC | `Sources/Mojentic/Mojentic.docc/` | DocC tutorials + auto-generated API reference |
-| **Kotlin** (📝 Planned) | Dokka v2 | `mojentic-kt/docs/` | Dokka multi-module HTML + handwritten Markdown use-case guides |
+| **Kotlin** | Dokka v2 | `mojentic-kt/docs/` | Dokka multi-module HTML + handwritten Markdown use-case guides (shipped Phase 7) |
 
 ### Example Tool Documentation
 
