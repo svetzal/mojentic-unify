@@ -1,6 +1,6 @@
 # Mojentic Kotlin Port — Plan
 
-Status: **✅ Phase 1 shipped** — Core LLM types, broker (suspend + streaming + recursive tool execution + structured output via `SerialDescriptor` schema generation), `mojentic-ollama` gateway over Ktor, two provided tools (CurrentDateTime, DateResolver), five runnable examples, full quality gate green on JVM + Android-host + iOS-simulator. Phase 0 skeleton remains the foundation.
+Status: **✅ Phase 2 shipped** — Phase 1 (core LLM + broker + Ollama gateway) plus `ChatSession`, `mojentic-openai` module (`OpenAIGateway`, `OpenAIEmbeddingsGateway`, `OpenAIModelRegistry`), `TokenizerGateway` (JVM jtokkit) + `EmbeddingsGateway` interfaces, five additional examples, Detekt now scans every KMP source set. Quality gate green on JVM + Android-host + iOS-simulator (144 tests).
 Target sub-project directory: `mojentic-kt/`
 Last updated: 2026-05-18
 
@@ -471,12 +471,17 @@ Each phase ends with a passing quality gate, tagged release, and an updated PARI
 - ✅ 35+ tests green on JVM, Android host, and iOS simulator (`kotlin.test`, `kotlinx-coroutines-test`, Turbine, Ktor MockEngine). Quality gate: ktlint clean, `./gradlew build allTests` green.
 - ⏭ **Deferred**: Detekt is wired but reports `NO-SOURCE` for KMP source sets (a known KMP / Detekt gap). Phase 2 will register per-target `detektMain` / `detektTest` tasks so it actually scans. Maven Central publishing also deferred to a later phase.
 
-### Phase 2 — OpenAI Gateway + ChatSession + Image Analysis
-- `mojentic-openai` module: `OpenAIGateway`, `OpenAIMessageAdapter`, `OpenAIModelRegistry`.
-- `ChatSession`.
-- Multimodal `LlmMessage` content (image parts).
-- `TokenizerGateway` + `EmbeddingsGateway` (JVM-first; bring-your-own on Native).
-- Examples: `broker-examples`, `chat-session`, `chat-session-with-tool`, `image-analysis`, `embeddings`.
+### Phase 2 — OpenAI Gateway + ChatSession + Image Analysis ✅ Shipped (2026-05-18)
+- ✅ `mojentic-openai` module with `OpenAIGateway` (Ktor Client over OkHttp on JVM/Android, Darwin on iOS): `complete`, `completeJson` via `response_format: json_schema`, SSE streaming with parallel-tool-call accumulation, `availableModels`. Companion `OpenAIMessageAdapter` handles the multimodal `content` array shape (`{type: text}` + `{type: image_url}`). `OpenAIModelRegistry` carries static metadata (context window, tool / vision / reasoning-effort capabilities).
+- ✅ `ChatSession` in `mojentic-core` — `Mutex`-protected history, atomic update on success + rollback on failure, `suspend send(...)` and `fun stream(...): Flow<StreamEvent>`, optional system prompt + default tool list.
+- ✅ Multimodal `LlmMessage` content (already shipped Phase 1 as `MessageContent` parts; Phase 2 hooks them through both the Ollama and OpenAI adapters).
+- ✅ `TokenizerGateway` interface in `commonMain`; JVM-only `JtokkitTokenizerGateway` in `mojentic-openai/jvmMain` backed by jtokkit (Kotlin/Native consumers inject their own).
+- ✅ `EmbeddingsGateway` interface in `commonMain` plus `OpenAIEmbeddingsGateway` implementation in `mojentic-openai`.
+- ✅ Examples: `broker-examples`, `chat-session`, `chat-session-with-tool`, `image-analysis`, `embeddings` as JVM-only Gradle subprojects.
+- ✅ Reasoning-effort plumbed end-to-end for OpenAI `o*` models (auto-swaps `max_tokens` → `max_completion_tokens`, omits `temperature`).
+- ✅ Detekt now scans **every** KMP source set — `./gradlew detekt` wires the umbrella task to the per-target `detektJvmMain` / `detektIosArm64Main` / … tasks. Closes the Phase 1 deferred gap.
+- ✅ Quality gate green: `./gradlew ktlintCheck detekt build allTests`. 144 tests passing on JVM, Android-host, and iOS-simulator combined.
+- ⏭ **Deferred**: Maven Central publishing pipeline; OWASP dependency-check; `ParallelToolRunner` (slated for Phase 3 with the Tracer + Provided Tools work).
 
 ### Phase 3 — Tracer + Provided Tools
 - `Tracer`, `NullTracer`, `EventStore`, full sealed-event union.

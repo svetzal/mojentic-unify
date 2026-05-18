@@ -8,13 +8,13 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-sw: **Phase 7 shipped — Swift port complete at v1.4.0**: DocC catalog with 4 Use Case tutorials + 3 Example articles, .spi.yml, GitHub Pages workflow on v* tags. 118 tests across 7 phases, 3 LLM gateways + realtime, full agent system). Previously: Kotlin Phase 1 (core LLM + Ollama).
+Last Updated: May 18, 2026 (mojentic-kt: **Phase 2 shipped — OpenAI gateway, ChatSession, Tokenizer/Embeddings gateways, multimodal image messages, five additional examples, Detekt now scans every KMP source set**. 144 tests passing across JVM, Android-host, and iOS-simulator). Previously: mojentic-sw Phase 7 (Swift port complete at v1.4.0); mojentic-kt Phase 1.
 
 ---
 
 ## What's Complete (Uniform Across All Ports)
 
-These features are **fully implemented in Python, Elixir, Rust, TypeScript, and Swift** (Kotlin port: Phase 1 shipped — see KOTLIN.md for remaining phases):
+These features are **fully implemented in Python, Elixir, Rust, TypeScript, and Swift** (Kotlin port: Phase 2 shipped — see KOTLIN.md for remaining phases):
 
 - **Layer 1 (LLM Integration)**: Broker, CompletionConfig, reasoning effort control, OpenAI + Ollama gateways, structured output, tool calling, streaming with recursive tool execution, streaming chat sessions, image analysis, tokenizer, embeddings
 - **Layer 2 (Tracer System)**: Event recording, correlation tracking, event filtering, broker/tool integration
@@ -51,12 +51,12 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 | Gateway | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **OpenAI** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Full featured (Kotlin: Phase 2) |
+| **OpenAI** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Full featured (Kotlin: `mojentic-openai` module, Ktor Client, JSON schema response format, SSE streaming, parallel tool calls, reasoning effort for o-series) |
 | **Ollama** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Full impl with streaming |
 | **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | ✅ | 📝 | Python + Swift (Swift: behind `anthropic` package trait); TypeScript planned |
 | **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Python: file-based mocking |
-| **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Token counting (Swift: approximate `chars/4` default; bring-your-own protocol) |
-| **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Vector embeddings |
+| **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Token counting (Swift: approximate `chars/4` default; bring-your-own protocol. Kotlin: JVM-only `JtokkitTokenizerGateway` shipped in `mojentic-openai`; Kotlin/Native consumers inject their own implementation) |
+| **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Vector embeddings (Kotlin: `OpenAIEmbeddingsGateway`) |
 
 #### Ollama Gateway Features
 
@@ -108,12 +108,12 @@ This section provides comprehensive feature tables for implementing new ports (e
 
 | Feature | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
-| **Session Management** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Conversation state |
-| **Message History** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Context retention |
-| **Context Window** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Token limit management |
-| **System Prompts** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Initial instructions |
-| **Tool Integration** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Session-level tools |
-| **Streaming Send** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Stream responses with auto history management |
+| **Session Management** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Conversation state (Kotlin: `Mutex`-protected history, atomic update + rollback) |
+| **Message History** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Context retention |
+| **Context Window** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Token limit management (Kotlin: `TokenizerGateway` interface ships in Phase 2; ChatSession doesn't auto-trim yet) |
+| **System Prompts** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Initial instructions |
+| **Tool Integration** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Session-level tools |
+| **Streaming Send** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Stream responses with auto history management |
 
 ### Layer 2: Tracer System
 
@@ -478,7 +478,7 @@ def process(_), do: {:error, :invalid_format}
 | Rust | 365+ | tarpaulin | 0 (clippy) | cargo deny (non-blocking warnings) |
 | TypeScript | 656 | Jest | 0 (ESLint) | npm audit clean |
 | Swift | 118 (through Phase 6) | not yet measured | 0 (swift-format strict); SwiftLint via CI | Dependabot (CI) |
-| Kotlin | 35 (through Phase 1) | not yet measured | 0 (ktlint strict; Detekt wired but NO-SOURCE on KMP — Phase 2 fix) | 📝 Phase 2+ (OWASP Dependency-Check planned) |
+| Kotlin | 144 (through Phase 2) | not yet measured | 0 (ktlint strict; Detekt now scans every KMP source set) | 📝 Phase 3+ (OWASP Dependency-Check planned) |
 
 ---
 
