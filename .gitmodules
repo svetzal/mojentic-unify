@@ -13,3 +13,6 @@
 [submodule "mojentic-sw"]
 	path = mojentic-sw
 	url = git@github.com:svetzal/mojentic-sw.git
+[submodule "mojentic-kt"]
+	path = mojentic-kt
+	url = git@github.com:svetzal/mojentic-kt.git

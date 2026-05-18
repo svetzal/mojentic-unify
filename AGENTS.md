@@ -4,7 +4,7 @@ This file provides shared guidance for all AI agents working across the Mojentic
 
 ## Project Overview
 
-Mojentic is a multi-language agentic framework providing simple, flexible LLM interaction capabilities. The monorepo contains four shipping language ports plus one in planning:
+Mojentic is a multi-language agentic framework providing simple, flexible LLM interaction capabilities. The monorepo contains four shipping language ports plus two in planning:
 
 | Sub-project | Language | Role |
 |-------------|----------|------|
@@ -13,6 +13,7 @@ Mojentic is a multi-language agentic framework providing simple, flexible LLM in
 | `mojentic-ex/` | Elixir | Port |
 | `mojentic-ru/` | Rust | Port |
 | `mojentic-sw/` | Swift | 📝 Planned — see SWIFT.md |
+| `mojentic-kt/` | Kotlin | 📝 Planned — see KOTLIN.md |
 
 **PARITY.md** tracks feature completeness across all implementations. When adding features to one port, check PARITY.md and update it accordingly.
 
@@ -77,6 +78,7 @@ Each port enforces its own mandatory quality checks. **All gates must pass befor
 | Elixir | `mix credo --strict` (zero warnings) + `mix format` | ExUnit | `mix audit` |
 | Rust | `cargo clippy --all-targets --all-features -- -D warnings` + `cargo fmt` | `cargo test` | `cargo deny check` |
 | Swift (📝 Planned) | `swiftlint --strict` + `swift format lint --strict` | `swift test --parallel` (Swift Testing) | GitHub Dependabot + manual `Package.resolved` review |
+| Kotlin (📝 Planned) | `./gradlew ktlintCheck detekt` | `./gradlew allTests` (`kotlin.test` + Turbine + Ktor MockEngine) | OWASP Dependency-Check (`./gradlew dependencyCheckAggregate`) |
 
 ## Per-Language Documentation
 
@@ -89,6 +91,7 @@ Each port maintains its own end-user documentation. Update docs in the same comm
 | Elixir | ex_docs | `mojentic-ex/guides/` |
 | Rust | mdBook | `mojentic-ru/book/src/` |
 | Swift (📝 Planned) | DocC | `mojentic-sw/Sources/Mojentic/Mojentic.docc/` |
+| Kotlin (📝 Planned) | Dokka v2 | `mojentic-kt/docs/` |
 
 ## Code Review Mindset
 
