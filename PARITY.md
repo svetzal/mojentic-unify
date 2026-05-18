@@ -8,13 +8,13 @@ This document tracks **differences and incomplete work** across the four Mojenti
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: Phase 1 shipped — core LLM types, broker with non-streaming + streaming + recursive tool execution + structured output, `mojentic-ollama` gateway over Ktor, two provided tools, JsonSchemaGenerator, five examples; 35+ tests green on JVM + Android-host + iOS-simulator). Previously: mojentic-sw Phase 5 shipped — realtime voice: URLSessionWebSocketTask transport, vendor-neutral RealtimeEvent union, RealtimeSession + RealtimeVoiceBroker, OpenAI realtime gateway with server/manual VAD and barge-in.
+Last Updated: May 18, 2026 (mojentic-sw: **Phase 7 shipped — Swift port complete at v1.4.0**: DocC catalog with 4 Use Case tutorials + 3 Example articles, .spi.yml, GitHub Pages workflow on v* tags. 118 tests across 7 phases, 3 LLM gateways + realtime, full agent system). Previously: Kotlin Phase 1 (core LLM + Ollama).
 
 ---
 
 ## What's Complete (Uniform Across All Ports)
 
-These features are **fully implemented in Python, Elixir, Rust, and TypeScript** (Swift port: Phase 1 shipped — see SWIFT.md for remaining phases; Kotlin port: Phase 1 shipped — see KOTLIN.md for remaining phases):
+These features are **fully implemented in Python, Elixir, Rust, TypeScript, and Swift** (Kotlin port: Phase 1 shipped — see KOTLIN.md for remaining phases):
 
 - **Layer 1 (LLM Integration)**: Broker, CompletionConfig, reasoning effort control, OpenAI + Ollama gateways, structured output, tool calling, streaming with recursive tool execution, streaming chat sessions, image analysis, tokenizer, embeddings
 - **Layer 2 (Tracer System)**: Event recording, correlation tracking, event filtering, broker/tool integration
@@ -53,7 +53,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
 | **OpenAI** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Full featured (Kotlin: Phase 2) |
 | **Ollama** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Full impl with streaming |
-| **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | 📝 | 📝 | Python only; TypeScript planned; Swift Phase 6 |
+| **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | ✅ | 📝 | Python + Swift (Swift: behind `anthropic` package trait); TypeScript planned |
 | **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Python: file-based mocking |
 | **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Token counting (Swift: approximate `chars/4` default; bring-your-own protocol) |
 | **Embeddings Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | Vector embeddings |
@@ -327,7 +327,7 @@ Each library provides tutorials for these core use cases:
 | **Elixir** | ✅ | ✅ | ✅ | ✅ | Uses ExDoc with grouped extras |
 | **Rust** | ✅ | ✅ | ✅ | ✅ | Uses mdBook with chapter organization |
 | **TypeScript** | ✅ | ✅ | ✅ | ✅ | Uses VitePress with sidebar navigation |
-| **Swift** | 📝 | 📝 | 📝 | 📝 | DocC; structure planned in SWIFT.md §6 |
+| **Swift** | ✅ | ✅ | ✅ | ✅ | DocC catalog shipped per SWIFT.md §6 |
 | **Kotlin** | 📝 | 📝 | 📝 | 📝 | Dokka v2 + handwritten Markdown; structure planned in KOTLIN.md §6 |
 
 ### Documentation Tooling
@@ -338,7 +338,7 @@ Each library provides tutorials for these core use cases:
 | **Elixir** | ExDoc | `mix.exs` | Grouped extras with regex patterns |
 | **Rust** | mdBook | `book/src/SUMMARY.md` | Chapter-based hierarchy |
 | **TypeScript** | VitePress | `docs/.vitepress/config.mts` | Sidebar item groups |
-| **Swift** (📝 Planned) | DocC | `Sources/Mojentic/Mojentic.docc/` | DocC tutorials + auto-generated API reference |
+| **Swift** | DocC | `Sources/Mojentic/Mojentic.docc/` | DocC tutorials + auto-generated API reference |
 | **Kotlin** (📝 Planned) | Dokka v2 | `mojentic-kt/docs/` | Dokka multi-module HTML + handwritten Markdown use-case guides |
 
 ### Example Tool Documentation
@@ -347,9 +347,9 @@ All provided tools are documented as examples with emphasis on extensibility:
 
 | Tool Category | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Presentation |
 | --------------- | -------- | -------- | ------ | ------------ | ------- | ------- | -------------- |
-| **File Tools** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | "Example: File Tools" |
-| **Task Management** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | "Example: Task Management" |
-| **Web Search** | ✅ | ✅ | ✅ | ✅ | 📝 | 📝 | "Example: Web Search" |
+| **File Tools** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: File Tools" |
+| **Task Management** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: Task Management" |
+| **Web Search** | ✅ | ✅ | ✅ | ✅ | ✅ | 📝 | "Example: Web Search" |
 
 Each example guide includes:
 - Introduction emphasizing it's a reference implementation
@@ -477,7 +477,7 @@ def process(_), do: {:error, :invalid_format}
 | Elixir | 634 | 81.56% | 0 (Credo) | mix deps.audit clean |
 | Rust | 365+ | tarpaulin | 0 (clippy) | cargo deny (non-blocking warnings) |
 | TypeScript | 656 | Jest | 0 (ESLint) | npm audit clean |
-| Swift | 109 (through Phase 5) | not yet measured | 0 (swift-format strict); SwiftLint via CI | Dependabot (CI) |
+| Swift | 118 (through Phase 6) | not yet measured | 0 (swift-format strict); SwiftLint via CI | Dependabot (CI) |
 | Kotlin | 35 (through Phase 1) | not yet measured | 0 (ktlint strict; Detekt wired but NO-SOURCE on KMP — Phase 2 fix) | 📝 Phase 2+ (OWASP Dependency-Check planned) |
 
 ---
