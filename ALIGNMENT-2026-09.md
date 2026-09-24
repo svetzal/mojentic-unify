@@ -179,3 +179,27 @@ Raised by the Elixir alignment pass. These bind every port.
 6. **Structured output truncation** (`generate_object` accepting a truncated
    response that happens to parse) is out of scope here. It goes with the
    `generate` finish-reason decision.
+
+## Clarifications, round 2 (2026-09-24)
+
+Raised by the Python and TypeScript passes.
+
+7. **Error reasons, one vocabulary.** Every port uses these names, in its own
+   casing: `incomplete_completion`, `incomplete_stream`, `provider_error`,
+   `unexpected_tool_calls`, `invalid_stream_event`, `invalid_stream_content`
+   (optional, see 5), `stream_events_unsupported`, `request_failed` (the
+   connection or body read failed), and `cancelled` (only where the port has
+   an explicit cancellation signal that fires while the consumer is still
+   reading). A non-2xx HTTP status is `provider_error` carrying the status.
+8. **Evidence field is `provider_model`.** Inside completed and
+   incomplete-completion evidence, the reported model is `provider_model`
+   (`providerModel`), matching the trace field.
+9. **Partial evidence on `incomplete_stream`.** Attach whatever evidence
+   arrived before the stream ended (model, usage). Null when none arrived.
+10. **Unsupported gateway.** Yield a single terminal `stream_events_unsupported`
+    error event. Do not raise or throw. No request and no response trace.
+11. **Early stop.** When the consumer stops early, the call is traced and no
+    response is. Document that. It is not an error.
+12. **Ollama without `done_reason`.** Treat it as `incomplete_completion`, as
+    written. Document that Ollama servers too old to send `done_reason` cannot
+    use this API.
