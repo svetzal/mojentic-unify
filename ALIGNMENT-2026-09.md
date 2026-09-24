@@ -151,3 +151,31 @@ Tests: at minimum, per supported gateway, with a fake transport:
 - Docs: a section for each capability in the port's broker or streaming guide,
   using the names in this document.
 - Commits on `main`, pushed. One commit per capability is preferred.
+
+## Clarifications, 2026-09-24
+
+Raised by the Elixir alignment pass. These bind every port.
+
+1. **"Streaming" in section 2 means the section 3 events API.** Legacy
+   streaming APIs keep their current behaviour, including whether they trace
+   at all. Do not add `include_usage` to a legacy stream that cannot hand
+   usage back.
+2. **Terminal event metadata carries provider metadata.** `completed` and the
+   incomplete-completion error hold finish reason, usage, provider model,
+   **and** a nullable provider metadata map (for example Ollama's
+   `total_duration`, `load_duration`, `prompt_eval_duration`,
+   `eval_duration`). The stream trace records that map as its `metadata`.
+3. **Usage shape.** The trace carries the usage value the port's gateway
+   response already holds, unchanged. Do not introduce a new normalization in
+   this pass. A cross-port usage shape is deferred to the adaptive-harness
+   schema work, where it belongs.
+4. **Error naming.** Ports keep their own idiom. The incomplete-completion
+   error from the events API carries the evidence (finish reason, usage,
+   model, metadata). Aligning `generate`'s incomplete-completion shape with it
+   is part of the deferred release decision.
+5. **Invalid content.** A content delta that is not a string may use a finer
+   `invalid_stream_content` reason where the port already distinguishes it.
+   Otherwise use `invalid_stream_event`.
+6. **Structured output truncation** (`generate_object` accepting a truncated
+   response that happens to parse) is out of scope here. It goes with the
+   `generate` finish-reason decision.
