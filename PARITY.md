@@ -1,14 +1,26 @@
 # Mojentic Feature Parity Matrix
 
-This document tracks **differences and incomplete work** across the four Mojentic implementations.
+This document tracks **differences and incomplete work** across the six Mojentic implementations.
 
 **Legend:**
+
 - ✅ Complete
 - ⚠️ Partial
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: May 18, 2026 (mojentic-kt: **Phase 7 (0.7.0 + 0.7.1) ✅ shipped — Documentation polish, 1.x stabilization, and the full release pipeline. 0.7.0: Dokka v2 multi-module HTML, four Use Case guides, binary-compatibility-validator baselined, Android Compose sample + iOS SPM smoke recipe under `samples/`. 0.7.1: XCFramework declarations on all six modules, Maven Central publishing via `vanniktech.maven.publish` to the Sonatype Central Portal with in-memory GPG signing, OWASP dependencyCheckAggregate at root (CVSS≥7 fails the build), three GitHub Actions workflows for docs / release / weekly security scan. Library surface unchanged; remaining repo-admin actions: enable GitHub Pages, add six CI secrets, push `v1.4.0`**). Previously: mojentic-kt Phase 6 (Anthropic Gateway: `mojentic-anthropic` over Ktor Client; system messages route through top-level `system`; multimodal images as base64; `reasoning_effort` filtered); Phase 5 (Realtime Voice: `mojentic-realtime-openai` over Ktor WebSockets, `RealtimeVoiceBroker` + `RealtimeSession`, server + manual VAD, barge-in); Phase 4 (`ReActAgent` + nine agent examples); Phase 3 (Tracer + ParallelToolRunner + user-interaction tools + file tools + WebSearch); Phase 2 (OpenAI gateway, ChatSession, Tokenizer/Embeddings); mojentic-sw Phase 7 (Swift port complete at v1.4.0).
+Last Updated: June 16, 2026.
+
+Current update: added `ADAPTIVE-HARNESS-ENHANCEMENTS.md` as the cross-port plan
+for Sandbox2-derived observability, context assembly, streaming progress,
+reasoning accounting, and trace summary enhancements.
+
+Previous update: May 18, 2026. mojentic-kt Phase 7 shipped documentation
+polish, 1.x stabilization, and release pipeline work. Earlier Kotlin phases
+covered Anthropic, Realtime Voice, ReAct, Tracer, ParallelToolRunner,
+user-interaction tools, file tools, WebSearch, OpenAI gateway, ChatSession,
+Tokenizer, and Embeddings. mojentic-sw Phase 7 completed the Swift port at
+v1.4.0.
 
 ---
 
@@ -22,6 +34,33 @@ These features are **fully implemented in Python, Elixir, Rust, TypeScript, and 
 - **Tools**: DateResolver, File tools (8 tools), Task manager, Tell user, Ask user, Web search, Current datetime, Tool wrapper (broker as tool)
 - **Examples**: 26 shared examples implemented across all ports (Python, Elixir, Rust, TypeScript)
 - **Infrastructure**: Full test suites, zero lint warnings, CI/CD pipelines, documentation
+
+## Planned Cross-Port Enhancements
+
+`ADAPTIVE-HARNESS-ENHANCEMENTS.md` captures the next shared observability and
+context-control feature set discovered from the Sandbox2 adaptive harness. These
+items are not harness policy; they are Mojentic primitives that should be
+implemented evenly across ports after the Python reference shape is settled.
+
+| Enhancement | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
+| ----------- | ------ | ------ | ---- | ---------- | ----- | ------ |
+| Context assembly ledger | 📝 | 📝 | ⚠️ | 📝 | 📝 | 📝 |
+| Context append events | 📝 | 📝 | ⚠️ | 📝 | 📝 | 📝 |
+| Tool payload measurement | 📝 | 📝 | ⚠️ | 📝 | 📝 | 📝 |
+| Provider stream progress and metrics | 📝 | 📝 | ⚠️ | 📝 | 📝 | 📝 |
+| Progress state classification | 📝 | 📝 | ⚠️ | 📝 | 📝 | 📝 |
+| Thinking and reasoning accounting | 📝 | 📝 | ⚠️ | 📝 | 📝 | 📝 |
+| Trace summary API or CLI | 📝 | 📝 | ⚠️ | 📝 | 📝 | 📝 |
+| Context assembly policy hooks | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
+| Validation output summaries | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
+
+Notes:
+
+- Rust has harness-local evidence for the partial items; Mojentic ports still
+  need shared trace/event surfaces.
+- Context assembly policy hooks should come after ledger and append tracing.
+- Validation output summaries are reusable shapes; applications decide what
+  counts as validation.
 
 ---
 
@@ -138,13 +177,13 @@ This section provides comprehensive feature tables for implementing new ports (e
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
 | **RealtimeVoiceBroker** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Sibling to LlmBroker |
 | **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | WebSocket transport; Kotlin: Ktor Client (OkHttp on JVM/Android, Darwin on iOS) |
-| **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |  |
+| **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | **Manual VAD / push-to-talk** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | turn_detection: 'none' / `VadConfig.Manual` + `session.commit()` |
 | **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Manual + speech_started; Elixir: async Task keeps GenServer responsive; Swift: cooperative Task cancellation; Kotlin: cooperative `Job.cancel()` on the tool-dispatch job + `ResponseCancel` |
 | **Parallel tool calls in voice turn** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Inherits ParallelToolRunner |
 | **Vendor-neutral event union** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | RealtimeEvent enum / struct + raw access; Kotlin: sealed interface |
 | **Raw event escape hatch** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | session.raw_events() / rawEvents() / transport pid; Kotlin: `session.rawEvents: Flow<JsonObject>` |
-| **Audio in/out streams** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | numpy int16 / binary PCM16 / Vec<i16> / Int16Array / Swift [Int16] @ 24kHz; Kotlin: `Flow<AudioFrame>` carrying `ShortArray` @ 24kHz |
+| **Audio in/out streams** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | numpy int16 / binary PCM16 / `Vec<i16>` / Int16Array / Swift [Int16] @ 24kHz; Kotlin: `Flow<AudioFrame>` carrying `ShortArray` @ 24kHz |
 | **Tool cancellation on interrupt** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | asyncio.Event / atomics ref (wired to interrupt/1) / CancellationToken / AbortSignal / Swift Task.cancel; Kotlin: cooperative coroutine cancellation on the dispatch `Job` |
 
 ### Layer 3: Agent System
@@ -178,7 +217,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 #### Level 1: Basic LLM Usage
 
 | Example | Description | Dependencies |
-|---------|-------------|--------------|
+| --------- | ------------- | -------------- |
 | **simple_llm** | Basic text generation | Broker, Gateway |
 | **list_models** | List available models | Gateway |
 | **simple_structured** | Schema-based structured output | Broker, JSON Schema |
@@ -187,7 +226,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 #### Level 2: Advanced LLM Features
 
 | Example | Description | Dependencies |
-|---------|-------------|--------------|
+| --------- | ------------- | -------------- |
 | **broker_examples** | Comprehensive broker features | All broker features |
 | **streaming** | Streaming with tool support | Streaming API |
 | **chat_session** | Interactive chat | ChatSession |
@@ -199,7 +238,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 #### Level 3: Tool System & Extensions
 
 | Example | Description | Dependencies |
-|---------|-------------|--------------|
+| --------- | ------------- | -------------- |
 | **file_tool** | File operations | File tools |
 | **coding_file_tool** | Code-aware file ops | File tools |
 | **broker_as_tool** | Broker as tool (delegation) | Tool wrapping |
@@ -211,20 +250,20 @@ This section provides comprehensive feature tables for implementing new ports (e
 #### Level 4: Tracing & Observability
 
 | Example | Description | Dependencies |
-|---------|-------------|--------------|
+| --------- | ------------- | -------------- |
 | **tracer_demo** | Tracer system demo | TracerSystem |
 
 #### Level 5: Agent System Basics
 
 | Example | Description | Dependencies |
-|---------|-------------|--------------|
+| --------- | ------------- | -------------- |
 | **async_llm** | Async LLM agents | AsyncDispatcher, Agents |
 | **async_dispatcher** | Event routing | AsyncDispatcher, Router |
 
 #### Level 6: Advanced Agent Patterns
 
 | Example | Description | Dependencies |
-|---------|-------------|--------------|
+| --------- | ------------- | -------------- |
 | **iterative_solver** | Multi-iteration solving | IterativeProblemSolver |
 | **recursive_agent** | Self-recursive agent | SimpleRecursiveAgent |
 | **solver_chat_session** | Interactive solver | Solver + ChatSession |
@@ -232,7 +271,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 #### Level 7: Multi-Agent & Specialized
 
 | Example | Description | Dependencies |
-|---------|-------------|--------------|
+| --------- | ------------- | -------------- |
 | **react** | ReAct pattern | ReAct agent |
 | **working_memory** | Shared memory | SharedWorkingMemory |
 
@@ -303,7 +342,7 @@ The Mojentic documentation follows a structured approach that emphasizes learnin
 Each library's documentation site includes:
 
 | Section | Purpose | Content Type |
-|---------|---------|--------------|
+| --------- | --------- | -------------- |
 | **Use Cases** | Learning path for common scenarios | Self-contained tutorials with Why/When/How structure |
 | **Examples** | Reference implementations | Code examples with explanations |
 | **Core Concepts** | API reference | Technical documentation of library features |
@@ -313,7 +352,7 @@ Each library's documentation site includes:
 Each library provides tutorials for these core use cases:
 
 | Use Case | Description | Key Features Demonstrated |
-|----------|-------------|--------------------------|
+| ---------- | ------------- | -------------------------- |
 | **Building Chatbots** | Creating conversational agents with context | Chat sessions, message history, system prompts |
 | **Structured Output** | Extracting data from unstructured text | Schema definition, JSON validation, type safety |
 | **Building Agents** | Creating autonomous problem-solving systems | Tool usage, reasoning loops, multi-step execution |
@@ -322,7 +361,7 @@ Each library provides tutorials for these core use cases:
 ### Library-Specific Documentation Adherence
 
 | Library | Use Cases Section | Examples Section | Tutorial Format | Self-Contained | Notes |
-|---------|------------------|------------------|-----------------|----------------|-------|
+| --------- | ------------------ | ------------------ | ----------------- | ---------------- | ------- |
 | **Python** | ✅ | ✅ | ✅ | ✅ | Reference implementation; most comprehensive |
 | **Elixir** | ✅ | ✅ | ✅ | ✅ | Uses ExDoc with grouped extras |
 | **Rust** | ✅ | ✅ | ✅ | ✅ | Uses mdBook with chapter organization |
@@ -333,7 +372,7 @@ Each library provides tutorials for these core use cases:
 ### Documentation Tooling
 
 | Library | Tool | Config File | Structure |
-|---------|------|-------------|-----------|
+| --------- | ------ | ------------- | ----------- |
 | **Python** | MkDocs | `mkdocs.yml` | Navigation-based sections |
 | **Elixir** | ExDoc | `mix.exs` | Grouped extras with regex patterns |
 | **Rust** | mdBook | `book/src/SUMMARY.md` | Chapter-based hierarchy |
@@ -352,6 +391,7 @@ All provided tools are documented as examples with emphasis on extensibility:
 | **Web Search** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | "Example: Web Search" (Kotlin: `examples/web-search`) |
 
 Each example guide includes:
+
 - Introduction emphasizing it's a reference implementation
 - Description of what the tool demonstrates
 - Complete usage examples
@@ -364,13 +404,16 @@ Each example guide includes:
 The three implementations represent fundamentally different approaches to working with data, each with distinct advantages:
 
 ### Python: Runtime Validation (Pydantic)
+
 **Philosophy**: Trust but verify at runtime
+
 - Classes with rich validation logic
 - Runtime type coercion and conversion
 - Detailed error messages for invalid data
 - Schema generation from classes
 
 **Example Mindset**:
+
 ```python
 class Message(BaseModel):
     role: str
@@ -384,7 +427,9 @@ class Message(BaseModel):
 ```
 
 ### Elixir: Data Transformation ("Thinking in Data")
+
 **Philosophy**: Data flows through transformations; structure emerges from use
+
 - Plain maps and structs without behavior
 - Pattern matching for destructuring and validation
 - Pipelines transform data through functions
@@ -392,6 +437,7 @@ class Message(BaseModel):
 - Guards and pattern matching provide implicit contracts
 
 **Example Mindset**:
+
 ```elixir
 # Data is just data - structs are lightweight
 %Message{role: :user, content: "Hello"}
@@ -412,13 +458,16 @@ messages
 **Key Insight**: Elixir doesn't validate data against schemas - it uses pattern matching to destructure it. If the pattern doesn't match, the function clause doesn't fire. This is "thinking in data" - the shape of data determines program flow, not types per se.
 
 ### Rust: Compile-Time Guarantees
+
 **Philosophy**: Invalid states unrepresentable
+
 - Strong static typing with zero-cost abstractions
 - Enum variants encode state transitions
 - Type system prevents entire classes of bugs
 - Traits define behavior contracts
 
 **Example Mindset**:
+
 ```rust
 enum MessageRole {
     User,
@@ -438,7 +487,7 @@ struct Message {
 ### Comparison Summary
 
 | Aspect | Python (Pydantic) | Elixir (Pattern Matching) | Rust (Type System) |
-|--------|-------------------|--------------------------|-------------------|
+| -------- | ------------------- | -------------------------- | ------------------- |
 | **When validated** | Runtime | At usage (pattern match) | Compile time |
 | **Invalid data** | Throws exception | Function clause doesn't match | Cannot compile |
 | **Flexibility** | Very high | High | Lower (by design) |
@@ -472,13 +521,13 @@ def process(_), do: {:error, :invalid_format}
 ## Test & Quality Snapshot
 
 | Port | Tests | Coverage | Lint Warnings | Security |
-|------|-------|----------|---------------|----------|
-| Python | 227 | ~63% | 0 (flake8) | pip-audit (network-blocked) |
-| Elixir | 634 | 81.56% | 0 (Credo) | mix deps.audit clean |
-| Rust | 365+ | tarpaulin | 0 (clippy) | cargo deny (non-blocking warnings) |
-| TypeScript | 656 | Jest | 0 (ESLint) | npm audit clean |
-| Swift | 118 (through Phase 6) | not yet measured | 0 (swift-format strict); SwiftLint via CI | Dependabot (CI) |
-| Kotlin | 144 (through Phase 2) | not yet measured | 0 (ktlint strict; Detekt now scans every KMP source set) | 📝 Phase 3+ (OWASP Dependency-Check planned) |
+| ------ | ------- | ---------- | --------------- | ---------- |
+| Python | 376 | not re-measured 2026-09-24 | 0 (flake8) | bandit, pip-audit clean |
+| Elixir | 777 (incl. 18 doctests) | 86.92% | 0 (Credo strict) | deps.audit, hex.audit, sobelow clean |
+| Rust | 517 unit + 2 integration + 16 doctests | tarpaulin | 0 (clippy -D warnings) | cargo deny advisories clean |
+| TypeScript | 773 | Jest | 0 (ESLint) | npm audit clean |
+| Swift | 194 (195 with `--traits full`) | not yet measured | 0 (swift-format, SwiftLint strict) | Dependabot (CI) |
+| Kotlin | 275+ JVM, plus iOS simulator arm64 | not yet measured | 0 (ktlint, Detekt) | OWASP Dependency-Check: 6 findings, build-time tooling plus one false positive (decision pending) |
 
 ---
 
@@ -492,3 +541,62 @@ def process(_), do: {:error, :invalid_format}
 ---
 
 *This document is maintained alongside ELIXIR.md, RUST.md, TYPESCRIPT.md, SWIFT.md, and KOTLIN.md.*
+
+## September 2026 native broker alignment
+
+All six source ports expose a single-response broker call: Python/Elixir/Rust
+`generate_response`, TypeScript/Swift/Kotlin `generateResponse`. It returns the
+native gateway response without dispatching tools or adding conversation turns.
+Callers already supply complete context; this work adds no context-policy hook.
+
+Explicit unlimited tool rounds use Python `None`, Elixir `:infinity`,
+TypeScript/Kotlin `null`, Swift `nil`, and Rust's
+`with_unlimited_tool_iterations()` builder. Existing finite defaults remain.
+These options are distinct from concurrency limits.
+
+The runner corrections preserve unknown-call outcomes in Python, Kotlin and
+Swift; configured runner/context dispatch and timeout identity in Elixir; caller
+context propagation in TypeScript; and bounded active execution in Kotlin.
+Python keeps one assistant message for each parallel batch and uses iterative
+follow-up so unlimited rounds do not consume Python recursion frames.
+
+Native response metadata availability still follows each gateway and response
+type. Python and Elixir OpenAI responses now retain reported usage, model and
+finish reason. This does not assert that every provider or port reports usage.
+
+Verification is recorded in Bedrock's `docs/mojentic-broker-review.md` and its
+native harness evaluation. Kotlin's source changes were committed on
+2026-09-24 (`7086d63`); its dependency-audit remediation is tracked
+separately.
+
+## September 2026 stream and trace evidence alignment
+
+Three capabilities first built in Elixir for Bedrock were aligned across all
+six ports on 2026-09-24. The contract, with two rounds of clarifications, is
+`ALIGNMENT-2026-09.md`. Background is in `DIVERGENCE-2026-09-24.md`.
+
+| Capability | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
+| ---------- | ------ | ------ | ---- | ---------- | ----- | ------ |
+| Response format in `CompletionConfig` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Response format forwarded in streaming (OpenAI, Ollama) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Response trace keeps usage, provider model, finish reason, metadata | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Single-turn stream events with terminal evidence (OpenAI) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Single-turn stream events with terminal evidence (Ollama) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Stream events via Anthropic | unsupported | n/a | n/a | n/a | unsupported | unsupported |
+
+Names: Python/Elixir/Rust `generate_stream_events`, TypeScript/Swift/Kotlin
+`generateStreamEvents`. Events are content, completed (evidence), and error
+(one shared reason vocabulary). Truncated output is an error, never a result.
+
+Known differences that remain, deliberately deferred:
+
+- **Usage shape.** Each port keeps its gateway's existing usage shape.
+  TypeScript normalizes Ollama counts; the others keep Ollama's raw keys.
+  A shared shape belongs to the adaptive-harness schema work.
+- **`generate` finish reasons.** Only Elixir treats a non-stop finish in
+  `generate` as an error. Aligning the others is a breaking change tied to
+  the next release version.
+- **Cancellation reason.** Only TypeScript emits `cancelled`, because only it
+  has an explicit abort signal that fires while the consumer is reading.
+- **Swift structured output naming.** `completeJSON` sends schema name
+  `Response` with `strict: true`; the streaming path sends `response`.
