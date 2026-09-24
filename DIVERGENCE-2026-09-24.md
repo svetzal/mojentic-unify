@@ -79,6 +79,33 @@ The length-continuation and incomplete-completion changes alter what callers
 get back. They are the most important divergence in this report: the same
 prompt now behaves differently in Elixir than in the other five ports.
 
+### Where the Elixir drift came from
+
+Every Elixir-only change was made for Bedrock's workshop agent and landed
+within minutes of a matching Bedrock commit
+(`~/Work/Projects/Mojility/bedrock-workspace/bedrock`):
+
+| mojentic-ex | Bedrock | Bedrock commit |
+| ----------- | ------- | -------------- |
+| 11a5622, 09-08 02:42 | 13ff5c8, 02:46 | Collect workshop model streams with explicit completion evidence |
+| ab4ac60, 09-08 21:45 | 3f5bad1, 22:00 | Use native Mojentic tool requests with caller-owned workshop context |
+| 065649e, 09-09 03:41 | 2c25e4f, 03:45 | Recover workshop usage through Mojentic response traces |
+| 82879d3, 09-19 11:17 | 83fd981, 11:18 | Resume length-limited workshop turns |
+
+Bedrock's `docs/mojentic-broker-review.md` (e1712f1, 2026-09-08) is also where
+the cross-port wave started. Its recommendations became the September changes
+in all six ports. The follow-ups after that stayed in Elixir only.
+
+Bedrock pins mojentic-ex by commit. `apps/workshop_executive` is pinned to
+82879d3, and its test `a length-limited model response continues before
+completion` depends on the library continuing. `apps/bedrock` is pinned to
+e6ade1c, before that change. Reverting in mojentic-ex therefore means moving
+continuation into Bedrock first.
+
+By contrast, the Rust-only stream features below are consumed by the Sandbox2
+benchmark harness (`~/Work/Sandbox2/Harness`), which is also the evidence
+source for `ADAPTIVE-HARNESS-ENHANCEMENTS.md`.
+
 ## Rust-only behaviour (2026-06-12 to 2026-08-09)
 
 | Change | Commit | In other ports |
