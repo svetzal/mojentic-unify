@@ -19,7 +19,7 @@ Mojentic is a multi-language agentic framework providing simple, flexible LLM in
 
 ## Cross-Language Coordination
 
-- The Elixir implementation is the **source of truth** for API design and feature behaviour. It leads because an active Elixir product (Bedrock) drives new capabilities. Python was the original reference and has fallen behind.
+- The Elixir implementation is the **source of truth** for API design and feature behaviour. New capabilities are prototyped there first because an active Elixir product (Bedrock) drives them. Every port is kept at feature parity; Elixir leads only in time.
 - New cross-port capabilities get a contract document at the monorepo root (for example `ALIGNMENT-2026-09.md`). Elixir implements it first; the other ports follow the contract, and Elixir's behaviour where the contract is silent.
 - Changes to the Elixir reference should be reflected in PARITY.md, flagging work needed in other ports
 - Each port must maintain its own quality gates independently (see sub-project `AGENTS.md`)
