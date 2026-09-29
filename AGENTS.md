@@ -23,6 +23,7 @@ Mojentic is a multi-language agentic framework providing simple, flexible LLM in
 - Changes to the Python reference should be reflected in PARITY.md, flagging work needed in other ports
 - Each port must maintain its own quality gates independently (see sub-project `AGENTS.md`)
 - Do not change multiple ports in a single commit — make focused, per-port changes
+- **Major and minor versions stay synchronised across all six ports.** The same `X.Y` means the same feature set in every language. A feature that bumps the minor version in one port ships in all six under that version; patch versions may differ. Before tagging any port, check the others' latest tags.
 
 ## Shared Engineering Principles
 
