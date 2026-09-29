@@ -92,7 +92,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
 | **OpenAI** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Full featured (Kotlin: `mojentic-openai` module, Ktor Client, JSON schema response format, SSE streaming, parallel tool calls, reasoning effort for o-series) |
 | **Ollama** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Full impl with streaming |
-| **oMLX** | 📝 | ✅ | 📝 | 📝 | 📝 | 📝 | Planned for 2.1.0; contract in OMLX-2026-09.md, Elixir first (Elixir: `Mojentic.LLM.Gateways.OMLX`, unreleased) |
+| **oMLX** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Local Apple Silicon server over the OpenAI protocol, contract in OMLX-2026-09.md, unreleased until 2.1.0. Names follow each port's acronym style: `OMLXGateway` (Python, TypeScript, Swift), `Mojentic.LLM.Gateways.OMLX` (Elixir), `OmlxGateway` (Rust, Kotlin; Kotlin in `mojentic-openai`, package `com.mojentic.omlx`). All six verified against a live oMLX 0.7.0rc1 server on 2026-09-29 |
 | **Anthropic (Claude)** | ✅ | ❌ | ❌ | 📝 | ✅ | ✅ | Python + Swift + Kotlin (Swift: behind `anthropic` package trait; Kotlin: `mojentic-anthropic` module — Messages API, system→top-level field, tool_use/tool_result blocks, base64 images, SSE streaming, forced-tool completeJson, `reasoning_effort` filtered with warning); TypeScript planned |
 | **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Python: file-based mocking |
 | **Tokenizer Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | Token counting (Swift: approximate `chars/4` default; bring-your-own protocol. Kotlin: JVM-only `JtokkitTokenizerGateway` shipped in `mojentic-openai`; Kotlin/Native consumers inject their own implementation) |
