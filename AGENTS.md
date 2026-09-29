@@ -8,9 +8,9 @@ Mojentic is a multi-language agentic framework providing simple, flexible LLM in
 
 | Sub-project | Language | Role |
 |-------------|----------|------|
-| `mojentic-py/` | Python | **Reference implementation** — all ports follow this API design |
+| `mojentic-py/` | Python | Port (original implementation) |
 | `mojentic-ts/` | TypeScript | Port |
-| `mojentic-ex/` | Elixir | Port |
+| `mojentic-ex/` | Elixir | **Reference implementation** — new capabilities land here first |
 | `mojentic-ru/` | Rust | Port |
 | `mojentic-sw/` | Swift | Port |
 | `mojentic-kt/` | Kotlin | Port (not yet published — see KOTLIN.md) |
@@ -19,8 +19,9 @@ Mojentic is a multi-language agentic framework providing simple, flexible LLM in
 
 ## Cross-Language Coordination
 
-- The Python implementation is the **source of truth** for API design and feature behaviour
-- Changes to the Python reference should be reflected in PARITY.md, flagging work needed in other ports
+- The Elixir implementation is the **source of truth** for API design and feature behaviour. It leads because an active Elixir product (Bedrock) drives new capabilities. Python was the original reference and has fallen behind.
+- New cross-port capabilities get a contract document at the monorepo root (for example `ALIGNMENT-2026-09.md`). Elixir implements it first; the other ports follow the contract, and Elixir's behaviour where the contract is silent.
+- Changes to the Elixir reference should be reflected in PARITY.md, flagging work needed in other ports
 - Each port must maintain its own quality gates independently (see sub-project `AGENTS.md`)
 - Do not change multiple ports in a single commit — make focused, per-port changes
 - **Major and minor versions stay synchronised across all six ports.** The same `X.Y` means the same feature set in every language. A feature that bumps the minor version in one port ships in all six under that version; patch versions may differ. Before tagging any port, check the others' latest tags.
