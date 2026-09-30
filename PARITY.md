@@ -9,10 +9,17 @@ This document tracks **differences and incomplete work** across the six Mojentic
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: June 16, 2026.
+Last Updated: September 30, 2026.
 
-Current update: added `ADAPTIVE-HARNESS-ENHANCEMENTS.md` as the cross-port plan
-for Sandbox2-derived observability, context assembly, streaming progress,
+Current update: text from content parts now matches across ports, including
+Kotlin OpenAI/oMLX and Anthropic system, assistant, and tool messages. Python
+now sends every parallel tool call in the assistant message. All six ports
+have broker streaming tests that keep a tool-call ID from the first chunk
+through later argument chunks and into the follow-up tool result, including
+oMLX cases.
+
+`ADAPTIVE-HARNESS-ENHANCEMENTS.md` remains the cross-port plan for
+Sandbox2-derived observability, context assembly, streaming progress,
 reasoning accounting, and trace summary enhancements.
 
 Previous update: May 18, 2026. mojentic-kt Phase 7 shipped documentation
