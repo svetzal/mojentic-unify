@@ -5,8 +5,8 @@ Authorized by Stacey on September 30, 2026. Publish all six ports as 2.1.0.
 ## Scope
 
 Release all six ports as 2.1.0. Python, TypeScript, Elixir, Rust, and Kotlin skip
-2.0.0. Kotlin joins with its first Maven Central release. Swift is already at
-2.0.0. No versions or tags changed during this completion pass.
+2.0.0. Kotlin joins with its first Maven Central release. Swift was previously at
+2.0.0. All six ports now have a 2.1.0 release commit and matching v2.1.0 tag.
 
 Include the oMLX gateway, September streaming and trace alignment, message
 adapter corrections, streamed tool-call corrections, and embedding bug fixes.
@@ -27,14 +27,16 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
   All five repository secrets are installed. The GPG public key is published,
   and detached POM signatures verified for all six modules. Private material
   is in `~/Keys/mojentic/`, outside the repositories. The Sonatype token expires
-  March 30, 2027; the signing key expires September 29, 2028. A complete upload
-  and Central validation have not yet run.
+  March 30, 2027; the signing key expires September 29, 2028. The complete signed upload
+  passed Central validation. Deployment `219ebb0d-b366-4869-939c-9926b1501bf2`
+  contains 36 coordinates across the six modules, covering common metadata,
+  JVM, Android and three iOS targets. Public artifact verification is pending
+  while Central reports `PUBLISHING`.
 
-- Enable Foundry release for Swift and Kotlin after those prerequisites pass.
-  Their registry records currently disable release for the earlier decisions.
+- Foundry release is enabled for all six ports, including Swift and Kotlin.
 
-- Confirm Foundry will publish the exact version 2.1.0 in each port.
-  A generic minor bump does not produce 2.1.0 from the older ports' versions.
+- Exact-version instructions in each port's `AGENTS.md` produced 2.1.0.
+  Every release tag points at its version and changelog commit.
 
 The scope decisions and credential setup are complete.
 Swift and Kotlin's automatic long-text embedding support is a separate parity
@@ -50,7 +52,7 @@ headers.
 
 The oMLX contract accepts those transport limits.
 
-## Release procedure
+## Release procedure used
 
 1. Sync each port with its remote `main`.
 2. Run the full quality gate specified in each port's `AGENTS.md`.
@@ -94,7 +96,25 @@ Python and npm use trusted publishing. Their workflows and prior releases
 provide evidence, but only a publish attempt can confirm current registry access.
 Hex and crates.io tokens exist; this audit did not exercise them by publishing.
 
-Swift and Kotlin release actions remain disabled in Foundry. Enable them after
-the scope decisions and Kotlin credentials are settled. Apply the exact version
-2.1.0 in each port's release instructions before starting Foundry releases.
-Stacey authorized the coordinated release after credential setup and scope decisions.
+## Publication results, September 30
+
+All six publishing workflows passed. Each GitHub release is 2.1.0 and each tag
+points at the audited release commit below. Foundry ran every release.
+
+| Port | Release commit | Publishing workflow | Consumer verification |
+| ---- | -------------- | ------------------- | --------------------- |
+| Elixir | [765808c](https://github.com/svetzal/mojentic-ex/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-ex/actions/runs/36789257377) | Fresh registry install and import/compile passed |
+| Python | [0ef58d5](https://github.com/svetzal/mojentic/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic/actions/runs/36791160120) | Fresh registry install and import/compile passed |
+| TypeScript | [9cd6587](https://github.com/svetzal/mojentic-ts/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-ts/actions/runs/36791349706) | Fresh registry install and import/compile passed |
+| Rust | [29a549e](https://github.com/svetzal/mojentic-ru/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-ru/actions/runs/36791916469) | Fresh registry install and import/compile passed |
+| Swift | [618eb7b](https://github.com/svetzal/mojentic-sw/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-sw/actions/runs/36792393408) | Fresh SwiftPM exact 2.1.0 build and run passed |
+| Kotlin | [df00ff2](https://github.com/svetzal/mojentic-kt/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-kt/actions/runs/36790184332) | Central validated; public download pending |
+
+Elixir's first release attempt exposed real-socket timeout tests that failed
+under concurrent Linux suite load. The isolated test module passed the full
+841-test suite twice before the retry; production code was unchanged.
+
+TypeScript's public `VERSION` export now reports 2.1.0, matching its package
+metadata. Swift's public version also reports 2.1.0. Kotlin documentation
+publishing required enabling GitHub Pages and permitting the workflow's `v*`
+tags. The retried deployment passed and the public site returns HTTP 200.
