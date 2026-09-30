@@ -11,12 +11,20 @@ This document tracks **differences and incomplete work** across the six Mojentic
 
 Last Updated: September 30, 2026.
 
-Current update: text from content parts now matches across ports, including
-Kotlin OpenAI/oMLX and Anthropic system, assistant, and tool messages. Python
-now sends every parallel tool call in the assistant message. All six ports
-have broker streaming tests that keep a tool-call ID from the first chunk
-through later argument chunks and into the follow-up tool result, including
-oMLX cases.
+Current update: the September handoff audit found and fixed image URLs and
+data URIs dropped by the Python, Elixir, and Rust OpenAI adapters. Their oMLX
+gateways share those adapters. Swift already supports both image forms;
+Kotlin's image type accepts base64 data and does not represent URL sources.
+Only TypeScript and Kotlin accept lists of content parts. Their system and
+tool text fixes are complete; the other four ports accept string content.
+TypeScript now assigns unique IDs to id-less legacy streamed tool calls and
+flushes pending tool calls once at `[DONE]`. All six ports have broker streaming
+tests that preserve a tool-call ID across argument chunks and follow-up requests.
+
+The September alignment capabilities and their Unreleased entries are present
+in all six ports. `RELEASE-2.1.0.md` records the coordinated release procedure,
+remaining policy decisions, and Kotlin publishing credentials that need
+confirmation. No version bumps or tags accompany this completion pass.
 
 `ADAPTIVE-HARNESS-ENHANCEMENTS.md` remains the cross-port plan for
 Sandbox2-derived observability, context assembly, streaming progress,
