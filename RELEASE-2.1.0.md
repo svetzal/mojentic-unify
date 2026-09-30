@@ -1,6 +1,6 @@
 # Mojentic 2.1.0 release plan
 
-Prepared September 30, 2026. This plan does not authorize publishing.
+Authorized by Stacey on September 30, 2026. Publish all six ports as 2.1.0.
 
 ## Scope
 
@@ -14,12 +14,13 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
 
 ## Decisions and prerequisites
 
-- Settle disabled reasoning across ports, or explicitly defer it to 2.2.0.
-  Rust alone has the disabled value today.
+- Disabled reasoning parity is deferred to 2.2.0. Rust keeps its existing
+  value; no port changes that behavior for this release.
 
-- Settle whether ordinary `generate` rejects non-stop finishes in every port,
-  or defer that breaking behavior to a later major release. The alignment
-  contract excludes it.
+- Ordinary `generate` finish handling keeps each port's current behavior.
+  Cross-port rejection of non-stop finishes is deferred to a later major release.
+
+- Swift and Kotlin keep whole-text embeddings as a documented 2.1.0 exception.
 
 - Kotlin publishing credentials are configured as of September 30. Sonatype
   verified `com.vetzal` through Route 53; Kotlin uses `com.vetzal.mojentic`.
@@ -35,7 +36,7 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
 - Confirm Foundry will publish the exact version 2.1.0 in each port.
   A generic minor bump does not produce 2.1.0 from the older ports' versions.
 
-The Operations `Planning/TODO.md` holds the decisions and credential action.
+The scope decisions and credential setup are complete.
 Swift and Kotlin's automatic long-text embedding support is a separate parity
 decision. Neither port averages embeddings, so neither had the weighting bug.
 
@@ -81,7 +82,7 @@ All six ports passed their local quality gates after those corrections.
 | TypeScript | 870 tests, coverage thresholds, lint, format, build, audits, docs | npm OIDC workflow |
 | Rust | 539 unit tests, 54 integration tests, 18 doctests, Clippy, audits, verified package | crates.io token exists |
 | Swift | 254 default tests, 255 with all traits, format, lint, build, DocC, OSV | Git tag for SwiftPM |
-| Kotlin | JVM, Android and iOS build/tests, lint, API check, Dokka, full dependency audit | Maven credentials missing |
+| Kotlin | JVM, Android and iOS build/tests, lint, API check, Dokka, full dependency audit | Maven namespace, signing and token configured |
 
 Kotlin's NVD feed was current at September 30, 12:00 EDT. The full audit
 reported zero unsuppressed findings after documented review of its matches.
@@ -96,4 +97,4 @@ Hex and crates.io tokens exist; this audit did not exercise them by publishing.
 Swift and Kotlin release actions remain disabled in Foundry. Enable them after
 the scope decisions and Kotlin credentials are settled. Apply the exact version
 2.1.0 in each port's release instructions before starting Foundry releases.
-No release has been authorized or started by this audit.
+Stacey authorized the coordinated release after credential setup and scope decisions.

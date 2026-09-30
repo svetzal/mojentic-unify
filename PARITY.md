@@ -77,10 +77,8 @@ They do not have the weighting defect. Automatic long-text handling remains a
 parity gap. Kotlin's concrete tokenizer is JVM-only; a shared implementation
 must also support iOS and preserve the batch API's input order.
 
-Stacey must decide whether these two ports add automatic token chunking or
-retain whole-text behavior as an explicit exception. This decision is in
-Operations `Planning/TODO.md`, under "Decide long-text embedding support in
-Swift and Kotlin". No major or minor version changes accompany this bug fix.
+On September 30, Stacey accepted whole-text behavior in Swift and Kotlin as
+a documented exception for 2.1.0. Automatic chunking remains deferred.
 
 `ADAPTIVE-HARNESS-ENHANCEMENTS.md` captures the next shared observability and
 context-control feature set discovered from the Sandbox2 adaptive harness. These
@@ -636,12 +634,15 @@ Names: Python/Elixir/Rust `generate_stream_events`, TypeScript/Swift/Kotlin
 
 Known differences that remain, deliberately deferred:
 
+For 2.1.0, Stacey accepted disabled reasoning as Rust-only and deferred
+its parity work to 2.2.0 on September 30.
+
 - **Usage shape.** Each port keeps its gateway's existing usage shape.
   TypeScript normalizes Ollama counts; the others keep Ollama's raw keys.
   A shared shape belongs to the adaptive-harness schema work.
 - **`generate` finish reasons.** Only Elixir treats a non-stop finish in
   `generate` as an error. Aligning the others is a breaking change tied to
-  the next release version.
+  a later major release (accepted for 2.1.0 on September 30).
 - **Cancellation reason.** Only TypeScript emits `cancelled`, because only it
   has an explicit abort signal that fires while the consumer is reading.
 - **Swift structured output naming.** `completeJSON` sends schema name
