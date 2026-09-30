@@ -21,13 +21,13 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
   or defer that breaking behavior to a later major release. The alignment
   contract excludes it.
 
-- Verify the `com.vetzal` namespace in Sonatype Central Portal using a TXT
-  record on `vetzal.com`. Kotlin publishes under `com.vetzal.mojentic`.
-
-- Supply Kotlin's Sonatype and signing secrets. Its repository
-  secret list was empty on September 30. The repository has a personal owner, so organization secrets cannot supply them.
-  The workflow needs `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`,
-  `SIGNING_KEY`, `SIGNING_KEY_ID`, and `SIGNING_KEY_PASSWORD`.
+- Kotlin publishing credentials are configured as of September 30. Sonatype
+  verified `com.vetzal` through Route 53; Kotlin uses `com.vetzal.mojentic`.
+  All five repository secrets are installed. The GPG public key is published,
+  and detached POM signatures verified for all six modules. Private material
+  is in `~/Keys/mojentic/`, outside the repositories. The Sonatype token expires
+  March 30, 2027; the signing key expires September 29, 2028. A complete upload
+  and Central validation have not yet run.
 
 - Enable Foundry release for Swift and Kotlin after those prerequisites pass.
   Their registry records currently disable release for the earlier decisions.
