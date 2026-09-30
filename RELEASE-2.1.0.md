@@ -18,7 +18,8 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
   Rust alone has the disabled value today.
 
 - Settle whether ordinary `generate` rejects non-stop finishes in every port,
-  or explicitly defer that behavior. The alignment contract excludes it.
+  or defer that breaking behavior to a later major release. The alignment
+  contract excludes it.
 
 - Supply Kotlin's Sonatype and signing secrets. Its repository
   secret list was empty on September 30. The repository has a personal owner, so organization secrets cannot supply them.
