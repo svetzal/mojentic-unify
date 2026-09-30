@@ -21,6 +21,9 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
   or defer that breaking behavior to a later major release. The alignment
   contract excludes it.
 
+- Verify the `com.vetzal` namespace in Sonatype Central Portal using a TXT
+  record on `vetzal.com`. Kotlin publishes under `com.vetzal.mojentic`.
+
 - Supply Kotlin's Sonatype and signing secrets. Its repository
   secret list was empty on September 30. The repository has a personal owner, so organization secrets cannot supply them.
   The workflow needs `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`,

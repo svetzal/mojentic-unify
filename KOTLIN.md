@@ -22,7 +22,7 @@ Give Kotlin developers — particularly mobile teams shipping the *same* product
 - Be **distinctly Kotlin-idiomatic**: coroutines + `Flow` throughout, sealed hierarchies for closed sums, data classes for value types, builder DSLs via lambda-with-receiver where they pay for themselves.
 - Be **multiplatform-first**: one `commonMain` API surface, platform-specific code only where unavoidable (HTTP client engine, WebSocket transport, file I/O, secure random).
 - Ship as a first-class Kotlin Multiplatform library:
-  - **JVM/Android** → Maven Central (`com.mojentic:mojentic-kotlin:<version>`)
+  - **JVM/Android** → Maven Central (`com.vetzal.mojentic:mojentic-core:<version>`)
   - **iOS** → XCFramework + Swift Package Manager (preferred) and CocoaPods (fallback)
   - **macOS / Linux / JS / wasmJs** → opportunistic, post-MVP
 - Achieve feature parity with the four existing ports across Layer 1 (LLM), Layer 2 (Tracer), Layer 3 (Agents), and Layer 4 (Realtime Voice).
@@ -232,10 +232,10 @@ kotlin {
 
 | Target | Artifact | Consumed how |
 |---|---|---|
-| JVM / Android | Maven Central (`com.mojentic:mojentic-core:<v>`, plus per-gateway modules) | `implementation("com.mojentic:mojentic-core:1.4.0")` in Gradle |
+| JVM / Android | Maven Central (`com.vetzal.mojentic:mojentic-core:<v>`, plus per-gateway modules) | `implementation("com.vetzal.mojentic:mojentic-core:1.4.0")` in Gradle |
 | iOS | XCFramework + Swift Package Manager manifest | Add as SPM dependency in Xcode |
 | iOS (fallback) | CocoaPods | `pod 'Mojentic'` |
-| Cross-version coordination | `mojentic-bom` | `implementation(platform("com.mojentic:mojentic-bom:1.4.0"))` |
+| Cross-version coordination | `mojentic-bom` | `implementation(platform("com.vetzal.mojentic:mojentic-bom:1.4.0"))` |
 
 iOS distribution uses Kotlin's **KMP-NMC (Native Multiplatform Cocoa)** publishing pipeline: Gradle builds an XCFramework and either (a) generates a `Package.swift` for direct SPM consumption from a Git URL, or (b) pushes to a CocoaPods specs repo. Path (a) is the modern preference and aligns with the Swift port's distribution model.
 
