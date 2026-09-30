@@ -203,3 +203,17 @@ Raised by the Python and TypeScript passes.
 12. **Ollama without `done_reason`.** Treat it as `incomplete_completion`, as
     written. Document that Ollama servers too old to send `done_reason` cannot
     use this API.
+
+## Clarifications from the release audit, 2026-09-30
+
+13. **Sparse Ollama evidence.** Keep reported model, usage, and timing fields
+    across frames. A later frame that omits a field must not erase it. This
+    includes an early end of stream. Completion still needs `done_reason`
+    on the final frame itself; an earlier reason cannot complete the stream.
+14. **Malformed fields.** Reject malformed choice, delta, message, tool-call,
+    model, finish-reason, and terminal-marker fields with a terminal invalid
+    stream event. Do not coerce a string or number into a boolean marker.
+15. **Python generator cleanup.** A retained Python generator stays open after
+    a loop breaks. Call `close()` or use `contextlib.closing` to cancel its
+    request. Closing or dropping the generator cancels it. This limitation
+    applies to both broker and gateway streams; the guides must state it.

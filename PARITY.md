@@ -11,20 +11,21 @@ This document tracks **differences and incomplete work** across the six Mojentic
 
 Last Updated: September 30, 2026.
 
-Current update: the September handoff audit found and fixed image URLs and
-data URIs dropped by the Python, Elixir, and Rust OpenAI adapters. Their oMLX
-gateways share those adapters. Swift already supports both image forms;
-Kotlin's image type accepts base64 data and does not represent URL sources.
-Only TypeScript and Kotlin accept lists of content parts. Their system and
-tool text fixes are complete; the other four ports accept string content.
-TypeScript now assigns unique IDs to id-less legacy streamed tool calls and
-flushes pending tool calls once at `[DONE]`. All six ports have broker streaming
-tests that preserve a tool-call ID across argument chunks and follow-up requests.
+Current update: a second release audit corrected streaming discrepancies in
+all six ports. Malformed control and evidence fields now end the events API
+with an error. Ollama retains reported model, usage, and timing fields across
+sparse frames and an early end of stream. Its final frame must itself report
+`done_reason: "stop"`; an earlier reason cannot complete a stream.
 
-The September alignment capabilities and their Unreleased entries are present
-in all six ports. `RELEASE-2.1.0.md` records the coordinated release procedure,
-remaining policy decisions, and Kotlin publishing credentials that need
-confirmation. No version bumps or tags accompany this completion pass.
+oMLX model operations reject blank identifiers before HTTP. Explicit empty API
+keys suppress environment keys. Rust and Elixir no longer apply a total
+response deadline to active oMLX streams. TypeScript closes legacy response
+bodies when consumption stops. Python documents explicit generator cleanup.
+The full contract clarifications are in `ALIGNMENT-2026-09.md`, clauses 13-15.
+
+All six ports have completed their local quality gates for the audit changes.
+The release plan in `RELEASE-2.1.0.md` records the remaining policy decisions
+and missing Kotlin publishing secrets. No versions or tags changed.
 
 `ADAPTIVE-HARNESS-ENHANCEMENTS.md` remains the cross-port plan for
 Sandbox2-derived observability, context assembly, streaming progress,

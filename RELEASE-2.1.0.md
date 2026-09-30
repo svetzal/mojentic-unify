@@ -20,8 +20,8 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
 - Settle whether ordinary `generate` rejects non-stop finishes in every port,
   or explicitly defer that behavior. The alignment contract excludes it.
 
-- Confirm Kotlin can access its Sonatype and signing secrets. Its repository
-  secret list was empty on September 30. Organization access needs confirmation.
+- Supply Kotlin's Sonatype and signing secrets. Its repository
+  secret list was empty on September 30. The repository has a personal owner, so organization secrets cannot supply them.
   The workflow needs `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`,
   `SIGNING_KEY`, `SIGNING_KEY_ID`, and `SIGNING_KEY_PASSWORD`.
 
@@ -63,3 +63,33 @@ The projects are `mojentic-ex`, `mojentic-py`, `mojentic-ts`, `mojentic-ru`,
 `mojentic-kt`, and `mojentic-sw`. Work lands directly on `main`.
 Stop on a publishing failure before proceeding with another port.
 Do not change the unrelated `.claude/settings.local.json` file.
+
+## Second audit results, September 30
+
+The second audit found and corrected stream validation, partial evidence,
+model validation, authentication precedence, and cancellation discrepancies.
+All six ports passed their local quality gates after those corrections.
+
+| Port | Validation | Release route |
+| ---- | ---------- | ------------- |
+| Elixir | 841 tests, strict Credo, format, dependency audits, docs | Hex token exists |
+| Python | 516 tests, strict flake8, pip-audit, Bandit, package builds, docs | PyPI OIDC workflow |
+| TypeScript | 870 tests, coverage thresholds, lint, format, build, audits, docs | npm OIDC workflow |
+| Rust | 539 unit tests, 54 integration tests, 18 doctests, Clippy, audits, verified package | crates.io token exists |
+| Swift | 254 default tests, 255 with all traits, format, lint, build, DocC, OSV | Git tag for SwiftPM |
+| Kotlin | JVM, Android and iOS build/tests, lint, API check, Dokka, full dependency audit | Maven credentials missing |
+
+Kotlin's NVD feed was current at September 30, 12:00 EDT. The full audit
+reported zero unsuppressed findings after documented review of its matches.
+The suppression file records exact artifacts, evidence, and December 23 expiries.
+The bundled protobuf exception remains limited to Android lint's compiler.
+The audit includes build tools and published configurations.
+
+Python and npm use trusted publishing. Their workflows and prior releases
+provide evidence, but only a publish attempt can confirm current registry access.
+Hex and crates.io tokens exist; this audit did not exercise them by publishing.
+
+Swift and Kotlin release actions remain disabled in Foundry. Enable them after
+the scope decisions and Kotlin credentials are settled. Apply the exact version
+2.1.0 in each port's release instructions before starting Foundry releases.
+No release has been authorized or started by this audit.
