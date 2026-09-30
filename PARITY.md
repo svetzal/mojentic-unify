@@ -44,6 +44,35 @@ These features are **fully implemented in Python, Elixir, Rust, TypeScript, and 
 
 ## Planned Cross-Port Enhancements
 
+### Long-text OpenAI embeddings
+
+The September 30, 2026 assessment found that Python, TypeScript, Rust, and
+Elixir used vector dimensions as averaging weights. Equal dimensions gave
+each part equal weight, including short trailing parts. The required behavior
+uses each part's token count and normalizes the combined vector to length 1.
+The [OpenAI cookbook](https://developers.openai.com/cookbook/examples/embedding_long_inputs)
+describes this calculation.
+
+Python and TypeScript now weight their existing token chunks correctly. Rust
+now uses its existing `tiktoken-rs` dependency for exact `cl100k_base` token
+chunks, replacing the character estimate. Elixir replaces its no-op splitter
+with `cl100k_base` token chunks. Each part has at most 8191 tokens. All four
+ports have fake HTTP regressions with 8191-token and 100-token parts. Their
+existing single-part behavior is preserved. Python and Elixir normalize a
+single vector; TypeScript and Rust return it unchanged.
+
+Kotlin's `OpenAIEmbeddingsGateway.embedBatch` and Swift's
+`OpenAIEmbeddingsGateway.embed` send whole texts and return one provider vector
+per input. Neither splits texts, averages vectors, or normalizes them locally.
+They do not have the weighting defect. Automatic long-text handling remains a
+parity gap. Kotlin's concrete tokenizer is JVM-only; a shared implementation
+must also support iOS and preserve the batch API's input order.
+
+Stacey must decide whether these two ports add automatic token chunking or
+retain whole-text behavior as an explicit exception. This decision is in
+Operations `Planning/TODO.md`, under "Decide long-text embedding support in
+Swift and Kotlin". No major or minor version changes accompany this bug fix.
+
 `ADAPTIVE-HARNESS-ENHANCEMENTS.md` captures the next shared observability and
 context-control feature set discovered from the Sandbox2 adaptive harness. These
 items are not harness policy; they are Mojentic primitives that should be
