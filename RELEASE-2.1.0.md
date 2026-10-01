@@ -1,6 +1,6 @@
-# Mojentic 2.1.0 release plan
+# Mojentic 2.1.0 release record
 
-Authorized by Stacey on September 30, 2026. Publish all six ports as 2.1.0.
+Authorized by Stacey on September 30, 2026. All six ports are released as 2.1.0.
 
 ## Scope
 
@@ -27,11 +27,13 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
   All five repository secrets are installed. The GPG public key is published,
   and detached POM signatures verified for all six modules. Private material
   is in `~/Keys/mojentic/`, outside the repositories. The Sonatype token expires
-  March 30, 2027; the signing key expires September 29, 2028. The complete signed upload
-  passed Central validation. Deployment `219ebb0d-b366-4869-939c-9926b1501bf2`
+  March 30, 2027; the signing key expires September 29, 2028. The signed
+  upload passed Central validation. Deployment `219ebb0d-b366-4869-939c-9926b1501bf2`
   contains 36 coordinates across the six modules, covering common metadata,
-  JVM, Android and three iOS targets. Public artifact verification is pending
-  while Central reports `PUBLISHING`.
+  JVM, Android and three iOS targets. All 36 public POMs and their detached
+  signatures are verified against release key
+  `C7F060F905F5222ECC7D0D258D7C3CDCE4DA9E1B`. A fresh Gradle JVM consumer
+  resolved all six modules from Maven Central, compiled and ran successfully.
 
 - Foundry release is enabled for all six ports, including Swift and Kotlin.
 
@@ -39,8 +41,8 @@ The contracts are `OMLX-2026-09.md` and `ALIGNMENT-2026-09.md`.
   Every release tag points at its version and changelog commit.
 
 The scope decisions and credential setup are complete.
-Swift and Kotlin's automatic long-text embedding support is a separate parity
-decision. Neither port averages embeddings, so neither had the weighting bug.
+Swift and Kotlin's automatic long-text embedding support remains deferred.
+Neither port averages embeddings, so neither had the weighting bug.
 
 ## Accepted limits
 
@@ -92,9 +94,8 @@ The suppression file records exact artifacts, evidence, and December 23 expiries
 The bundled protobuf exception remains limited to Android lint's compiler.
 The audit includes build tools and published configurations.
 
-Python and npm use trusted publishing. Their workflows and prior releases
-provide evidence, but only a publish attempt can confirm current registry access.
-Hex and crates.io tokens exist; this audit did not exercise them by publishing.
+The later publication pass confirmed PyPI and npm trusted publishing, Hex
+and crates.io token access, and Kotlin's Central token and signing setup.
 
 ## Publication results, September 30
 
@@ -103,12 +104,12 @@ points at the audited release commit below. Foundry ran every release.
 
 | Port | Release commit | Publishing workflow | Consumer verification |
 | ---- | -------------- | ------------------- | --------------------- |
-| Elixir | [765808c](https://github.com/svetzal/mojentic-ex/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-ex/actions/runs/36789257377) | Fresh registry install and import/compile passed |
-| Python | [0ef58d5](https://github.com/svetzal/mojentic/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic/actions/runs/36791160120) | Fresh registry install and import/compile passed |
-| TypeScript | [9cd6587](https://github.com/svetzal/mojentic-ts/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-ts/actions/runs/36791349706) | Fresh registry install and import/compile passed |
-| Rust | [29a549e](https://github.com/svetzal/mojentic-ru/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-ru/actions/runs/36791916469) | Fresh registry install and import/compile passed |
-| Swift | [618eb7b](https://github.com/svetzal/mojentic-sw/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-sw/actions/runs/36792393408) | Fresh SwiftPM exact 2.1.0 build and run passed |
-| Kotlin | [df00ff2](https://github.com/svetzal/mojentic-kt/releases/tag/v2.1.0) | [Passed](https://github.com/svetzal/mojentic-kt/actions/runs/36790184332) | Central validated; public download pending |
+| Elixir | [765808c](https://github.com/svetzal/mojentic-ex/commit/765808c3e9f76d73459452d87923b23380c2bcd9) | [Passed](https://github.com/svetzal/mojentic-ex/actions/runs/36789257377) | Fresh registry install and import/compile passed |
+| Python | [0ef58d5](https://github.com/svetzal/mojentic/commit/0ef58d57cf49b756667d14572a50126e3e0312a8) | [Passed](https://github.com/svetzal/mojentic/actions/runs/36791160120) | Fresh registry install and import/compile passed |
+| TypeScript | [9cd6587](https://github.com/svetzal/mojentic-ts/commit/9cd658760520b9520a516d818105d4bbe2751598) | [Passed](https://github.com/svetzal/mojentic-ts/actions/runs/36791349706) | Fresh registry install and import/compile passed |
+| Rust | [29a549e](https://github.com/svetzal/mojentic-ru/commit/29a549e807f6bab32bba39ea40a284a34b7eeffb) | [Passed](https://github.com/svetzal/mojentic-ru/actions/runs/36791916469) | Fresh registry install and import/compile passed |
+| Swift | [618eb7b](https://github.com/svetzal/mojentic-sw/commit/618eb7b42ff2b74e6ff9bb6fd9f3c65373da2262) | [Passed](https://github.com/svetzal/mojentic-sw/actions/runs/36792393408) | Fresh SwiftPM exact 2.1.0 build and run passed |
+| Kotlin | [df00ff2](https://github.com/svetzal/mojentic-kt/commit/df00ff22fa488ef6208243e78ad2eb8b9be89e9c) | [Passed](https://github.com/svetzal/mojentic-kt/actions/runs/36790184332) | All 36 signed POMs verified; fresh six-module Gradle build and run passed |
 
 Elixir's first release attempt exposed real-socket timeout tests that failed
 under concurrent Linux suite load. The isolated test module passed the full
@@ -118,3 +119,16 @@ TypeScript's public `VERSION` export now reports 2.1.0, matching its package
 metadata. Swift's public version also reports 2.1.0. Kotlin documentation
 publishing required enabling GitHub Pages and permitting the workflow's `v*`
 tags. The retried deployment passed and the public site returns HTTP 200.
+
+Public packages are [Hex](https://hex.pm/packages/mojentic/2.1.0),
+[PyPI](https://pypi.org/project/mojentic/2.1.0/),
+[npm](https://www.npmjs.com/package/mojentic/v/2.1.0),
+[crates.io](https://crates.io/crates/mojentic/2.1.0),
+[SwiftPM](https://github.com/svetzal/mojentic-sw/releases/tag/v2.1.0), and
+[Maven Central](https://repo.maven.apache.org/maven2/com/vetzal/mojentic/).
+
+The Elixir consumer check ran on mojility-ops-01. The other five consumer
+checks ran on Max-Headroom, all against public registry artifacts. Foundry's
+release gates ran on mojility-ops-01; GitHub Actions also verified macOS/iOS
+and Linux where applicable. Kotlin's Central propagation took
+about 19 minutes after validation, before the public consumer check passed.

@@ -25,10 +25,11 @@ The full contract clarifications are in `ALIGNMENT-2026-09.md`, clauses 13-15.
 
 All six ports have completed their local quality gates for the audit changes.
 All six ports have 2.1.0 release commits, tags and successful publishing
-workflows. Fresh consumers passed for Elixir, Python, TypeScript, Rust and
-Swift. Kotlin passed Central validation; its public artifact check is pending
-while Central propagates the release. `RELEASE-2.1.0.md` records the commits,
-workflow evidence and accepted scope decisions.
+workflows. Fresh consumers passed for all six ports. Kotlin's first Central
+publication exposes all 36 common, JVM, Android and iOS coordinates under
+`com.vetzal.mojentic`; their POM signatures match the release key.
+`RELEASE-2.1.0.md` records the commits, workflow evidence and accepted scope
+decisions.
 
 `ADAPTIVE-HARNESS-ENHANCEMENTS.md` remains the cross-port plan for
 Sandbox2-derived observability, context assembly, streaming progress,
