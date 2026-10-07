@@ -55,6 +55,14 @@ These features are **fully implemented in Python, Elixir, Rust, TypeScript, and 
 - **Examples**: 26 shared examples implemented across all ports (Python, Elixir, Rust, TypeScript)
 - **Infrastructure**: Full test suites, zero lint warnings, CI/CD pipelines, documentation
 
+## Rust reasoning prototype (October 6, 2026)
+
+User-authorized Rust-first prototype: native assistant reasoning history,
+explicit model capability profiles, distinct boolean/named reasoning controls,
+and ordinary/streaming/structured parity for Ollama and oMLX. Other ports remain
+unchanged; this is not part of the 2.1.0 release or a parity claim.
+See [the prototype contract](REASONING-PROTOTYPE-2026-10.md).
+
 ## Planned Cross-Port Enhancements
 
 ### Long-text OpenAI embeddings
