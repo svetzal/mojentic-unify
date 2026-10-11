@@ -26,8 +26,8 @@ The full contract clarifications are in `ALIGNMENT-2026-09.md`, clauses 13-15.
 All six ports have completed their local quality gates for the audit changes.
 All six ports have 2.1.0 release commits, tags and successful publishing
 workflows. Fresh consumers passed for all six ports. Kotlin's first Central
-publication exposes all 36 common, JVM, Android and iOS coordinates under
-`com.vetzal.mojentic`; their POM signatures match the release key.
+publication exposed all 36 common, JVM, Android and iOS coordinates under
+`com.vetzal.mojentic` (iOS was dropped after 2.1.0; see AGENTS.md); their POM signatures match the release key.
 `RELEASE-2.1.0.md` records the commits, workflow evidence and accepted scope
 decisions.
 
@@ -87,7 +87,7 @@ Kotlin's `OpenAIEmbeddingsGateway.embedBatch` and Swift's
 per input. Neither splits texts, averages vectors, or normalizes them locally.
 They do not have the weighting defect. Automatic long-text handling remains a
 parity gap. Kotlin's concrete tokenizer is JVM-only; a shared implementation
-must also support iOS and preserve the batch API's input order.
+must preserve the batch API's input order.
 
 On September 30, Stacey accepted whole-text behavior in Swift and Kotlin as
 a documented exception for 2.1.0. Automatic chunking remains deferred.
@@ -232,7 +232,7 @@ This section provides comprehensive feature tables for implementing new ports (e
 | Feature | Python | Elixir | Rust | TypeScript | Swift | Kotlin | Notes |
 | --------- | -------- | -------- | ------ | ------------ | ------- | ------- | ------- |
 | **RealtimeVoiceBroker** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Sibling to LlmBroker |
-| **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | WebSocket transport; Kotlin: Ktor Client (OkHttp on JVM/Android, Darwin on iOS) |
+| **OpenAI Realtime Gateway** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | WebSocket transport; Kotlin: Ktor Client (OkHttp on JVM/Android) |
 | **Server VAD turn detection** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | **Manual VAD / push-to-talk** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | turn_detection: 'none' / `VadConfig.Manual` + `session.commit()` |
 | **Interruption / barge-in** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Manual + speech_started; Elixir: async Task keeps GenServer responsive; Swift: cooperative Task cancellation; Kotlin: cooperative `Job.cancel()` on the tool-dispatch job + `ResponseCancel` |
