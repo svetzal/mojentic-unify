@@ -18,6 +18,7 @@ are not included.
 | `stream_thinking.sse` | Streamed plain chat, `include_usage` |
 | `stream_tool_call.sse` | Streamed tool call |
 | `stream_length.sse` | Streamed, `max_tokens: 5` |
+| `chat_no_max_tokens.json` | No `max_tokens`, `enable_thinking: false`, asked for 1,500 numbered lines (captured 2026-10-15); generation ran to `finish_reason: stop` |
 | `models.json` | `GET /v1/models` |
 | `model_load.json`, `model_unload.json` | Load and unload |
 | `error_model_not_loaded.json` | Unload of a model that is not loaded (400) |
