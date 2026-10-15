@@ -129,22 +129,35 @@ behaviour, so applications call it without a provider check.
 
 ## 1b. Stop forcing `num_ctx` on Ollama (bug)
 
-Every port's `CompletionConfig` defaults `num_ctx` to 32,768, and every Ollama
-gateway always sends `options.num_ctx`. A request's `num_ctx` overrides both
-the model's own `num_ctx` parameter and the server's `OLLAMA_CONTEXT_LENGTH`.
-The library default therefore silently replaces the operator's configuration:
+Tracked as `svetzal/mojentic-unify#1`.
 
-- On Stacey's Mac (2026-10-15) the Ollama server runs with
-  `OLLAMA_CONTEXT_LENGTH=131072`, and `qwen3.8-flash-next:125b-mlx` has a
-  `num_ctx 262144` parameter (`fixtures/ollama/show_num_ctx_parameter.json`).
-  Every Mojentic request ran those models at 32,768.
-- A model whose window is smaller than 32,768 is asked for more than it
-  supports.
+Five of the six ports send `options.num_ctx` on every Ollama request, because
+their `CompletionConfig` defaults it to 32,768. A request's `num_ctx` overrides
+both the model's own `num_ctx` parameter and the server's
+`OLLAMA_CONTEXT_LENGTH`, so the library default silently replaces the
+operator's configuration. TypeScript already does the right thing, so the
+ports also disagree with each other.
 
-**Fix:** a `CompletionConfig` with no explicit `num_ctx` sends none. The Ollama
-gateway sends `options.num_ctx` only when the caller set it. Ollama then
-applies its own precedence: the request, the model parameter, the server
-setting, the built-in default.
+| Port | Field type | Default | Ollama gateway sends `num_ctx` |
+| ---- | ---------- | ------- | ------------------------------ |
+| Elixir | `pos_integer()` | 32,768 | always |
+| Python | `int` | 32,768, and the gateway falls back to 32,768 | always |
+| Rust | `usize` | 32,768 | always |
+| TypeScript | `numCtx?: number` | none | only when set |
+| Swift | `Int?` | 32,768 | whenever non-nil, so by default |
+| Kotlin | `Int` (`DEFAULT_NUM_CTX`) | 32,768 | always |
+
+Evidence, 2026-10-15: the Ollama server on Stacey's Mac runs with
+`OLLAMA_CONTEXT_LENGTH=131072`, and `qwen3.8-flash-next:125b-mlx` has a
+`num_ctx 262144` parameter (`fixtures/ollama/show_num_ctx_parameter.json`).
+Every request from microgentic (`mojentic-ru`) carried `num_ctx: 32768`. A model
+whose window is smaller than 32,768 is also asked for more than it supports.
+
+**Fix:** match TypeScript. A `CompletionConfig` with no explicit `num_ctx`
+sends none, and the Ollama gateway sends `options.num_ctx` only when the caller
+set it. Ollama then applies its own precedence: the request, the model
+parameter, the server setting, the built-in default. Remove Python's gateway
+fallback as well.
 
 **Consequence to document:** a caller that relied on the 32,768 default and
 runs against a server with no `OLLAMA_CONTEXT_LENGTH` and a model with no
@@ -152,40 +165,29 @@ runs against a server with no `OLLAMA_CONTEXT_LENGTH` and a model with no
 smaller. The CHANGELOG entry says so and shows how to set `num_ctx`
 explicitly.
 
-**API shape, a decision for Stacey.** In the typed ports `num_ctx` is a plain
-integer (Rust `pub num_ctx: usize`), so making it optional changes a public
-type. The options:
+**API shape, a decision for Stacey.** The change of default touches every port
+except TypeScript. The change of public type touches only the ports where the
+field is a plain integer:
 
-1. Make it optional (`Option<usize>`, `int | None`, and so on) with no default.
-   This is the clearest model, but it is a breaking change in the typed ports,
-   and with major versions synchronised it means 3.0.0 everywhere.
-2. Keep the integer field and add an explicit "send it" flag, defaulting to
-   off. This is not breaking, but it leaves a number in the config that may
-   not be sent, which misleads readers.
-3. Keep the field and default, and fix nothing in the library; applications
-   set `num_ctx` themselves. This leaves the bug for every other application.
+1. Make the field optional with no default everywhere. Swift keeps its type
+   and changes only the default; Elixir and Python change a typespec or a
+   type hint. Rust (`pub num_ctx: usize`) and Kotlin (`val numCtx: Int`,
+   recorded in its API dump) change a public type, which is a breaking change
+   there, and with major versions synchronised that means 3.0.0 everywhere.
+2. Keep the integer field in Rust and Kotlin and add an explicit "send it"
+   flag, defaulting to off, while the other ports take option 1. This is not
+   breaking, but it leaves a number in the config that may not be sent, and
+   the ports would differ in shape.
+3. Change nothing in the library; applications set `num_ctx` themselves. This
+   leaves the bug for every other application and keeps the ports divergent.
 
 I recommend option 1, in the next major, with the model metadata capabilities
 above shipped in the same release so the helper's rules hold from day one.
 
 **Tests per port:** a default config sends no `num_ctx`; an explicit one sends
-exactly that value; the oMLX and OpenAI gateways are unaffected (oMLX ignores
-`num_ctx`; check each port's OpenAI-compatible path, because Python's OpenAI
-gateway reads `config.num_ctx` today).
-
-### Rules
-
-- **Report, never adjust.** Asking for the window changes no later request.
-  It never sets `num_ctx`, `max_tokens`, or any other parameter. A larger
-  `num_ctx` makes Ollama allocate a larger cache, so applications must choose
-  that deliberately.
-- **No caching in the gateway.** Each call asks the provider. Whether and how
-  long to cache is the application's choice.
-- **Timeouts.** Use the gateway's configured timeout unless the caller passes a
-  shorter one through the port's usual mechanism. Applications usually want a
-  short bound (microgentic uses 2 seconds) so that discovery never delays a run.
-- **Authentication** follows the gateway's existing configuration (oMLX sends
-  `Authorization: Bearer <key>` only when a key is configured).
+exactly that value; the oMLX gateway is unaffected (it never sends
+`num_ctx`). Check each port's OpenAI-compatible path separately: TypeScript's
+OpenAI gateway and Python's read `num_ctx` with a 32,768 fallback today.
 
 ## 2. First-token timing in stream metrics
 
