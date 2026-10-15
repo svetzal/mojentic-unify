@@ -131,6 +131,11 @@ Ollama should preserve `eval_count`, `eval_duration`, `prompt_eval_count`,
 `prompt_eval_duration`, `total_duration`, and `load_duration` where available.
 Other providers should map their closest equivalents.
 
+Client-measured first-token timing (`time_to_first_token_ms`,
+`first_token_kind`, `request_duration_ms`) is specified in
+`MODEL-METADATA-2026-10.md`, section 2, together with asking the provider for a
+model's context window.
+
 ### 5. Progress State Classification
 
 **Need:** Applications need common language for stream health.
