@@ -9,9 +9,14 @@ The contract every port implements for two gateway capabilities:
    completion.
 
 Elixir implements it first and is the reference where this document is silent.
-The other ports follow in the same minor release, so the same version means the
-same features everywhere. The latest coordinated release is 2.1.0; this
-belongs in the next minor.
+The other ports follow in the same release, so the same version means the
+same features everywhere. The latest coordinated release is 2.1.0. Sections 1
+and 2 fit a minor release; the bug fix in section 1b may need the next major
+(see its options).
+
+It also fixes a bug found on the way (section 1b): the Ollama gateways always
+send `num_ctx`, which overrides the model's and the server's configured context
+length.
 
 Both capabilities are primitives in the sense of
 `ADAPTIVE-HARNESS-ENHANCEMENTS.md`: Mojentic reports what the provider says
@@ -100,20 +105,73 @@ where the value lives.
 ### The window a request runs at (Ollama)
 
 The advertised window is not always the window a request runs at. Ollama runs
-a request at the `num_ctx` it receives. Through Mojentic that is always
-`config.num_ctx`. In microgentic's live check, Ollama advertised 262,144 while
-every request ran at 32,768. An application that accounted against the
+a request at the `num_ctx` it receives, and today every Mojentic Ollama request
+sends one (section 1b). In microgentic's live check, Ollama advertised 262,144
+while every request ran at 32,768. An application that accounted against the
 advertised figure understated context pressure eightfold.
 
 So the Ollama gateway also exposes a pure helper with no request:
 
 - `effective_context_window(advertised, config)` returns
-  `min(advertised, config.num_ctx)`, or `config.num_ctx` when nothing is
-  advertised.
+  `min(advertised, config.num_ctx)` when the config sets `num_ctx`, and the
+  advertised window otherwise. When neither is known it returns nothing.
+
+Without a `num_ctx` in the request, Ollama uses the model's `num_ctx`
+parameter, then the server's `OLLAMA_CONTEXT_LENGTH`, then its built-in
+default. The client cannot see the server setting, so in that case the helper
+returns the advertised window as an upper bound. Applications that need the
+exact figure can read `context_length` for the loaded model from
+`GET /api/ps` after the first request.
 
 Other gateways' requests do not set a context size, so their effective window
 is the advertised one. Ports may expose the helper on every gateway with that
 behaviour, so applications call it without a provider check.
+
+## 1b. Stop forcing `num_ctx` on Ollama (bug)
+
+Every port's `CompletionConfig` defaults `num_ctx` to 32,768, and every Ollama
+gateway always sends `options.num_ctx`. A request's `num_ctx` overrides both
+the model's own `num_ctx` parameter and the server's `OLLAMA_CONTEXT_LENGTH`.
+The library default therefore silently replaces the operator's configuration:
+
+- On Stacey's Mac (2026-10-15) the Ollama server runs with
+  `OLLAMA_CONTEXT_LENGTH=131072`, and `qwen3.8-flash-next:125b-mlx` has a
+  `num_ctx 262144` parameter (`fixtures/ollama/show_num_ctx_parameter.json`).
+  Every Mojentic request ran those models at 32,768.
+- A model whose window is smaller than 32,768 is asked for more than it
+  supports.
+
+**Fix:** a `CompletionConfig` with no explicit `num_ctx` sends none. The Ollama
+gateway sends `options.num_ctx` only when the caller set it. Ollama then
+applies its own precedence: the request, the model parameter, the server
+setting, the built-in default.
+
+**Consequence to document:** a caller that relied on the 32,768 default and
+runs against a server with no `OLLAMA_CONTEXT_LENGTH` and a model with no
+`num_ctx` parameter gets Ollama's built-in default instead, which may be
+smaller. The CHANGELOG entry says so and shows how to set `num_ctx`
+explicitly.
+
+**API shape, a decision for Stacey.** In the typed ports `num_ctx` is a plain
+integer (Rust `pub num_ctx: usize`), so making it optional changes a public
+type. The options:
+
+1. Make it optional (`Option<usize>`, `int | None`, and so on) with no default.
+   This is the clearest model, but it is a breaking change in the typed ports,
+   and with major versions synchronised it means 3.0.0 everywhere.
+2. Keep the integer field and add an explicit "send it" flag, defaulting to
+   off. This is not breaking, but it leaves a number in the config that may
+   not be sent, which misleads readers.
+3. Keep the field and default, and fix nothing in the library; applications
+   set `num_ctx` themselves. This leaves the bug for every other application.
+
+I recommend option 1, in the next major, with the model metadata capabilities
+above shipped in the same release so the helper's rules hold from day one.
+
+**Tests per port:** a default config sends no `num_ctx`; an explicit one sends
+exactly that value; the oMLX and OpenAI gateways are unaffected (oMLX ignores
+`num_ctx`; check each port's OpenAI-compatible path, because Python's OpenAI
+gateway reads `config.num_ctx` today).
 
 ### Rules
 
@@ -206,4 +264,7 @@ they are.
    already has its own model profiles, and a broad struct invites guessing at
    fields no provider reports.
 2. **Release.** Does this go into the next minor on its own, or wait for other
-   work planned for that minor?
+   work planned for that minor? If section 1b takes option 1, the whole
+   contract ships in the next major instead.
+3. **The `num_ctx` fix (section 1b).** Option 1 (optional field, 3.0.0),
+   option 2 (a flag, non-breaking), or option 3 (leave it)?
