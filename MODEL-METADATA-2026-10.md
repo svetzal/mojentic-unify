@@ -1,6 +1,6 @@
 # Model metadata and first-token timing, October 2026
 
-Status: draft for Stacey's review. Targets 3.0.0 (see section 3).
+Status: agreed on 2026-10-15 (see Decisions). Ships in 3.0.0 in all six ports.
 
 The contract every port implements for three changes:
 
@@ -240,7 +240,7 @@ The ports also disagree in shape:
    `max_tokens` is the only output limit: Ollama receives it as
    `options.num_predict`, OpenAI as `max_tokens` or `max_completion_tokens`,
    oMLX and Anthropic as `max_tokens`. This replaces the four precedence rules.
-   (A decision for Stacey; see open question 3.)
+   Python's and Kotlin's -1 sentinel goes with it.
 3. **Remove gateway-level fallbacks** that invent values: Python's
    `args.get("num_ctx", 32768)` and the deprecated broker keyword defaults, and
    TypeScript's `?? 1.0` and `?? 16384` in the OpenAI and oMLX gateways.
@@ -333,17 +333,15 @@ these operations, and deletes `src/model_metadata.rs` and `src/first_token.rs`
 in a commit of its own. Its fallback order, accounting, and tracing stay where
 they are.
 
-## Open questions
+## Decisions
 
-1. **Name and shape of the window call.** A single-purpose
-   `get_model_context_window`, or the first field of a broader
-   `get_model_info` that can later carry tool, vision, and reasoning
-   capabilities? I lean towards the single-purpose call: the reasoning work in
-   `REASONING-PROTOTYPE-2026-10.md` already has its own model profiles, and a
-   broad struct invites guessing at fields no provider reports.
-2. **One output limit.** Remove `num_predict` and make `max_tokens` the only
-   output limit (section 3.2, item 2)? I recommend it: the field is breaking
-   anyway in 3.0.0, and it removes four conflicting precedence rules.
-3. **Scope of 3.0.0.** Ship sections 1, 2 and 3 together, as this document
-   assumes? The patch-level bugs found in the audit (#2, #3, #4) ship
+Stacey decided the open questions on 2026-10-15:
+
+1. **The window call is single-purpose:** `get_model_context_window` (named
+   per port as in section 1). It is not the first field of a broader model-info
+   call; the reasoning work keeps its own model profiles.
+2. **One output limit:** `num_predict` is removed and `max_tokens` is the only
+   output limit (section 3.2, item 2).
+3. **Scope:** sections 1, 2 and 3 ship together in 3.0.0, in all six ports,
+   Elixir first. The patch-level bugs found in the audit (#2, #3, #4) ship
    separately in 2.1.x and do not wait.
