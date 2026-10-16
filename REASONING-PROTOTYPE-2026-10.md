@@ -1,5 +1,8 @@
 # Native reasoning prototype contract
 
+Status, 2026-10-15: Stacey authorized this contract for every port in 3.0.0
+(`RELEASE-3.0.0.md`, part 2). Rust's prototype is the reference.
+
 Stacey explicitly requested a Rust-first prototype on October 6, 2026, validated
 in the Sandbox2 Harness using a temporary Git revision. This is an exception to
 Elixir-first feature development. It does not authorize a release or changes to

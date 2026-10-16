@@ -249,7 +249,9 @@ The ports also disagree in shape:
 4. **Align the shape differences above**, taking Elixir's behaviour as the
    reference: warn when reasoning effort is dropped, and rewrite a fixed
    temperature to the model's only allowed value when the caller set one.
-   Ollama `think` takes `true` or `false` until Ollama documents levels.
+   Reasoning effort values and their provider mapping (including Ollama
+   `think` booleans and level strings) follow `REASONING-PROTOTYPE-2026-10.md`,
+   which 3.0.0 takes to every port.
 
 ### 3.3 What this breaks
 
