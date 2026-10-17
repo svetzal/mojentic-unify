@@ -170,6 +170,21 @@ Rules:
 - **Tool-call arguments count** from the first argument fragment, not from the
   completed call.
 - **Non-streamed completions** may report `request_duration_ms` alone.
+- **One frame, several kinds.** When the first token-bearing frame carries
+  more than one kind, the kind is chosen in this order: `thinking`, then
+  `content`, then `tool_call`. The order of fields inside the frame does not
+  matter.
+- **Retries stay on one clock.** `time_to_first_token_ms` and
+  `request_duration_ms` are measured from the first dispatch of one logical
+  completion. The clock keeps running through every admitted retry of that
+  completion; it does not restart for each wire attempt.
+- **Each tool continuation is a new completion.** The request that sends tool
+  results back starts a fresh clock.
+
+Stacey decided these three rules on 2026-10-17 for the Mojentic 3.0.0
+initiative. They match the TypeScript port and the measurement microgentic
+already makes, so microgentic's benchmarks stay continuous. The TypeScript
+executable set `ts-stream-first-token-v1` is the reference for this section.
 
 Observed in microgentic's live check, for scale: oMLX `Qwen3.8-27B-oQ4e-mtp`
 took 8.9 to 14.3 seconds to its first (thinking) token; Ollama
