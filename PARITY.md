@@ -9,7 +9,7 @@ This document tracks **differences and incomplete work** across the six Mojentic
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: October 17, 2026.
+Last Updated: October 18, 2026.
 
 Known 3.0.0 divergence: the ports map reasoning controls to OpenAI and
 Anthropic differently. 3.0.0 ships with it by decision, and 3.1 aligns every
@@ -59,12 +59,48 @@ These features are **fully implemented in Python, Elixir, Rust, TypeScript, and 
 - **Examples**: 26 shared examples implemented across all ports (Python, Elixir, Rust, TypeScript)
 - **Infrastructure**: Full test suites, zero lint warnings, CI/CD pipelines, documentation
 
+## 3.0.0 release parts
+
+All six ports released 3.0.0 on October 18, 2026 with the five parts of
+`RELEASE-3.0.0.md`. The release commits, CI runs, registry links and consumer
+checks are in that file's "RELEASE-3.0.0 record" section. Rust has since
+released 3.0.1, a patch for the Ollama context window of a model that reports
+only `num_ctx`.
+
+Each port has a `CONFORMANCE-3.0.0.md` at its root, at its `v3.0.0` tag. That
+document maps every binding decision of parts 1 to 3 to a named test, and
+records the port's part 4 and 5 evidence. A cell gives the result for the port;
+"n/a" means the part changes nothing in that port.
+
+| Part | Elixir | Python | Rust | TypeScript | Swift | Kotlin |
+| ---- | ------ | ------ | ---- | ---------- | ----- | ------ |
+| 1. Transient recovery and its October 12 amendment | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 2. Native reasoning (Rust reference) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 3. Model metadata and request fidelity (#1) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 4. Kotlin drops iOS targets | n/a | n/a | n/a | n/a | n/a | ✅ |
+| 5. October 15 audit bugs | n/a | ✅ #2 | ✅ #3 | ✅ #4 | n/a | n/a |
+
+Notes:
+
+- Part 2 ships with one divergence by decision: the ports map reasoning
+  controls to OpenAI and Anthropic differently. See "Reasoning controls by
+  provider" under Remaining Differences. 3.1 aligns every port.
+- Part 3: `num_predict` is removed from the public configuration in every port.
+  This removal also eliminates Rust's negative `num_predict` cast (#3).
+- Part 4: Kotlin publishes only its root, JVM and Android coordinates. Its
+  distribution test rejects any iOS variant.
+- Part 5: Swift, Kotlin and Elixir found no matching defect. Swift and Kotlin
+  have assistant-history tests for the Anthropic case of #2.
+- Several ports' library tests use real HTTP servers and wall-clock
+  assertions. This is test-design debt for 3.1. See "Test design: real HTTP
+  servers in library tests".
+
 ## Rust reasoning prototype (October 6, 2026)
 
 User-authorized Rust-first prototype: native assistant reasoning history,
 explicit model capability profiles, distinct boolean/named reasoning controls,
-and ordinary/streaming/structured parity for Ollama and oMLX. Other ports remain
-unchanged; this is not part of the 2.1.0 release or a parity claim.
+and ordinary/streaming/structured parity for Ollama and oMLX. It was not part
+of 2.1.0. Part 2 of 3.0.0 took it to every port, with Rust as the reference.
 See [the prototype contract](REASONING-PROTOTYPE-2026-10.md).
 
 ## Planned Cross-Port Enhancements
