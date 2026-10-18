@@ -17,10 +17,12 @@ Mojentic is a multi-language agentic framework providing simple, flexible LLM in
 
 **PARITY.md** tracks feature completeness across all implementations. When adding features to one port, check PARITY.md and update it accordingly.
 
+**PARITY.md is the only home for cross-port status.** What each port has, where ports diverge, known divergences a release ships with, and planned alignment work all go in PARITY.md, in the section they belong to. Do not create a separate file for a divergence report, audit, survey, snapshot or alignment plan, dated or not; update PARITY.md and let git keep the history. The only other documents at the root are binding contracts the ports implement (`ALIGNMENT-2026-09.md`, `OMLX-2026-09.md`, `MODEL-METADATA-2026-10.md` and similar) and release plans (`RELEASE-X.Y.Z.md`). Their implementation status still goes in PARITY.md. Before creating any new root document, check whether it is really a contract; if it records state, it belongs in PARITY.md. (Stacey, 2026-10-17, after dated divergence reports kept accumulating beside PARITY.md.)
+
 ## Cross-Language Coordination
 
 - The Elixir implementation is the **source of truth** for API design and feature behaviour. New capabilities are prototyped there first because an active Elixir product (Bedrock) drives them. Every port is kept at feature parity; Elixir leads only in time.
-- New cross-port capabilities get a contract document at the monorepo root (for example `ALIGNMENT-2026-09.md`). Elixir implements it first; the other ports follow the contract, and Elixir's behaviour where the contract is silent.
+- New cross-port capabilities get a contract document at the monorepo root (for example `ALIGNMENT-2026-09.md`): the binding behaviour, not progress or status. Elixir implements it first; the other ports follow the contract, and Elixir's behaviour where the contract is silent. Progress against the contract is tracked in PARITY.md.
 - Changes to the Elixir reference should be reflected in PARITY.md, flagging work needed in other ports
 - **Each port serves its own platform ecosystem and nothing more.** Python serves Python, Kotlin serves the JVM and Android, Swift serves Apple platforms (and Swift on Linux). A port does not target another port's ecosystem: Kotlin has no iOS targets, because native Apple apps use `mojentic-sw`. Do not add cross-ecosystem targets, bridges or distributions without Stacey's explicit decision. (Stacey, 2026-10-11, when iOS was dropped from Kotlin.)
 - Each port must maintain its own quality gates independently (see sub-project `AGENTS.md`)

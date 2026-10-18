@@ -12,10 +12,8 @@ This document tracks **differences and incomplete work** across the six Mojentic
 Last Updated: October 17, 2026.
 
 Known 3.0.0 divergence: the ports map reasoning controls to OpenAI and
-Anthropic differently, and Swift places oMLX's `enable_thinking` differently.
-3.0.0 ships with these divergences by decision. 3.1 aligns every port on one
-rule: native equivalent or explicit failure, never omission or name-based
-guessing. See `DIVERGENCE-2026-10-17.md` for the table and the per-port work.
+Anthropic differently. 3.0.0 ships with it by decision, and 3.1 aligns every
+port. See "Reasoning controls by provider" under Remaining Differences.
 
 Current update: a second release audit corrected streaming discrepancies in
 all six ports. Malformed control and evidence fields now end the events API
@@ -348,6 +346,78 @@ This section provides comprehensive feature tables for implementing new ports (e
 | **Anthropic** | ✅ | ❌ | ❌ | 📝 | 📝 | ✅ | Python + Kotlin currently; TypeScript planned |
 | **File Gateway** | ✅ | ❌ | ❌ | ❌ | ❌ | 📝 | Python: file-based mocking for tests |
 
+### Reasoning controls by provider (3.0.0 divergence, aligned in 3.1)
+
+Every port must behave the same way; that is the point of the ports. 3.0.0 is
+blocking other work, so it ships with the divergence below (Stacey,
+2026-10-17), and 3.1 aligns every port on the rule at the end of this section.
+Surveyed on 2026-10-17 from each port's `main`.
+
+OpenAI (`reasoning_effort`):
+
+| Control | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
+| ------- | ------ | ------ | ---- | ---------- | ----- | ------ |
+| Disabled | error | error | omitted, no error | error | error | error |
+| Enabled | error | error | error | error | error | error |
+| Low, Medium, High | sent | sent | sent | sent | sent | sent |
+| XHigh | error | error | `xhigh` | error | error | error |
+
+- Rust's omission means a caller who asks for no reasoning gets the model's
+  default, `medium` on current OpenAI models.
+- Every port sends the effort only when its model registry marks the model as
+  a reasoning model, and drops it with a warning otherwise. Unknown models are
+  guessed from the name (`o1`, `o3`, `o4`; also `gpt-5` in Rust and a substring
+  table in Kotlin).
+- Elixir, Python and Swift reject a reasoning profile on OpenAI. Rust and
+  Kotlin validate the effort against the profile and continue.
+
+Anthropic (no gateway in Elixir, Rust or TypeScript):
+
+| Control | Python | Swift | Kotlin |
+| ------- | ------ | ----- | ------ |
+| Disabled, Enabled, XHigh | warns, omits | error | error |
+| Low, Medium, High | warns, omits | `budget_tokens` thinking, one budget for all three | warns, omits |
+
+- Python's recovery path omits without the warning.
+- Swift's `budget_tokens` mode is deprecated on Claude 4.6 and rejected by
+  Claude 4.7 and later.
+- First-token timing for Anthropic streams: Kotlin and Swift. The `input: {}`
+  in a `tool_use` `content_block_start` is not a token; the first non-empty
+  `input_json_delta` starts the `tool_call` clock; a zero-argument tool call
+  leaves the first-token fields absent. Python does not stream Anthropic.
+
+oMLX: Swift puts `enable_thinking` inside `chat_template_kwargs`; the other
+ports put it at the top level.
+
+**The 3.1 rule: native or nothing.**
+
+1. Each control maps to the provider's native equivalent. OpenAI: Disabled
+   sends `reasoning_effort: "none"`, and Low, Medium, High and XHigh send their
+   own names. Anthropic: Disabled sends `thinking: {type: "disabled"}`, Enabled
+   sends `thinking: {type: "adaptive"}`, and the named levels send
+   `output_config.effort`. oMLX: `enable_thinking` at the top level.
+2. When a provider has no native equivalent, the gateway fails before
+   dispatch. OpenAI has no plain Enabled.
+3. A gateway never omits a control, substitutes another, or guesses support
+   from a model name. The provider enforces what each model supports, and its
+   HTTP 400 returns as the gateway's typed error. This removes the name-based
+   reasoning-model fallback in every OpenAI registry.
+
+Support varies by model and changes monthly: OpenAI accepts `none` on GPT-5.2
+and later but not on GPT-5, the o-series, GPT-6 Astra or GPT-6.1 Sol, and
+Anthropic's Opus 5.5 cannot disable thinking while Haiku 5.5 can at `high`
+effort or below. A per-model table in six ports would be wrong within a
+quarter. 3.1 also settles a zero-argument Anthropic tool call; the proposal is
+that it counts as the first token when its block completes.
+
+| 3.1 work | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
+| -------- | ------ | ------ | ---- | ---------- | ----- | ------ |
+| OpenAI Disabled to `none` | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
+| OpenAI XHigh to `xhigh` | 📝 | 📝 | ✅ | 📝 | 📝 | 📝 |
+| Drop model-name guessing | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
+| Anthropic native mapping | 📝 | n/a | n/a | n/a | 📝 | 📝 |
+| oMLX `enable_thinking` at top level | ✅ | ✅ | ✅ | ✅ | 📝 | ✅ |
+
 ### Message Features (Python-only)
 
 | Feature | Python | Others | Swift | Kotlin | Notes |
@@ -635,7 +705,7 @@ separately.
 
 Three capabilities first built in Elixir for Bedrock were aligned across all
 six ports on 2026-09-24. The contract, with two rounds of clarifications, is
-`ALIGNMENT-2026-09.md`. Background is in `DIVERGENCE-2026-09-24.md`.
+`ALIGNMENT-2026-09.md`.
 
 | Capability | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
 | ---------- | ------ | ------ | ---- | ---------- | ----- | ------ |

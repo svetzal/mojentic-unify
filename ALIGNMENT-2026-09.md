@@ -5,7 +5,7 @@ appeared in mojentic-ex for Bedrock. Elixir is the reference where this
 document is silent. Where Elixir falls short of this document, Elixir changes
 too.
 
-Background: `DIVERGENCE-2026-09-24.md`.
+Background: the 2026-09-24 divergence audit, now in git history (`git log -- DIVERGENCE-2026-09-24.md`).
 
 ## Principle
 
