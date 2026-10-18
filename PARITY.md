@@ -9,7 +9,13 @@ This document tracks **differences and incomplete work** across the six Mojentic
 - ❌ Not Started
 - 📝 Planned
 
-Last Updated: September 30, 2026.
+Last Updated: October 17, 2026.
+
+Known 3.0.0 divergence: the ports map reasoning controls to OpenAI and
+Anthropic differently, and Swift places oMLX's `enable_thinking` differently.
+3.0.0 ships with these divergences by decision. 3.1 aligns every port on one
+rule: native equivalent or explicit failure, never omission or name-based
+guessing. See `DIVERGENCE-2026-10-17.md` for the table and the per-port work.
 
 Current update: a second release audit corrected streaming discrepancies in
 all six ports. Malformed control and evidence fields now end the events API
