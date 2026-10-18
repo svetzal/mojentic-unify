@@ -169,8 +169,12 @@ request successful or create another inference request.
 
 ## Deterministic conformance evidence
 
-Use scripted HTTP transports or fake provider boundaries. No live model is needed.
-Run the cases through public entrypoints and each applicable adapter.
+Use in-process scripted transports (the HTTP library's own test transport,
+which opens no socket) or fake provider boundaries, with an injected clock and
+sleeper. Do not use a local or loopback HTTP server, and do not assert
+wall-clock thresholds (revised 2026-10-18; see `AGENTS.md`, "Tests Are the
+Executable Spec"). No live model is needed. Run the cases through public
+entrypoints and each applicable adapter.
 
 | Case | Required proof |
 | --- | --- |

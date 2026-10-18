@@ -59,6 +59,14 @@ When these heuristics conflict with stated requirements, explicitly surface the 
 - Tests verify behaviour, not implementation details
 - Only mock gateway/boundary classes, never mock library internals
 - Do not test gateway (I/O isolating) classes unless they have custom logic
+- **No test makes a real network connection.** Tests do not open sockets,
+  start local or scripted HTTP servers, or call any service, a package registry
+  included. To test the real HTTP client, use the HTTP library's own in-process
+  test transport (`URLProtocol`, a Req test adapter or plug, Ktor `MockEngine`,
+  an injected `fetch`, a stub `httpx` transport). Inject the clock and the
+  sleeper; tests do not sleep for real time or assert wall-clock thresholds.
+  No suite in any port is an exception. (Stacey, 2026-10-18, after real-server
+  tests made CI slow and hung Swift CI for up to six hours.)
 
 ### Functional Core, Imperative Shell
 
