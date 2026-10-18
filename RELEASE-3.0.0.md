@@ -112,3 +112,39 @@ package registry, never a git commit or branch pin (Operations `AGENTS.md`,
   package registries, with no git pins, and their gates pass.
 - `PARITY.md` has rows for every part, and the submodule pointers in this
   repository move to the 3.0.0 commits in one commit.
+
+## RELEASE-3.0.0 record
+
+Stacey gave the release go-ahead on 2026-10-18. All six ports are released as
+3.0.0. Each was released by its own `AGENTS.md` process after its whole
+`.hone-gates.json` passed on the release tree. `foundry release` was not used:
+its Claude Code release agent first hit an expired login, then backgrounded its
+gates and ended its turn (fixed in Foundry 0.54.1).
+
+| Port | Release commit | Release CI | Registry | Fresh consumer check |
+| ---- | -------------- | ---------- | -------- | -------------------- |
+| Elixir | `38875fa` | [39125330249](https://github.com/svetzal/mojentic-ex/actions/runs/39125330249) | [Hex 3.0.0](https://hex.pm/packages/mojentic/3.0.0) | New Mix project resolved `mojentic 3.0.0`; `Mojentic.LLM.Broker` loads |
+| Python | `d37a4ca` | [39127764075](https://github.com/svetzal/mojentic/actions/runs/39127764075) | [PyPI 3.0.0](https://pypi.org/project/mojentic/3.0.0/) | New venv installed 3.0.0; imports, `__version__` is 3.0.0 |
+| Rust | `89ab969` | [39128022714](https://github.com/svetzal/mojentic-ru/actions/runs/39128022714) | [crates.io 3.0.0](https://crates.io/crates/mojentic/3.0.0) | New Cargo project resolved 3.0.0 and built |
+| TypeScript | `dcec7d4` | [39130400610](https://github.com/svetzal/mojentic-ts/actions/runs/39130400610) | [npm 3.0.0](https://www.npmjs.com/package/mojentic/v/3.0.0) | New npm project installed 3.0.0; `VERSION` is 3.0.0 |
+| Kotlin | `6d0de37` | [39130852575](https://github.com/svetzal/mojentic-kt/actions/runs/39130852575) | [Maven Central 3.0.0](https://repo1.maven.org/maven2/com/vetzal/mojentic/mojentic-core/3.0.0/) | `tests/distribution` consumer against Maven Central: five modules, 7 contract tests pass |
+| Swift | `79948c0` | [39130871375](https://github.com/svetzal/mojentic-sw/actions/runs/39130871375) (attempt 2) | [tag v3.0.0](https://github.com/svetzal/mojentic-sw/releases/tag/v3.0.0) | New SwiftPM package resolved exactly 3.0.0; `Mojentic.version` is 3.0.0 |
+
+Found and fixed during the release:
+
+- TypeScript's exported `VERSION`, Swift's `Mojentic.version` and Kotlin's
+  `Mojentic.VERSION` were still 2.1.0; each moved to 3.0.0 in its release commit.
+- TypeScript's first v3.0.0 publish job failed before upload: the job installs
+  npm 12, whose `npm pack --json` returns an object, and the package check
+  expected an array. `dcec7d4` reads both shapes. The unpublished v3.0.0 release
+  and tag were deleted and re-created at `dcec7d4`; npm never had a broken 3.0.0.
+- Rust's local lockfile resolved `rustls` 0.23.45 and `quinn-proto` 0.11.17 with
+  seven new advisories. `Cargo.lock` is not committed, and fresh resolution takes
+  the fixed 0.23.46 and 0.11.19.
+- Swift's first macOS run on the release commit hung in its test step and was
+  cancelled; attempt 2 passed. The cause is the Swift test design (real loopback
+  HTTP and wall-clock assertions); see `PARITY.md` for the 3.1 work.
+
+Known divergences shipped by decision are in `PARITY.md`, "Reasoning controls by
+provider". The consumers (`bedrock`, `bedrock-workshop`, `microgentic`) have not
+moved yet; their Foundry members stay held until the owner releases them.
