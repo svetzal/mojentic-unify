@@ -418,6 +418,34 @@ that it counts as the first token when its block completes.
 | Anthropic native mapping | 📝 | n/a | n/a | n/a | 📝 | 📝 |
 | oMLX `enable_thinking` at top level | ✅ | ✅ | ✅ | ✅ | 📝 | ✅ |
 
+### Test design: real HTTP servers in library tests (3.1)
+
+The 3.0 recovery, timing and fidelity work added tests that drive gateways
+through real local HTTP servers with wall-clock assertions. That breaks the
+principle in `AGENTS.md`: only mock gateway and boundary types. Counted on
+2026-10-18: Swift 85 test files (one hand-written socket server,
+`RecoveryLoopback.swift`), Elixir 23 (`scripted_completion_server.ex`,
+`chunked_http_server.ex`, with 900-second gate timeouts), Rust 5. Swift's CI
+shows the cost: green runs take about 5 minutes, failed runs 31 minutes, and four
+runs since 2026-10-12 hung until GitHub's 6-hour limit.
+
+The cause was our tooling, not the contracts. The recovery contract asked for
+"scripted HTTP transports or fake provider boundaries". Foundry's campaign
+formation read that as "scripted loopback HTTP" and "local HTTP fixtures through
+the real ReqClient", its executor prompt asks for proof "through the real
+boundary", and its reviewers rejected stubs.
+
+3.1 work in every port that has it: test the logic through the public API with
+an in-process stub transport (URLProtocol, a Req test adapter, a mock client)
+and an injected clock; no real sockets and no wall-clock thresholds. At most a
+few loopback smoke tests, run serially in a separate time-boxed CI job. Every CI
+job sets `timeout-minutes`.
+
+| 3.1 work | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
+| -------- | ------ | ------ | ---- | ---------- | ----- | ------ |
+| Replace real-server tests with stub transport and injected clock | check | 📝 | 📝 | check | 📝 | check |
+| `timeout-minutes` on every CI job | check | check | check | check | 📝 | check |
+
 ### Message Features (Python-only)
 
 | Feature | Python | Others | Swift | Kotlin | Notes |
