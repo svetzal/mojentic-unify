@@ -91,9 +91,9 @@ Notes:
   distribution test rejects any iOS variant.
 - Part 5: Swift, Kotlin and Elixir found no matching defect. Swift and Kotlin
   have assistant-history tests for the Anthropic case of #2.
-- Several ports' library tests use real HTTP servers and wall-clock
-  assertions. This is test-design debt for 3.1. See "Test design: real HTTP
-  servers in library tests".
+- Several ports' 3.0.0 library tests use real HTTP servers and wall-clock
+  assertions. They are being removed now. See "Test design: no real network
+  in tests".
 
 ## Rust reasoning prototype (October 6, 2026)
 
@@ -454,33 +454,38 @@ that it counts as the first token when its block completes.
 | Anthropic native mapping | 📝 | n/a | n/a | n/a | 📝 | 📝 |
 | oMLX `enable_thinking` at top level | ✅ | ✅ | ✅ | ✅ | 📝 | ✅ |
 
-### Test design: real HTTP servers in library tests (3.1)
+### Test design: no real network in tests (in progress, 2026-10-18)
 
 The 3.0 recovery, timing and fidelity work added tests that drive gateways
 through real local HTTP servers with wall-clock assertions. That breaks the
 principle in `AGENTS.md`: only mock gateway and boundary types. Counted on
 2026-10-18: Swift 85 test files (one hand-written socket server,
 `RecoveryLoopback.swift`), Elixir 23 (`scripted_completion_server.ex`,
-`chunked_http_server.ex`, with 900-second gate timeouts), Rust 5. Swift's CI
-shows the cost: green runs take about 5 minutes, failed runs 31 minutes, and four
-runs since 2026-10-12 hung until GitHub's 6-hour limit.
+`chunked_http_server.ex`, with 900-second gate timeouts), TypeScript 16,
+Kotlin 12, Python 10, Rust 7. Swift's CI shows the cost: green runs take about
+5 minutes, failed runs 31 minutes, and four runs since 2026-10-12 hung until
+GitHub's 6-hour limit.
 
-The cause was our tooling, not the contracts. The recovery contract asked for
-"scripted HTTP transports or fake provider boundaries". Foundry's campaign
-formation read that as "scripted loopback HTTP" and "local HTTP fixtures through
-the real ReqClient", its executor prompt asks for proof "through the real
+The cause was our tooling, not the original intent. The recovery contract asked
+for "scripted HTTP transports or fake provider boundaries", and the oMLX
+contract allowed "a local socket". Foundry's campaign formation read that as
+"scripted loopback HTTP", its executor prompt asked for proof "through the real
 boundary", and its reviewers rejected stubs.
 
-3.1 work in every port that has it: test the logic through the public API with
-an in-process stub transport (URLProtocol, a Req test adapter, a mock client)
-and an injected clock; no real sockets and no wall-clock thresholds. At most a
-few loopback smoke tests, run serially in a separate time-boxed CI job. Every CI
-job sets `timeout-minutes`.
+Stacey decided on 2026-10-18 that this is done now, not in 3.1, and that no test
+makes a real network connection (`AGENTS.md`, "Tests Are the Executable Spec").
+The recovery and oMLX contracts are revised to match. Each port has a Foundry
+campaign, `<port>-no-network-tests`, on `mojility-ops-01`. It replaces the
+real-server tests with the HTTP library's in-process test transport or a fake
+gateway and an injected clock. No loopback smoke tests remain. Every CI job
+gets `timeout-minutes`; on 2026-10-18 no job in any port set it. microgentic
+has the same campaign.
 
-| 3.1 work | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
-| -------- | ------ | ------ | ---- | ---------- | ----- | ------ |
-| Replace real-server tests with stub transport and injected clock | check | 📝 | 📝 | check | 📝 | check |
-| `timeout-minutes` on every CI job | check | check | check | check | 📝 | check |
+| Work | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
+| ---- | ------ | ------ | ---- | ---------- | ----- | ------ |
+| No sockets, servers or registry calls | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
+| No real sleeps or wall-clock limits | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
+| CI `timeout-minutes` on every job | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
 
 ### Message Features (Python-only)
 
