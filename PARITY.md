@@ -454,7 +454,7 @@ that it counts as the first token when its block completes.
 | Anthropic native mapping | 📝 | n/a | n/a | n/a | 📝 | 📝 |
 | oMLX `enable_thinking` at top level | ✅ | ✅ | ✅ | ✅ | 📝 | ✅ |
 
-### Test design: no real network in tests (in progress, 2026-10-18)
+### Test design: no real network in tests (in progress, 2026-10-19)
 
 The 3.0 recovery, timing and fidelity work added tests that drive gateways
 through real local HTTP servers with wall-clock assertions. That breaks the
@@ -479,13 +479,15 @@ campaign, `<port>-no-network-tests`, on `mojility-ops-01`. It replaces the
 real-server tests with the HTTP library's in-process test transport or a fake
 gateway and an injected clock. No loopback smoke tests remain. Every CI job
 gets `timeout-minutes`; on 2026-10-18 no job in any port set it. microgentic
-has the same campaign.
+has the same campaign. On 2026-10-19 the Python, Rust, TypeScript and Kotlin
+campaigns are complete. Elixir is still running. Swift waits for Stacey's
+decision on an internal Anthropic transport seam.
 
 | Work | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
 | ---- | ------ | ------ | ---- | ---------- | ----- | ------ |
-| No sockets, servers or registry calls | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
-| No real sleeps or wall-clock limits | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
-| CI `timeout-minutes` on every job | 📝 | 📝 | 📝 | 📝 | 📝 | 📝 |
+| No sockets, servers or registry calls | ✅ | 📝 | ✅ | ✅ | 📝 | ✅ |
+| No real sleeps or wall-clock limits | ✅ | 📝 | ✅ | ✅ | 📝 | ✅ |
+| CI `timeout-minutes` on every job | ✅ | 📝 | ✅ | ✅ | 📝 | ✅ |
 
 ### Message Features (Python-only)
 
