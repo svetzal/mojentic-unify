@@ -63,10 +63,14 @@ When these heuristics conflict with stated requirements, explicitly surface the 
   start local or scripted HTTP servers, or call any service, a package registry
   included. To test the real HTTP client, use the HTTP library's own in-process
   test transport (`URLProtocol`, a Req test adapter or plug, Ktor `MockEngine`,
-  an injected `fetch`, a stub `httpx` transport). Inject the clock and the
-  sleeper; tests do not sleep for real time or assert wall-clock thresholds.
-  No suite in any port is an exception. (Stacey, 2026-10-18, after real-server
-  tests made CI slow and hung Swift CI for up to six hours.)
+  an injected `fetch`, a stub `httpx` transport). No suite in any port is an
+  exception. (Stacey, 2026-10-18, after real-server tests made CI slow and hung
+  Swift CI for up to six hours.)
+- **No test is temporally coupled.** A temporally coupled test depends on real
+  elapsed time, scheduling or ordering: it sleeps, waits on a wall-clock
+  deadline, races a real timeout, or asserts on measured duration. Clock time
+  is simulated. Code reads time only through an injected clock and sleeper,
+  and the test sets and advances that clock explicitly. (Stacey, 2026-10-19.)
 
 ### Functional Core, Imperative Shell
 
