@@ -480,14 +480,16 @@ real-server tests with the HTTP library's in-process test transport or a fake
 gateway and an injected clock. No loopback smoke tests remain. Every CI job
 gets `timeout-minutes`; on 2026-10-18 no job in any port set it. microgentic
 has the same campaign. On 2026-10-19 the Python, Rust, TypeScript and Kotlin
-campaigns are complete. Elixir is still running. Swift waits for Stacey's
-decision on an internal Anthropic transport seam.
+campaigns are complete. Swift is complete on 2026-10-19. Its campaign removed
+the servers, and a Mac session fixed the in-process fixture's empty request
+bodies on Darwin and made the gate checks run without python3 (CI run
+39356560368, all jobs green). Elixir is still running.
 
 | Work | Python | Elixir | Rust | TypeScript | Swift | Kotlin |
 | ---- | ------ | ------ | ---- | ---------- | ----- | ------ |
-| No sockets, servers or registry calls | ✅ | 📝 | ✅ | ✅ | 📝 | ✅ |
-| No real sleeps or wall-clock limits | ✅ | 📝 | ✅ | ✅ | 📝 | ✅ |
-| CI `timeout-minutes` on every job | ✅ | 📝 | ✅ | ✅ | 📝 | ✅ |
+| No sockets, servers or registry calls | ✅ | 📝 | ✅ | ✅ | ✅ | ✅ |
+| No real sleeps or wall-clock limits | ✅ | 📝 | ✅ | ✅ | ✅ | ✅ |
+| CI `timeout-minutes` on every job | ✅ | 📝 | ✅ | ✅ | ✅ | ✅ |
 
 ### Message Features (Python-only)
 
