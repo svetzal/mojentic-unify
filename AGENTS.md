@@ -29,6 +29,22 @@ Mojentic is a multi-language agentic framework providing simple, flexible LLM in
 - Do not change multiple ports in a single commit — make focused, per-port changes
 - **Major and minor versions stay synchronised across all six ports.** The same `X.Y` means the same feature set in every language. A feature that bumps the minor version in one port ships in all six under that version; patch versions may differ. Before tagging any port, check the others' latest tags.
 
+## Dependency diligence
+
+Use maintained tools native to each port's ecosystem to check resolved direct
+and transitive dependencies for known advisories. Do not add another language
+runtime, commercial service or external account to satisfy an audit. Optional
+analyzers for unrelated ecosystems may be removed with the coverage change
+stated explicitly. Do not lower thresholds or suppress real findings to pass.
+
+A passing audit reports no matching known advisories within its stated coverage
+and checked revision. It does not prove supply-chain integrity. If a suitable
+native check is unavailable, report the limitation instead of building a scanner
+or expanding infrastructure. Preserve native build, test and quality checks.
+Act on concrete findings; stop when the authorized outcome and required evidence
+are satisfied. An impossible acceptance criterion needs an owner amendment,
+not more cycles chasing certainty.
+
 ## Shared Engineering Principles
 
 All craftsperson agents used in this project should share the same core philosophy.
