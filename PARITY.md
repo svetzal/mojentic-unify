@@ -723,16 +723,32 @@ def process(_), do: {:error, :invalid_format}
 
 ---
 
+## Dependency diligence
+
+The October 23 review checks known advisories with each port's ecosystem tools.
+These checks do not guarantee supply-chain integrity. Shared `AGENTS.md` limits
+new audit tooling to the port's ecosystem without extra accounts or commercial
+services. Native build and behavior checks remain required.
+
+| Port | Check | Current evidence |
+| --- | --- | --- |
+| Python | `uv run --locked pip-audit` | No known vulnerabilities reported on ops-01. |
+| TypeScript | Full `npm audit --audit-level=moderate` | follow-redirects and Vite findings fixed on main; full npm audit reports zero vulnerabilities. |
+| Elixir | `scripts/recovery-mix deps.audit` | No vulnerabilities reported on ops-01. |
+| Rust | `cargo audit` | Yanked yoke-derive replaced with 0.8.4; unrelated versions preserved. Cargo.lock is now tracked. All native gates and advisory checks passed. |
+| Swift | Native SwiftPM build/test/lint/DocC | Non-native OSV workflow removed on main; native gates and hosted CI passed, including repaired Swift 6.1 dependency resolution. No suitable native automated advisory check was identified. This is a coverage gap. |
+| Kotlin | JVM-only Gradle Dependency-Check | JVM-only configuration delivered on main without .NET, Sonatype or a custom downloader. Six native gates passed; the standard audit could not obtain a complete public NVD feed, so fresh advisory coverage is unavailable. The post-push audit action is disabled while the nightly scan continues to report that gap. |
+
 ## Test & Quality Snapshot
 
 | Port | Tests | Coverage | Lint Warnings | Security |
 | ------ | ------- | ---------- | --------------- | ---------- |
-| Python | 376 | not re-measured 2026-09-24 | 0 (flake8) | bandit, pip-audit clean |
-| Elixir | 777 (incl. 18 doctests) | 86.92% | 0 (Credo strict) | deps.audit, hex.audit, sobelow clean |
-| Rust | 517 unit + 2 integration + 16 doctests | tarpaulin | 0 (clippy -D warnings) | cargo deny advisories clean |
-| TypeScript | 773 | Jest | 0 (ESLint) | npm audit clean |
-| Swift | 194 (195 with `--traits full`) | not yet measured | 0 (swift-format, SwiftLint strict) | Dependabot (CI) |
-| Kotlin | 275+ JVM, plus iOS simulator arm64 | not yet measured | 0 (ktlint, Detekt) | OWASP Dependency-Check: 6 findings, build-time tooling plus one false positive (decision pending) |
+| Python | 376 | not re-measured 2026-09-24 | 0 (flake8) | pip-audit: no known vulnerabilities (October 23) |
+| Elixir | 777 (incl. 18 doctests) | 86.92% | 0 (Credo strict) | deps.audit: no known vulnerabilities (October 23) |
+| Rust | 517 unit + 2 integration + 16 doctests | tarpaulin | 0 (clippy -D warnings) | See dependency diligence above |
+| TypeScript | 773 | Jest | 0 (ESLint) | full npm audit: no known vulnerabilities after repair (October 23) |
+| Swift | 194 (195 with `--traits full`) | not yet measured | 0 (swift-format, SwiftLint strict) | No native advisory check established; gap explicit |
+| Kotlin | 275+ JVM, plus iOS simulator arm64 | not yet measured | 0 (ktlint, Detekt) | JVM-only audit configured; fresh NVD data unavailable |
 
 ---
 
